@@ -113,24 +113,14 @@ const handleSdelete=()=>{
        
         <DialogContent>
           <div>
-          <label className="input-label" > Class Id</label>
-                  
-                    <input className="input"
-                     >
-
-                     </input>
-                    <br></br>
+         
                     <label className="input-label"> Class Name </label>
                   
                   <input className="input"
                   >
 
                    </input>
-                   {/* <br></br>
-                    <label className="input-label"> Subjects </label>
                   
-                  
-                   <select className="select"></select> */}
         
           </div>
 
@@ -144,7 +134,7 @@ const handleSdelete=()=>{
       </Dialog>
     </div>
 
-    {/* Add Subject dialog*/}
+   
     <div >
       <Dialog open={sopen} onClose={handleSclose} className="Dialog" >
      
@@ -184,23 +174,14 @@ const handleSdelete=()=>{
     
         
           <div>
-          <label className="input-label" > Class</label>
-                  
-                    <input className="input">
-
-                    </input>
-                    <br></br>
+          
                     <label className="input-label" > Class Name </label>
                   
                   <input 
                  className="input"
               
                   ></input>
-                  {/* <br></br>
-                  <label className="input-label" > Subjects </label>
                   
-                 <select className="select"></select>
-         */}
           </div>
 
       
@@ -346,7 +327,7 @@ const handleSdelete=()=>{
          <Table className="Class-table">
              <TableHead className="Table-head">
              <Stack direction="row">
-                 <TableCell className="Head-Table-cell">Class Id</TableCell>
+                 <TableCell className="Head-Table-cell">Class Code</TableCell>
                  <TableCell className="Head-Table-cell">Class Name</TableCell>
                  <TableCell className="Head-Table-cell">Subjects</TableCell>
                  <TableCell className="Head-Table-cell">Update</TableCell>
@@ -384,23 +365,10 @@ const handleSdelete=()=>{
                    </TableRow> */}
                    <TableRow>          
                          <Stack  direction="row">
-                           <TableCell className="Table-cell" >1</TableCell>
-                           <TableCell className="Table-cell" >Class 1</TableCell> 
+                           <TableCell className="Table-cell" >C1</TableCell>
+                           <TableCell className="Table-cell" >1</TableCell> 
                            <TableCell className="Table-cell" >
-                            {/* <div>
-                            <div>
-                            <TableCell >Maths</TableCell>
-                            </div>
-                            <div>
-                            <TableCell>Science</TableCell>
-                            </div>
-                            <div>
-                            <TableCell>Social</TableCell>
-                            </div>
-                            <div>
-                            <TableCell>English</TableCell>
-                            </div>
-                            </div> */}
+                        
                             Maths
                             <Divider style={{border:"0px"}}/>
                             Science
