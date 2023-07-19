@@ -87,11 +87,11 @@ const ClassesAndSubjects = () => {
                   >
 
                    </input>
-                   <br></br>
+                   {/* <br></br>
                     <label className="input-label"> Subjects </label>
                   
                   
-                   <select className="select"></select>
+                   <select className="select"></select> */}
         
           </div>
 
@@ -127,11 +127,11 @@ const ClassesAndSubjects = () => {
                  className="input"
               
                   ></input>
-                  <br></br>
+                  {/* <br></br>
                   <label className="input-label" > Subjects </label>
                   
                  <select className="select"></select>
-        
+         */}
           </div>
 
       
