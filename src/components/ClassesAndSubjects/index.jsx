@@ -19,6 +19,10 @@ const ClassesAndSubjects = () => {
     const [open, setOpen] = React.useState(false);
     const [open1, setOpen1] = React.useState(false);
     const [open2, setOpen2] = React.useState(false);
+    const [sopen, setSopen] = React.useState(false);
+    const [sopen1, setSopen1] = React.useState(false);
+    const [sopen2, setSopen2] = React.useState(false);
+
 
 
     const handleButton=(str)=>{
@@ -28,7 +32,6 @@ const ClassesAndSubjects = () => {
     }
 
     const handleClickOpen = () => {
-     
       setOpen(true);
     };
     
@@ -62,6 +65,42 @@ const ClassesAndSubjects = () => {
   const handleDelete=()=>{
     setOpen2(true);
   }
+
+
+  const handleClickSopen = () => {
+    setSopen(true);
+  };
+  
+  const handleSclose = () => {
+    setSopen(false);
+  };
+
+  const handleClickSopen1 = () => {
+ 
+    setSopen1(true);
+  };
+  
+  const handleSclose1 = () => {
+    setSopen1(false);
+  };
+
+  const handleClickSopen2 = () => {
+ 
+    setSopen2(true);
+  };
+  
+  const handleSclose2 = () => {
+    setSopen2(false);
+  };
+
+  const handleSupdate=()=>{
+    setSopen1(true);
+  
+}
+
+const handleSdelete=()=>{
+  setSopen2(true);
+}
     
 
 
@@ -99,6 +138,36 @@ const ClassesAndSubjects = () => {
         <DialogActions>
         
           <button onClick={handleClose}>Close</button>
+          <button   >Add</button>
+         
+        </DialogActions>
+      </Dialog>
+    </div>
+
+    {/* Add Subject dialog*/}
+    <div >
+      <Dialog open={sopen} onClose={handleSclose} className="Dialog" >
+     
+        <DialogTitle className="DialogTitle">New Subject</DialogTitle>
+       
+        <DialogContent>
+          <div>
+                  
+                  <label className="input-label"> Name </label>
+                  <input className="input"></input>
+                  <br/>
+                  <label className="input-label"> Credit </label>
+                  <input className="input"></input>
+                   <br />
+                  <label className="input-label"> Class </label>
+                  <select className="select"></select>
+        
+          </div>
+
+        </DialogContent>
+        <DialogActions>
+        
+          <button onClick={handleSclose}>Close</button>
           <button   >Add</button>
          
         </DialogActions>
@@ -143,7 +212,50 @@ const ClassesAndSubjects = () => {
         </DialogActions>
       </Dialog>
     </div>
-    <div>
+
+    {/* Update subject */}
+    <div >
+      <Dialog open={sopen1} onClose={handleSclose1} className="Dialog">
+      
+        <DialogTitle className="DialogTitle"><b>Update Subject</b></DialogTitle>
+  
+        <DialogContent>
+         
+    
+        
+          <div>
+          <label className="input-label" >Name</label>
+                  
+                    <input className="input">
+
+                    </input>
+                    <br></br>
+                    <label className="input-label" >Credit</label>
+                  
+                  <input 
+                 className="input"
+              
+                  ></input>
+                  <br></br>
+                  <label className="input-label" > Class</label>
+                  
+                 <select className="select"></select>
+        
+          </div>
+
+      
+        </DialogContent>
+        <DialogActions>
+          <button onClick={handleSclose1} >Close</button>
+          <button   >Update</button>
+         
+        </DialogActions>
+      </Dialog>
+    </div>
+    {/*End of Update subject */}
+
+   {/* delete class */}
+   <div>
     <Dialog
     open={open2}
     onClose={handleClose2}
@@ -171,6 +283,36 @@ const ClassesAndSubjects = () => {
     </DialogActions>
   </Dialog>
   </div>
+  {/* end of delete class */}
+
+  {/* Delete Subject */}
+  <div>
+    <Dialog
+    open={sopen2}
+    onClose={handleSclose2}
+    aria-labelledby="alert-dialog-title"
+    aria-describedby="alert-dialog-description"
+    className="Dialog"
+  >
+    
+    <DialogTitle id="alert-dialog-title" className="DialogTitle">
+        <b>
+      {"Are you sure?"}
+      </b>
+    </DialogTitle>
+  
+    <DialogContent style={{color:"black"}}>
+      <DialogContentText id="alert-dialog-description">
+       Do you really want to delete this Subject? This process cannot be undone.
+      </DialogContentText>
+    </DialogContent>
+    <DialogActions>
+    <button onClick={handleSclose2} variant="contained" >Cancel</button>
+    <button  variant="contained" color="error"autoFocus >Delete</button>
+   </DialogActions>
+  </Dialog>
+  </div>
+
     <Grid container  className="Grid-container"> 
         <Grid item lg={2} >
         <Box className="box" >
@@ -290,11 +432,13 @@ const ClassesAndSubjects = () => {
         :
         <Grid item lg={10}>
         <Box >
+
+          {/* Subjects */}
         <Paper className="paper2">
         <Stack direction="column">
        <div>
         <div>
-            <button className="button-style">Add Class</button>
+            <button className="button-style"onClick={handleClickSopen}>Add Subject</button>
             </div>
             <div className="nosubmit"   >
                
@@ -306,16 +450,15 @@ const ClassesAndSubjects = () => {
         <Table className="Subject-table">
             <TableHead className="Table-head">
             <Stack direction="row">
-                <TableCell className="Head-Table-cell">Class Id</TableCell>
-                <TableCell className="Head-Table-cell">Class Name</TableCell>
-                
-                <TableCell className="Head-Table-cell">Subjects</TableCell>
+                <TableCell className="Head-Table-cell">Subject Code</TableCell>
+                <TableCell className="Head-Table-cell">Name</TableCell>
+                <TableCell className="Head-Table-cell">Credit</TableCell>
+                <TableCell className="Head-Table-cell">Class</TableCell>
                 <TableCell className="Head-Table-cell">Update</TableCell>
-                <TableCell className="Head-Table-cell">Delete</TableCell>
-
-                </Stack>
+                <TableCell className="Head-Table-cell">Delete </TableCell>
+            </Stack>
             </TableHead>
-            <TableRow>
+            {/* <TableRow>
                     {classes?.length===0 ?
                       <TableCell style={{width:'100%'}} >  
                         <h5>No  Data Available!!!</h5>
@@ -343,7 +486,25 @@ const ClassesAndSubjects = () => {
                       </TableRow>
                       
                     ),) }
-                  </TableRow>
+                  </TableRow> */}
+                  <TableRow>          
+                         <Stack  direction="row">
+                         <TableCell className="Table-cell">SPh7</TableCell>
+                           <TableCell className="Table-cell">Physics</TableCell> 
+                           <TableCell className="Table-cell">3</TableCell> 
+                           <TableCell className="Table-cell">7</TableCell> 
+                           <TableCell className="Table-cell">
+                             <button onClick={() =>{handleSupdate()}} >
+                               <EditIcon/>  
+                             </button>  
+                           </TableCell>
+                           <TableCell className="Table-cell">          
+                             <button onClick={() =>{handleSdelete()}}  >
+                               <DeleteIcon/>
+                             </button>
+                           </TableCell>
+                         </Stack>
+                       </TableRow>
         </Table>
 
 
