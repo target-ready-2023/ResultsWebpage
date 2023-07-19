@@ -1,0 +1,62 @@
+/* .top-part{
+    margin: 30px;
+} */
+.drop-down{
+    padding: 25px;
+    width: 200px;
+    float: right; 
+    margin: 0px; 
+    margin-right: 20px;
+}
+.add-button{
+    margin: 0px; 
+    margin-left: 20px;
+    padding: 25px;
+    width: 200px;
+    float: left;
+}
+.icon{
+    font-size: 25px;
+    padding-right: 5px;
+}
+.label{
+    background-color: #6d94ed;
+}
+
+.Table{
+    
+    height: 265px;
+}
+
+.table{
+    padding: 150px;
+}
+
+.add{
+    margin: 5px;
+}
+
+.add-button button{
+    height: 56px;
+}
+.drop-down Select{
+    right:auto;
+}
+
+.dd1{
+    width: 150px;
+    padding: 10px;
+    display: inline-block;
+}
+
+.dd2{
+    width: 150px;
+    padding: 10px;
+    display: inline-block;
+}
+
+.dd3{
+    width: 200px;
+    padding: 10px;
+    display: inline-block;
+}
