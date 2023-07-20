@@ -88,8 +88,8 @@ function BasicTable() {
   const columns = [
     // { field: "scheduleCode", headerName: "Schedule Code", width: 200 },
     // { field: "classCode", headerName: "Class Code", width: 200 },
-    { field: "className", headerName: "Class Name", width: 300 },
-    { field: "scheduleType", headerName: "Schedule Type", width: 300 },
+    { field: "className", headerName: "Class Name", width: 220 },
+    { field: "scheduleType", headerName: "Schedule Type", width: 220 },
     { 
       field: "status",
       renderCell:(cellValues)=>
