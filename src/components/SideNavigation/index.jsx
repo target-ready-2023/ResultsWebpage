@@ -4,6 +4,12 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from '@mui/icons-material/Menu';
 import { useNavigate } from 'react-router-dom';
+import Box from "@mui/material/Box";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import "./index.css"
+import { colors } from "@mui/material";
 
 const SideNavigation = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -23,17 +29,42 @@ const SideNavigation = () => {
     navigate('/student')
     handleClose()
   }
-  const handleClassesSubjects = () => {
+  const handleClasses = () => {
     navigate('/classes+subjects')
     handleClose()
   }
-
   const handleSchedule = () => {
     navigate('/exam')
     handleClose()
   }
+  const handleScheduleStd = () => {
+    navigate('/examstudent')
+    handleClose()
+  }
+  
+   //for User Persona Selection
+   const [selectedOption, setSelectedOption] = React.useState('');
+   const handleChange = (event) => {
+     // setSelectedOption(event.target.value);
+     const value = event.target.value;
+     setSelectedOption(value);
+     // onSelectionChange(value); 
+   };
   return (
     <>
+     {/* < className="persona-drop-down"> */}
+        <Box className="dd">
+          <FormControl  className="label" fullWidth variant="filled" sx={{ m: 1  }}>
+            <InputLabel className="LabelName">User Persona</InputLabel>
+              <Select  value={selectedOption} onChange={handleChange} >
+                  <MenuItem value={1}>Admin</MenuItem>
+                  <MenuItem value={2}>Teacher</MenuItem>
+                  <MenuItem value={3}>Coordinator</MenuItem>
+                  <MenuItem value={4}>Student</MenuItem>
+              </Select>
+          </FormControl>
+          </Box>
+        
       <Button
         id="side-navigation"
         aria-controls={open ? "basic-menu" : undefined}
@@ -54,8 +85,9 @@ const SideNavigation = () => {
       >
         <MenuItem onClick={handleHome}>Home</MenuItem>
         <MenuItem onClick={handleStudent}>Student</MenuItem>
-        <MenuItem onClick={handleClassesSubjects}>Classes & Subjects</MenuItem>
+        <MenuItem onClick={handleClasses}>Classes and Subjects</MenuItem>
         <MenuItem onClick={handleSchedule}>Exam Schedule</MenuItem>
+        <MenuItem onClick={handleScheduleStd}>Std Schedule</MenuItem>
       </Menu>
     </>
   );

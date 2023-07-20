@@ -1,0 +1,15 @@
+.dd{
+    left : 78%;
+    position: absolute;
+    transform: translateY(-10px);
+    /* right : 10%; */
+    margin-left: 20px;
+    top: -13px;
+    padding: 25px;
+    width: 200px;
+    float: right;
+}
+.menuItem
+{
+    text-emphasis-color: white;
+}
