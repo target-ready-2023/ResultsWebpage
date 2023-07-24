@@ -1,5 +1,5 @@
 .dd{
-    left : 78%;
+    left : 70%;
     position: absolute;
     transform: translateY(-10px);
     /* right : 10%; */
@@ -8,8 +8,23 @@
     padding: 25px;
     width: 200px;
     float: right;
+    /* color: aliceblue; */
+    
+}
+.dd .selectBox{
+    /* color: azure; */
+    text-decoration: none;
+    background-color: #EEE7E7;
+    height: 50px;
+}
+.dd .menus{
+    color: black;text-shadow: black;
+
+}
+/* .label-persona, .LabelName, .labelSelect{
+    color: aliceblue;
 }
 .menuItem
 {
     text-emphasis-color: white;
-}
+} */

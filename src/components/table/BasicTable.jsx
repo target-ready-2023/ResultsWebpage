@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -14,7 +14,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import Switch from "@mui/material/Switch";
 import DltPop from "../ExamMainPage/dltpopover";
-import { AiTwotoneDelete } from "react-icons/ai";
+import { AiTwotoneDelete, AiTwotoneEdit } from "react-icons/ai";
 import { Popover } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
@@ -22,58 +22,86 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import {GrAdd} from "react-icons/gr";
+import axios from "axios";
+
+
 
 function BasicTable() {
-  const [jsonData, setJsonData] = useState([
-    {
-      id: 1,
-      scheduleCode: "t1",
-      classCode: "C1",
-      className: 1,
-      scheduleType: "Test 1",
-      nestedData: [
-        {
-          id: 1,
-          code: "M101",
-          name: "Mathematics",
-          timing: randomCreatedDate(),
-        },
-        {
-          id: 2,
-          code: "Ph101",
-          name: "Physics",
-          timing: randomCreatedDate(),
-        },
-        {
-          id: 3,
-          code: "Ch101",
-          name: "Chemistry",
-          timing: randomCreatedDate(),
-        },
-      ],
-    },
-    {
-      id: 2,
-      scheduleCode: "t2",
-      classCode: "C2",
-      className: 2,
-      scheduleType: "Test 2",
-      nestedData: [
-        {
-          id: 1,
-          code: "M101",
-          name: "Mathematics",
-          timing: randomCreatedDate(),
-        },
-        {
-          id: 2,
-          code: "Ph101",
-          name: "Physics",
-          timing: randomCreatedDate(),
-        },
-      ],
-    },
-  ]);
+
+  const getUrl = " http://localhost:8080/schedule/v1/all"
+  const [schedule, setSchedule] = useState([]);
+  useEffect(() => {
+    axios.get(getUrl).then((response) => {
+      console.log(response.data)
+       setSchedule(response.data);
+      //  console.log("after fetching",username);
+      //  console.log(response.data);
+      // console.log(post.type);
+      const modifiedData = response.data.map((item) => ({
+        ...item,
+        id: item.scheduleCode,
+        className: item.classCode,
+         // Use the unique 'itemId' as the row identifier
+      }));
+      setSchedule(modifiedData);
+    })
+    .catch((error) => {
+      console.error('Error fetching data:', error);
+    });
+  },[]);
+
+
+
+  // const [jsonData, setJsonData] = useState([
+  //   {
+  //     id: 1,
+  //     scheduleCode: "t1",
+  //     classCode: "C1",
+  //     className: 1,
+  //     scheduleType: "Test 1",
+  //     nestedData: [
+  //       {
+  //         id: 1,
+  //         code: "M101",
+  //         name: "Mathematics",
+  //         timing: randomCreatedDate(),
+  //       },
+  //       {
+  //         id: 2,
+  //         code: "Ph101",
+  //         name: "Physics",
+  //         timing: randomCreatedDate(),
+  //       },
+  //       {
+  //         id: 3,
+  //         code: "Ch101",
+  //         name: "Chemistry",
+  //         timing: randomCreatedDate(),
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     id: 2,
+  //     scheduleCode: "t2",
+  //     classCode: "C2",
+  //     className: 2,
+  //     scheduleType: "Test 2",
+  //     nestedData: [
+  //       {
+  //         id: 1,
+  //         code: "M101",
+  //         name: "Mathematics",
+  //         timing: randomCreatedDate(),
+  //       },
+  //       {
+  //         id: 2,
+  //         code: "Ph101",
+  //         name: "Physics",
+  //         timing: randomCreatedDate(),
+  //       },
+  //     ],
+  //   },
+  // ]);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [popoverData, setPopoverData] = useState([]);
@@ -126,6 +154,7 @@ function BasicTable() {
           }
         >
           view
+          <AiTwotoneEdit/>
         </Button>
       ),
     },
@@ -186,7 +215,7 @@ function BasicTable() {
       <div>
         <DataGrid
           className="schedule-display"
-          rows={jsonData}
+          rows={schedule}
           columns={columns}
           hideFooter
           hideFooterPagination

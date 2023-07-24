@@ -15,18 +15,10 @@ import {
   randomTraderName,
   randomUpdatedDate,
 } from "@mui/x-data-grid-generator";
-import { AiOutlinePlus, AiFillSchedule, AiTwotoneDelete } from "react-icons/ai";
+import { AiOutlinePlus, AiFillSchedule, AiTwotoneDelete, BsFillPencilFill } from "react-icons/ai";
 import {GrAdd} from "react-icons/gr";
 
 const ExamMainPage = () => {
-  // const {anchorEl, setAnchorEl} = React.useState<HTMLButtonElement | null>(null);
-  // const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-  //   setAnchorEl(event.currentTarget);
-  // };
-
-  // console.log(setAnchorEl);
-  // const open = Boolean(anchorEl);
-  // const id = open ? 'simple-popover' : undefined;
 
   const [anchor, setAnchor] = React.useState(null);
 
@@ -138,7 +130,7 @@ const ExamMainPage = () => {
                   <Box className="dd1">
                     <FormControl fullWidth variant="filled" sx={{ m: 1 }}>
                       <InputLabel>Class Name</InputLabel>
-                      <Select>
+                      <Select className="classForAdmin">
                         <MenuItem value={10}>10th</MenuItem>
                         <MenuItem value={9}>9th</MenuItem>
                         <MenuItem value={8}>8th</MenuItem>
@@ -193,7 +185,7 @@ const ExamMainPage = () => {
           <Box className="label">
             <FormControl fullWidth variant="filled">
               <InputLabel>Class</InputLabel>
-              <Select className="dropdown">
+              <Select className="dropdown-class-main">
                 <MenuItem value={10}>10</MenuItem>
                 <MenuItem value={9}>9</MenuItem>
                 <MenuItem value={8}>8</MenuItem>

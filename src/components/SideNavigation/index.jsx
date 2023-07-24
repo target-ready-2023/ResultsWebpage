@@ -15,6 +15,14 @@ const SideNavigation = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const navigate = useNavigate()
   const open = Boolean(anchorEl);
+  //for User Persona Selection
+  const [userPersona, setUserPersona] = React.useState('');
+  const handleUserPersonaChange = (event) => {
+    // setSelectedOption(event.target.value);
+    const value = event.target.value;
+    setUserPersona(value);
+    // onSelectionChange(value); 
+  };
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -34,33 +42,26 @@ const SideNavigation = () => {
     handleClose()
   }
   const handleSchedule = () => {
-    navigate('/exam')
-    handleClose()
-  }
-  const handleScheduleStd = () => {
-    navigate('/examstudent')
+    if (userPersona=="student") {
+      navigate('/examstudent')
+    }
+    else {
+    navigate('/exam')}
     handleClose()
   }
   
-   //for User Persona Selection
-   const [selectedOption, setSelectedOption] = React.useState('');
-   const handleChange = (event) => {
-     // setSelectedOption(event.target.value);
-     const value = event.target.value;
-     setSelectedOption(value);
-     // onSelectionChange(value); 
-   };
+   
   return (
     <>
      {/* < className="persona-drop-down"> */}
         <Box className="dd">
-          <FormControl  className="label" fullWidth variant="filled" sx={{ m: 1  }}>
+          <FormControl  className="label-persona" fullWidth variant="filled" sx={{ m: 1  }}>
             <InputLabel className="LabelName">User Persona</InputLabel>
-              <Select  value={selectedOption} onChange={handleChange} >
-                  <MenuItem value={1}>Admin</MenuItem>
-                  <MenuItem value={2}>Teacher</MenuItem>
-                  <MenuItem value={3}>Coordinator</MenuItem>
-                  <MenuItem value={4}>Student</MenuItem>
+              <Select  className="selectBox" value={userPersona} onChange={handleUserPersonaChange} >
+                  <MenuItem className="menus" value="admin">Admin</MenuItem>
+                  <MenuItem className="menus"  value="teacher">Teacher</MenuItem>
+                  <MenuItem className="menus"  value="coordinator">Coordinator</MenuItem>
+                  <MenuItem className="menus"  value="student">Student</MenuItem>
               </Select>
           </FormControl>
           </Box>
@@ -87,7 +88,6 @@ const SideNavigation = () => {
         <MenuItem onClick={handleStudent}>Student</MenuItem>
         <MenuItem onClick={handleClasses}>Classes and Subjects</MenuItem>
         <MenuItem onClick={handleSchedule}>Exam Schedule</MenuItem>
-        <MenuItem onClick={handleScheduleStd}>Std Schedule</MenuItem>
       </Menu>
     </>
   );

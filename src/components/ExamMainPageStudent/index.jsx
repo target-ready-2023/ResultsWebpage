@@ -14,14 +14,6 @@ const ExamMainPageStudent = () => {
  
   const [anchor, setAnchor] = React.useState(null);
 
-  
-
-
-  
-
-  
-  
-
   return (
     <>
     <div className="main-div">

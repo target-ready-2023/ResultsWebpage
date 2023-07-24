@@ -8,6 +8,12 @@
     margin: 0px; 
     margin-right: 20px;
 }
+.classForAdmin{
+    background-color: #EEE7E7;
+    color: azure;
+    text-decoration: none;
+    height: 50px;
+}
 .add-button{
     margin: 0px; 
     margin-left: 20px;
@@ -19,8 +25,9 @@
     font-size: 25px;
     padding-right: 5px;
 }
-.label{
-    background-color: #6d94ed;
+.label .dropdown-class-main{
+    background-color:rgb(245, 245, 245);
+    
 }
 
 .Table{
