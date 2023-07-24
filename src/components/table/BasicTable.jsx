@@ -41,6 +41,7 @@ function BasicTable() {
         ...item,
         id: item.scheduleCode,
         className: item.classCode,
+        // id: item.subjectSchedule.subjectCode
          // Use the unique 'itemId' as the row identifier
       }));
       setSchedule(modifiedData);
@@ -51,58 +52,6 @@ function BasicTable() {
   },[]);
 
 
-
-  // const [jsonData, setJsonData] = useState([
-  //   {
-  //     id: 1,
-  //     scheduleCode: "t1",
-  //     classCode: "C1",
-  //     className: 1,
-  //     scheduleType: "Test 1",
-  //     nestedData: [
-  //       {
-  //         id: 1,
-  //         code: "M101",
-  //         name: "Mathematics",
-  //         timing: randomCreatedDate(),
-  //       },
-  //       {
-  //         id: 2,
-  //         code: "Ph101",
-  //         name: "Physics",
-  //         timing: randomCreatedDate(),
-  //       },
-  //       {
-  //         id: 3,
-  //         code: "Ch101",
-  //         name: "Chemistry",
-  //         timing: randomCreatedDate(),
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     id: 2,
-  //     scheduleCode: "t2",
-  //     classCode: "C2",
-  //     className: 2,
-  //     scheduleType: "Test 2",
-  //     nestedData: [
-  //       {
-  //         id: 1,
-  //         code: "M101",
-  //         name: "Mathematics",
-  //         timing: randomCreatedDate(),
-  //       },
-  //       {
-  //         id: 2,
-  //         code: "Ph101",
-  //         name: "Physics",
-  //         timing: randomCreatedDate(),
-  //       },
-  //     ],
-  //   },
-  // ]);
-
   const [anchorEl, setAnchorEl] = useState(null);
   const [popoverData, setPopoverData] = useState([]);
   const popoverOpen = Boolean(anchorEl);
@@ -110,8 +59,12 @@ function BasicTable() {
   // const [openDialog, setOpenDialog] = useState(false);
   // const [dialogData, setDialogData] = useState([]);
 
-  const handleNestedDataClick = (event, nestedData) => {
-    setPopoverData(nestedData);
+  const handleNestedDataClick = (event, row) => {
+    const nestedDataWithIdFromBackend = row.map((item) => ({
+      ...item,
+      id: item.subjectCode,
+    }));
+    setPopoverData(nestedDataWithIdFromBackend);
     setAnchorEl(event.currentTarget);
   };
 
@@ -150,7 +103,7 @@ function BasicTable() {
       renderCell: (params) => (
         <Button
           onClick={(event) =>
-            handleNestedDataClick(event, params.row.nestedData)
+            handleNestedDataClick(event, params.row.subjectSchedule)
           }
         >
           view
@@ -170,13 +123,13 @@ function BasicTable() {
 
   const popoverColumns = [
     {
-      field: "code",
+      field: "id",
       headerName: "Subject Code",
       type: "String",
       editable: true,
     },
     {
-      field: "name",
+      field: "date",
       headerName: "Subject Name",
       editable: true,
       width: 180,
@@ -184,11 +137,11 @@ function BasicTable() {
       headerAlign: "left",
     },
     {
-      field: "timing",
+      field: "time",
       headerName: "Date & Time",
-      type: "dateTime",
+      //type: "dateTime",
       width: 220,
-      valueGetter: ({ value }) => value && new Date(value),
+      //valueGetter: ({ value }) => value && new Date(value),
       editable: true,
     },
     {
