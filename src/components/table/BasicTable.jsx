@@ -30,40 +30,92 @@ import axios from "axios";
 
 function BasicTable() {
 
-  const [isChecked, setIsChecked] = useState(false);
 
-  const handleStatusChange = (event) => {
-    setIsChecked(event.target.checked);
-    console.log(isChecked);
-    // if (isChecked==true) {
-      
-    // }
-  };
+  const [data, setData] = useState([]);  
+  const [isChecked, setIsChecked] = useState(false)
+  //GET CALL URL
   const getUrl = " http://localhost:8080/schedule/v1/all"
   const [schedule, setSchedule] = useState([]);
   useEffect(() => {
     axios.get(getUrl).then((response) => {
       console.log(response.data)
        setSchedule(response.data);
-      //  console.log("after fetching",username);
-      //  console.log(response.data);
-      // console.log(post.type);
       const modifiedData = response.data.map((item) => ({
         ...item,
         id: item.scheduleCode,
-        className: item.classCode,
+        className: item.scheduleCode,
         status: item.scheduleStatus
         
         // id: item.subjectSchedule.subjectCode
          // Use the unique 'itemId' as the row identifier
       }));
       setSchedule(modifiedData);
+      const initialCheckedState = response.data.reduce((acc, item) => {
+        acc[item.id] = item.scheduleStatus === 'active';
+        return acc;
+      }, {});
+      setIsChecked(initialCheckedState);
     })
     .catch((error) => {
       console.error('Error fetching data:', error);
     });
   },[]);
+  
+  const handleStatusChange = (event,id) => {
+    const updatedIsChecked = {
+      ...isChecked,
+      [id]: event.target.checked,
+    };
+    const newStatus = event.target.checked;
+    const updatedData = data.map(item => {
+      if (item.id === id) {
+        return {
+          ...item,
+          scheduleStatus: event.target.checked? 'true' : 'false'
+        };
+      }
+      return item;
+    });
 
+    const putUrl=`http://localhost:8080/schedule/v1/${id}`
+    axios.put(putUrl, 
+      { 
+        "classCode":"C10",
+        "subjectSchedule":[
+            {
+            "subjectCode":"S-SoC10",
+            "date":"2023-07-24",
+            "time":"13:30",
+            "status":"true"
+        }
+        ],
+        "scheduleType":"Test",
+        "scheduleName":"Test 1",
+        "scheduleStatus":newStatus? 'true' : 'false'
+     })
+    .then((response)=>{
+      setData(updatedData); 
+      console.log(response)
+    })
+    .catch((error)=>{
+      // console.log("Expectation Failed (417) - The server cannot fulfill the expectation.");
+      console.log(error)
+    });
+    }
+
+  // const handleUpdateStatus = () =>
+  // {
+  //   const putData = {
+  //     scheduleStatus: isChecked // Include the isChecked state as a field in the data
+  //   };
+  //   const putUrl="http://localhost:8080/schedule/v1/TC1024JULY2023"
+  // axios.put(putUrl, putData).then((response)=>{
+     
+  // })
+  // .catch((error)=>{
+
+  // });
+  // }
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [popoverData, setPopoverData] = useState([]);
@@ -102,10 +154,11 @@ function BasicTable() {
     { field: "scheduleType", headerName: "Schedule Type", width: 200 },
     {
       field: "status",
-      renderCell: (cellValues) => {
+      renderCell: (params) => {
         return (
-          <Switch  checked={isChecked}
-          onChange={handleStatusChange} />
+          <Switch  
+          checked={isChecked[params.id]}
+          onChange={(event) => handleStatusChange(event, params.id)} />
         );
       },
       headerName: "Status",
