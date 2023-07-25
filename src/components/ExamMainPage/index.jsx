@@ -18,10 +18,38 @@ import {
 import { AiOutlinePlus, AiFillSchedule, AiTwotoneDelete, BsFillPencilFill,AiTwotoneSave,AiTwotoneCloseSquare } from "react-icons/ai";
 import {GiCancel} from "react-icons/gi";
 import {GrAdd} from "react-icons/gr";
+import { useState, useEffect } from "react";
+import { setSelectionRange } from "@testing-library/user-event/dist/utils";
+import axios from "axios";
+import Input from '@mui/material/Input';
+
+
 
 const ExamMainPage = () => {
 
   const [anchor, setAnchor] = React.useState(null);
+  const [classNameSelect, setClassNameSelect] = useState('');
+  const [classNameoptions, setClassNameOptions] = useState([]);
+  const [scheduleNameSelect, setScheduleNameSelect] = useState('');
+  const [scheduleType, setScheduleType]=useState('');  
+
+
+
+
+  useEffect( ()=>{
+
+    axios.get ('http://localhost:8080/results/v1/classes')
+    .then( (response)=>{
+      //console.log(response.data);
+      setClassNameOptions(response.data)
+    })
+    .catch((error)=>{
+      console.log(error);
+    })
+
+    
+
+  })
 
   const handleClick = (event) => {
     setAnchor(event.currentTarget);
@@ -106,6 +134,21 @@ const ExamMainPage = () => {
     setRows((prevRows) => prevRows.filter((row) => row.id !== id));
   };
 
+  const handleClassNameSelect = (event) =>{
+    setClassNameSelect(event.target.value)
+    //console.log(classNameSelect)
+  }
+  const handleScheduleNameSelect = (event) =>{
+    setScheduleNameSelect(event.target.value)
+    const scName = scheduleNameSelect;
+    if(scName === "Test 1" || scName === "Test 2"|| scName === "Test 3"|| scName === "Test 4"){
+      setScheduleType("Test")
+    }
+    else{
+      setScheduleType("Exam")
+    }
+  }
+
   return (
     <>
     <div className="main-div">
@@ -131,10 +174,15 @@ const ExamMainPage = () => {
                   <Box className="dd1">
                     <FormControl fullWidth variant="filled" sx={{ m: 1 }}>
                       <InputLabel>Class Name</InputLabel>
-                      <Select className="classForAdmin">
-                        <MenuItem value={10}>10th</MenuItem>
+                      <Select className="classForAdmin" value={classNameSelect} onChange={handleClassNameSelect}>
+                        {/* <MenuItem value={10}>10th</MenuItem>
                         <MenuItem value={9}>9th</MenuItem>
-                        <MenuItem value={8}>8th</MenuItem>
+                        <MenuItem value={8}>8th</MenuItem> */}
+                        {
+                          classNameoptions.map(option =>(
+                            <MenuItem key={option.name} value={option.code}>{option.name}</MenuItem>
+                          ))
+                        }
                       </Select>
                     </FormControl>
                   </Box>
@@ -142,25 +190,22 @@ const ExamMainPage = () => {
                   <Box className="dd3">
                     <FormControl fullWidth variant="filled" sx={{ m: 1 }}>
                       <InputLabel>Schedule Name</InputLabel>
-                      <Select>
-                        <MenuItem value={1}>Test 1</MenuItem>
-                        <MenuItem value={2}>Test 2</MenuItem>
-                        <MenuItem value={4}>Mid-Term</MenuItem>
-                        <MenuItem value={5}>Test 3</MenuItem>
-                        <MenuItem value={6}>Test 4</MenuItem>
-                        <MenuItem value={7}>Pre-Preparatory</MenuItem>
-                        <MenuItem value={8}>Preparatory</MenuItem>
-                        <MenuItem value={9}>Final</MenuItem>
+                      <Select value={scheduleNameSelect} onChange={handleScheduleNameSelect}>
+                        <MenuItem value={"Test 1"}>Test 1</MenuItem>
+                        <MenuItem value={"Test 2"}>Test 2</MenuItem>
+                        <MenuItem value={"Mid-Term"}>Mid-Term</MenuItem>
+                        <MenuItem value={"Test 3"}>Test 3</MenuItem>
+                        <MenuItem value={"Test 4"}>Test 4</MenuItem>
+                        <MenuItem value={"Pre-Preparatory"}>Pre-Preparatory</MenuItem>
+                        <MenuItem value={"Preparatory"}>Preparatory</MenuItem>
+                        <MenuItem value={"Final"}>Final</MenuItem>
                       </Select>
                     </FormControl>
                   </Box>
                   <Box className="dd2">
                     <FormControl fullWidth variant="filled" sx={{ m: 1 }}>
                       <InputLabel>Schedule Type</InputLabel>
-                      <Select>
-                        <MenuItem value={10}>Exam</MenuItem>
-                        <MenuItem value={9}>Test</MenuItem>
-                      </Select>
+                      <Input value={scheduleNameSelect} readOnly />
                     </FormControl>
                   </Box>
                 </div>
@@ -177,9 +222,11 @@ const ExamMainPage = () => {
                 </div>
                 <div className="add">
                   <button onClick={handleAddRow}><GrAdd/> Subject </button>
-                  <button type="cancel">Cancel {<GiCancel />}</button>
-                  <button type="submit">Save Schedule {<AiTwotoneSave />}</button>
+                  
                 </div>
+                <div className="buttons-right-align">
+                  <button type="cancel">Cancel {<GiCancel />}</button>
+                  <button type="submit">Save Schedule {<AiTwotoneSave />}</button></div>
               </div>
             </Typography>
           </Popover>
