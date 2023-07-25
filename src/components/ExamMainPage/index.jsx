@@ -15,7 +15,8 @@ import {
   randomTraderName,
   randomUpdatedDate,
 } from "@mui/x-data-grid-generator";
-import { AiOutlinePlus, AiFillSchedule, AiTwotoneDelete, BsFillPencilFill } from "react-icons/ai";
+import { AiOutlinePlus, AiFillSchedule, AiTwotoneDelete, BsFillPencilFill,AiTwotoneSave,AiTwotoneCloseSquare } from "react-icons/ai";
+import {GiCancel} from "react-icons/gi";
 import {GrAdd} from "react-icons/gr";
 
 const ExamMainPage = () => {
@@ -176,6 +177,8 @@ const ExamMainPage = () => {
                 </div>
                 <div className="add">
                   <button onClick={handleAddRow}><GrAdd/> Subject </button>
+                  <button type="cancel">Cancel {<GiCancel />}</button>
+                  <button type="submit">Save Schedule {<AiTwotoneSave />}</button>
                 </div>
               </div>
             </Typography>

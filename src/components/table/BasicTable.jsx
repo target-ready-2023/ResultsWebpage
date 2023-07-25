@@ -14,7 +14,9 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import Switch from "@mui/material/Switch";
 import DltPop from "../ExamMainPage/dltpopover";
-import { AiTwotoneDelete, AiTwotoneEdit } from "react-icons/ai";
+import { AiTwotoneDelete, AiTwotoneEdit, AiTwotoneSave } from "react-icons/ai";
+import {GiCancel} from "react-icons/gi";
+
 import { Popover } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
@@ -252,6 +254,8 @@ function BasicTable() {
               <button onClick={handleAddRow}>
                 <GrAdd /> Subject
               </button>
+              <button type="cancel">Cancel {<GiCancel />}</button>
+                  <button type="submit">Save Schedule {<AiTwotoneSave />}</button>
             </div>
           </div>
         </Typography>
