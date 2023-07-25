@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -28,6 +28,15 @@ import axios from "axios";
 
 function BasicTable() {
 
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleStatusChange = (event) => {
+    setIsChecked(event.target.checked);
+    console.log(isChecked);
+    // if (isChecked==true) {
+      
+    // }
+  };
   const getUrl = " http://localhost:8080/schedule/v1/all"
   const [schedule, setSchedule] = useState([]);
   useEffect(() => {
@@ -41,6 +50,8 @@ function BasicTable() {
         ...item,
         id: item.scheduleCode,
         className: item.classCode,
+        status: item.scheduleStatus
+        
         // id: item.subjectSchedule.subjectCode
          // Use the unique 'itemId' as the row identifier
       }));
@@ -58,7 +69,7 @@ function BasicTable() {
 
   // const [openDialog, setOpenDialog] = useState(false);
   // const [dialogData, setDialogData] = useState([]);
-
+  
   const handleNestedDataClick = (event, row) => {
     const nestedDataWithIdFromBackend = row.map((item) => ({
       ...item,
@@ -67,6 +78,7 @@ function BasicTable() {
     setPopoverData(nestedDataWithIdFromBackend);
     setAnchorEl(event.currentTarget);
   };
+
 
   // const handleCloseDialog = () => {
   //   setOpenDialog(false);
@@ -84,17 +96,19 @@ function BasicTable() {
 
 
   const columns = [
-    { field: "className", headerName: "Class Name", width: 300 },
-    { field: "scheduleType", headerName: "Schedule Type", width: 300 },
+    { field: "className", headerName: "Class Name", width: 200 },
+    { field: "scheduleType", headerName: "Schedule Type", width: 200 },
     {
       field: "status",
       renderCell: (cellValues) => {
         return (
-          <Switch value="checkedA" inputProps={{ "aria-label": "Switch A" }} />
+          <Switch  checked={isChecked}
+          onChange={handleStatusChange} />
         );
       },
       headerName: "Status",
-      width: 150,
+      width: 80,
+      type: Boolean,
     },
     {
       field: "actions",
