@@ -32,7 +32,8 @@ function BasicTable() {
 
 
   const [data, setData] = useState([]);  
-  const [isChecked, setIsChecked] = useState(false)
+  const [isChecked, setIsChecked] = useState(false);
+  const [selectedRowData, setSelectedRowData] = useState(null);
   //GET CALL URL
   const getUrl = " http://localhost:8080/schedule/v1/all"
   const [schedule, setSchedule] = useState([]);
@@ -43,13 +44,11 @@ function BasicTable() {
       const modifiedData = response.data.map((item) => ({
         ...item,
         id: item.scheduleCode,
-        className: item.scheduleCode,
+        className: item.className,
         status: item.scheduleStatus
-        
-        // id: item.subjectSchedule.subjectCode
-         // Use the unique 'itemId' as the row identifier
       }));
       setSchedule(modifiedData);
+
       const initialCheckedState = response.data.reduce((acc, item) => {
         acc[item.id] = item.scheduleStatus === 'active';
         return acc;
@@ -60,62 +59,44 @@ function BasicTable() {
       console.error('Error fetching data:', error);
     });
   },[]);
-  
-  const handleStatusChange = (event,id) => {
-    const updatedIsChecked = {
-      ...isChecked,
-      [id]: event.target.checked,
-    };
+
+  const handleStatusChange = (event, id) => {
     const newStatus = event.target.checked;
-    const updatedData = data.map(item => {
+    const updatedData = schedule.map((item) => {
       if (item.id === id) {
         return {
           ...item,
-          scheduleStatus: event.target.checked? 'true' : 'false'
+          scheduleStatus: newStatus ? "true" : "false",
         };
       }
       return item;
     });
-
-    const putUrl=`http://localhost:8080/schedule/v1/${id}`
-    axios.put(putUrl, 
-      { 
-        "classCode":"C10",
-        "subjectSchedule":[
-            {
-            "subjectCode":"S-SoC10",
-            "date":"2023-07-24",
-            "time":"13:30",
-            "status":"true"
-        }
-        ],
-        "scheduleType":"Test",
-        "scheduleName":"Test 1",
-        "scheduleStatus":newStatus? 'true' : 'false'
-     })
-    .then((response)=>{
-      setData(updatedData); 
-      console.log(response)
-    })
-    .catch((error)=>{
-      // console.log("Expectation Failed (417) - The server cannot fulfill the expectation.");
-      console.log(error)
-    });
-    }
-
-  // const handleUpdateStatus = () =>
-  // {
-  //   const putData = {
-  //     scheduleStatus: isChecked // Include the isChecked state as a field in the data
-  //   };
-  //   const putUrl="http://localhost:8080/schedule/v1/TC1024JULY2023"
-  // axios.put(putUrl, putData).then((response)=>{
-     
-  // })
-  // .catch((error)=>{
-
-  // });
-  // }
+  
+    const selectedRow = schedule.find((item) => item.id === id);
+    const putData = {
+      classCode: selectedRow?.classCode, // Use optional chaining to prevent undefined error
+      subjectSchedule: Array.isArray(selectedRow?.subjectSchedule)
+        ? selectedRow.subjectSchedule.map((scheduleItem) => ({
+            ...scheduleItem,
+          }))
+        : [],
+      scheduleType: selectedRow?.scheduleType,
+      scheduleName: selectedRow?.scheduleName,
+      scheduleStatus: newStatus ? "true" : "false",
+    };
+  
+    const putUrl = `http://localhost:8080/schedule/v1/${id}`;
+    axios
+      .put(putUrl, putData)
+      .then((response) => {
+        setSchedule(updatedData);
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [popoverData, setPopoverData] = useState([]);
@@ -308,7 +289,7 @@ function BasicTable() {
                 <GrAdd /> Subject
               </button>
               <button type="cancel">Cancel {<GiCancel />}</button>
-                  <button type="submit">Save Schedule {<AiTwotoneSave />}</button>
+                  <button type="submit">Save Changes {<AiTwotoneSave />}</button>
             </div>
           </div>
         </Typography>
