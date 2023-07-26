@@ -33,6 +33,10 @@ const SideNavigation = () => {
     navigate('/classes+subjects')
     handleClose()
   }
+  const handleExamPage = () => {
+    navigate('/exampage')
+    handleClose()
+  }
   const handleSchedule = () => {
     navigate('/exam')
     handleClose()
@@ -56,7 +60,7 @@ const SideNavigation = () => {
         <Box className="dd">
           <FormControl  className="label" fullWidth variant="filled" sx={{ m: 1  }}>
             <InputLabel className="LabelName">User Persona</InputLabel>
-              <Select  value={selectedOption} onChange={handleChange} >
+              <Select  className="selectBox" value={selectedOption} onChange={handleChange} >
                   <MenuItem value={1}>Admin</MenuItem>
                   <MenuItem value={2}>Teacher</MenuItem>
                   <MenuItem value={3}>Coordinator</MenuItem>
@@ -86,8 +90,10 @@ const SideNavigation = () => {
         <MenuItem onClick={handleHome}>Home</MenuItem>
         <MenuItem onClick={handleStudent}>Student</MenuItem>
         <MenuItem onClick={handleClasses}>Classes and Subjects</MenuItem>
+        <MenuItem onClick={handleExamPage}>Exam Main Page</MenuItem>
         <MenuItem onClick={handleSchedule}>Exam Schedule</MenuItem>
         <MenuItem onClick={handleScheduleStd}>Std Schedule</MenuItem>
+
       </Menu>
     </>
   );

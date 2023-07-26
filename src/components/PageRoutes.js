@@ -5,10 +5,11 @@ import About from "./About"
 import Contact from "./Contact"
 import NotFound from "./NotFound"
 import ClassesAndSubjects from "./ClassesAndSubjects"
-import ExamMainPage from "./ExamMainPage"
+import ExamMainPage1 from "./ExamMainPage1"
 import BasicTable from "./table/BasicTable"
 import BasicTableStudent from "./table-student/Basictable"
 import ExamMainPageStudent from "./ExamMainPageStudent"
+import ExamMainPage from "./ExamMainPage"
 
 
 const PageRoutes = () => {
@@ -19,7 +20,8 @@ const PageRoutes = () => {
           <Route exact path="/contact" element={<Contact />} />
           <Route exact path="/student" element={<Student />} />
           <Route exact path="/classes+subjects" element={<ClassesAndSubjects />} />
-          <Route exact path="/exam" element={<ExamMainPage />} />
+          <Route exact path="/exampage" element={<ExamMainPage/>}/>
+          <Route exact path="/exam" element={<ExamMainPage1 />} />
           <Route exact path="/examstudent" element={<ExamMainPageStudent />} />
           <Route path='*' element={<NotFound />}/>
         </Routes>

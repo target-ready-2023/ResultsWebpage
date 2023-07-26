@@ -1,15 +1,16 @@
-import { Box, Grid, Paper,Select,Button, Stack, Table, Divider,TableHead, TableCell ,TableRow,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle} from "@mui/material";
+import { Box, Grid, Paper,Select,Button,MenuItem, Stack, Table, Divider,TableHead, TableCell ,TableRow,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle} from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import EditIcon  from '@mui/icons-material/Edit'
 import DeleteIcon  from '@mui/icons-material/Delete'
-
-
+import axios from "axios";
+import swal from "sweetalert";
+import "./index.css";
 import React, { useState } from "react";
 
 const ClassesAndSubjects = () => {
-    const[classes,setClasses]=new useState([])
+    const[classes,setClasses]=new useState()
     const [page, setPage] = React.useState(0);
-    const [usersPerPage, setUsersPerPage] = React.useState(7);
+    const [usersPerPage, setUsersPerPage] = React.useState(2);
     const[currentPage,setCurrentPage] = React.useState(1);
     const lastIndex = currentPage * usersPerPage;
     const firstIndex = lastIndex - usersPerPage;
@@ -22,12 +23,59 @@ const ClassesAndSubjects = () => {
     const [sopen, setSopen] = React.useState(false);
     const [sopen1, setSopen1] = React.useState(false);
     const [sopen2, setSopen2] = React.useState(false);
+    const [code,setCode]=React.useState("");
+    const [name,setName]=React.useState("");
+    const[subjects,setSubjects]=React.useState([]);
+    const [class1,setClass1]=React.useState({
+      code:"",
+      name:"",
+      subjects:[]
+    })
+    const [subjects1,setSubjects1]=React.useState([]);
+    const [subjectCode,setSubjectCode]=React.useState("");
+    const [subjectName,setSubjectName]=React.useState("");
+    const [credits,setCredits]=React.useState("");
+    const [classCode,setClassCode]=React.useState("");
+    const [subject,setSubject]=React.useState({
+      subjectCode:"",
+      subjectName:"",
+      credits:"",
+      classCode:""
+    })
+    const [page1, setPage1] = React.useState(0);
+    const [usersPerPage1, setUsersPerPage1] = React.useState(4);
+    const[currentPage1,setCurrentPage1] = React.useState(1);
+    const lastIndex1 = currentPage1 * usersPerPage1;
+    const firstIndex1 = lastIndex1 - usersPerPage1;
+    const subjectsPerPage = subjects1 && subjects1.slice(firstIndex1,lastIndex1);
+    const totalPages1 = Math.ceil(subjects1?.length/usersPerPage1);
 
+    const PreviousPage= (event) =>{
+      if(currentPage>1){
+        setCurrentPage(currentPage-1);
+      }
+  }
+  const NextPage = (event) =>{
+    if(currentPage<totalPages){
+  
+      setCurrentPage(currentPage+1);
+    
+  }}
 
+  const PreviousPage1= (event) =>{
+    if(currentPage1>1){
+      setCurrentPage1(currentPage1-1);
+    }
+}
+const NextPage1 = (event) =>{
+  if(currentPage1<totalPages1){
 
+    setCurrentPage1(currentPage1+1);
+  
+}}
     const handleButton=(str)=>{
       setButton(str);
-      console.log(button);
+    
 
     }
 
@@ -39,15 +87,6 @@ const ClassesAndSubjects = () => {
       setOpen(false);
     };
 
-    const handleClickOpen1 = () => {
-   
-      setOpen1(true);
-    };
-    
-    const handleClose1 = () => {
-      setOpen1(false);
-    };
-
     const handleClickOpen2 = () => {
    
       setOpen2(true);
@@ -56,15 +95,6 @@ const ClassesAndSubjects = () => {
     const handleClose2 = () => {
       setOpen2(false);
     };
-
-    const handleUpdate=()=>{
-      setOpen1(true);
-    
-  }
-
-  const handleDelete=()=>{
-    setOpen2(true);
-  }
 
 
   const handleClickSopen = () => {
@@ -92,20 +122,128 @@ const ClassesAndSubjects = () => {
   const handleSclose2 = () => {
     setSopen2(false);
   };
-
-  const handleSupdate=()=>{
-    setSopen1(true);
-  
-}
-
-const handleSdelete=()=>{
-  setSopen2(true);
-}
     
+React.useEffect(() => {  
+  classDetailsHandle();
+  subjectDetailsHandle();
+ },[]) 
+
+const classDetailsHandle=()=>{
+  axios.get('http://localhost:8080/classes/v1/classes').then(result =>setClasses(result?.data))
+  .catch(err=>{
+    console.log(err.message)
+  })
+}
+
+const subjectDetailsHandle=()=>{
+  axios.get('http://localhost:8080/subjects/v1/subjects').then(result =>setSubjects1(result?.data))
+  .catch(err=>{
+    console.log(err.message)
+  })
+}
+
+const addClass = (e) => {
+setOpen(false);
+  axios.post("http://localhost:8080/classes/v1/classes",class1).then(result=> {
+    swal({
+      title: "Class Added Successfully",
+      icon: "success",
+      button: "OK",
+    }); 
+  classDetailsHandle();
+  });
+}
+
+const handleDelete=(class_id)=>{
+  setOpen2(true);
+  setCode(class_id);
+}
+
+const deleteClass=()=>{
+  setOpen2(false);
+  axios.delete('http://localhost:8080/classes/v1/classes/'+code).then((response) => {
+    swal({
+      title: "Class Deleted Successfully",
+      icon: "success",
+      button: "OK",
+    });
+    classDetailsHandle(); 
+  });
+ 
+}
+
+const addSubject = (e) => {
+  setSopen(false);
+    axios.post("http://localhost:8080/subjects/v1/subject",subject).then(result=> {
+      swal({
+        title: "Subject Added Successfully",
+        icon: "success",
+        button: "OK",
+      }); 
+    subjectDetailsHandle();
+    });
+  }
+  const handleSupdate=(sub_id,itr)=>{
+    setSopen1(true);
+    setSubject(itr);
+    setSubjectCode(sub_id);
+}
+
+const updateSubject=(e)=>{
+    setSopen1(false);
+    axios.put('http://localhost:8080/subjects/v1/subject/'+subjectCode,subject).then((response) => {
+      swal({
+        title: "Subject Updated Successfully",
+        icon: "success",
+        button: "OK",
+      });
+      subjectDetailsHandle(); 
+    });
+    
+  }
+
+
+
+  const handleSdelete=(sub_id)=>{
+    setSopen2(true);
+    setSubjectCode(sub_id);
+  }
+  
+  const deleteSubject=()=>{
+    setSopen2(false);
+    axios.delete('http://localhost:8080/subjects/v1/subject/'+subjectCode).then((response) => {
+      swal({
+        title: "Subject Deleted Successfully",
+        icon: "success",
+        button: "OK",
+      });
+      subjectDetailsHandle(); 
+    });
+   
+  }
+
+  const handleClassSearch=(className)=>{
+    
+   
+    axios.get('http://localhost:8080/classes/v1/classes/search',{params:{className}}).then(result =>setClasses(result?.data))
+    .catch(err=>{
+      console.log(err.message)
+    })
+  }
+
+  const handleSubjectSearch=(subjectName)=>{
+    
+   
+    axios.get('http://localhost:8080/subjects/v1/search',{params:{subjectName}}).then(result =>setSubjects1(result?.data))
+    .catch(err=>{
+      console.log(err.message)
+    })
+  }
 
 
     return (
        <>
+       {/* Add class */}
       <div >
       <Dialog open={open} onClose={handleClose} className="Dialog" >
      
@@ -117,8 +255,8 @@ const handleSdelete=()=>{
                     <label className="input-label"> Class Name </label>
                   
                   <input className="input"
+                  onChange={(event)=>setClass1({...class1,name:event.target.value})}
                   >
-
                    </input>
                   
         
@@ -128,13 +266,13 @@ const handleSdelete=()=>{
         <DialogActions>
         
           <button onClick={handleClose}>Close</button>
-          <button   >Add</button>
+          <button  onClick={()=>addClass()} >Add</button>
          
         </DialogActions>
       </Dialog>
     </div>
 
-   
+   {/* Add Subject */}
     <div >
       <Dialog open={sopen} onClose={handleSclose} className="Dialog" >
      
@@ -144,13 +282,24 @@ const handleSdelete=()=>{
           <div>
                   
                   <label className="input-label"> Name </label>
-                  <input className="input"></input>
+                  <input className="input"
+                  onChange={(event)=>setSubject({...subject,subjectName:event.target.value})}></input>
                   <br/>
                   <label className="input-label"> Credit </label>
-                  <input className="input"></input>
+                  <input className="input"
+                   onChange={(event)=>setSubject({...subject,credits:event.target.value})}></input>
                    <br />
                   <label className="input-label"> Class </label>
-                  <select className="select"></select>
+                  <select className="select"
+                  onChange={(event)=>setSubject({...subject,classCode:event.target.value})}
+                 
+                   >
+                    <option value="Select">Select</option>
+                    {classes?.map((classes,id) => (
+                      
+                        <option key={id} value={classes.code}>{classes.code}</option>
+                        ))}
+                   </select>
         
           </div>
 
@@ -158,41 +307,13 @@ const handleSdelete=()=>{
         <DialogActions>
         
           <button onClick={handleSclose}>Close</button>
-          <button   >Add</button>
+          <button   onClick={()=>addSubject()}>Add</button>
          
         </DialogActions>
       </Dialog>
     </div>
 
-    <div >
-      <Dialog open={open1} onClose={handleClose1} className="Dialog">
-      
-        <DialogTitle className="DialogTitle"><b>Update Class</b></DialogTitle>
-  
-        <DialogContent>
-         
     
-        
-          <div>
-          
-                    <label className="input-label" > Class Name </label>
-                  
-                  <input 
-                 className="input"
-              
-                  ></input>
-                  
-          </div>
-
-      
-        </DialogContent>
-        <DialogActions>
-          <button onClick={handleClose1} >Close</button>
-          <button   >Update</button>
-         
-        </DialogActions>
-      </Dialog>
-    </div>
 
     {/* Update subject */}
     <div >
@@ -207,7 +328,9 @@ const handleSdelete=()=>{
           <div>
           <label className="input-label" >Name</label>
                   
-                    <input className="input">
+                    <input className="input"
+                    defaultValue={subject.subjectName}
+                    onChange={(event)=>setSubject({...subject,subjectName:event.target.value})}>
 
                     </input>
                     <br></br>
@@ -215,12 +338,22 @@ const handleSdelete=()=>{
                   
                   <input 
                  className="input"
-              
+                 defaultValue={subject.credits}
+                 onChange={(event)=>setSubject({...subject,credits:event.target.value})}
                   ></input>
                   <br></br>
                   <label className="input-label" > Class</label>
                   
-                 <select className="select"></select>
+                 <select className="select"
+                 defaultValue={subject.classCode}
+                  onChange={(event)=>setSubject({...subject,classCode:event.target.value})}>
+                    <option value="Select">Select</option>
+                    {classes?.map((classes,id) => (
+                      
+                        <option key={id} value={classes.code}>{classes.code}</option>
+                        ))}
+
+                  </select>
         
           </div>
 
@@ -228,7 +361,7 @@ const handleSdelete=()=>{
         </DialogContent>
         <DialogActions>
           <button onClick={handleSclose1} >Close</button>
-          <button   >Update</button>
+          <button  onClick={()=>updateSubject()} >Update</button>
          
         </DialogActions>
       </Dialog>
@@ -258,7 +391,7 @@ const handleSdelete=()=>{
     </DialogContent>
     <DialogActions>
     <button onClick={handleClose2} variant="contained" >Cancel</button>
-    <button  variant="contained" color="error"autoFocus >Delete</button>
+    <button  variant="contained" color="error"autoFocus  onClick={()=>deleteClass()}>Delete</button>
     
       
     </DialogActions>
@@ -289,7 +422,7 @@ const handleSdelete=()=>{
     </DialogContent>
     <DialogActions>
     <button onClick={handleSclose2} variant="contained" >Cancel</button>
-    <button  variant="contained" color="error"autoFocus >Delete</button>
+    <button  variant="contained" color="error"autoFocus onClick={()=>deleteSubject()}>Delete</button>
    </DialogActions>
   </Dialog>
   </div>
@@ -310,6 +443,7 @@ const handleSdelete=()=>{
 
         {button=="classes"?
          <Grid item lg={10}>
+          {/* classes */}
          <Box >
          <Paper className="paper2">
          <Stack direction="column">
@@ -319,7 +453,9 @@ const handleSdelete=()=>{
              </div>
              <div className="nosubmit"   >
                 
-           <input type="search" placeholder="Search..."/>
+           <input type="search" placeholder="Search..."
+           onChange={(event)=>{handleClassSearch(event.target.value)}}>
+          </input>
         
          </div>
          </div>
@@ -330,12 +466,11 @@ const handleSdelete=()=>{
                  <TableCell className="Head-Table-cell">Class Code</TableCell>
                  <TableCell className="Head-Table-cell">Class Name</TableCell>
                  <TableCell className="Head-Table-cell">Subjects</TableCell>
-                 <TableCell className="Head-Table-cell">Update</TableCell>
                  <TableCell className="Head-Table-cell">Delete</TableCell>
  
                  </Stack>
              </TableHead>
-             {/* <TableRow>
+             <TableRow>
                      {classes?.length===0 ?
                        <TableCell style={{width:'100%'}} >  
                          <h5>No  Data Available!!!</h5>
@@ -343,59 +478,57 @@ const handleSdelete=()=>{
                          classesPerPage?.map((itr,index) => (
                        <TableRow key={index}>          
                          <Stack  direction="row">
-                           <TableCell className="Table-cell" >{}</TableCell>
-                           <TableCell className="Table-cell" >{}</TableCell> 
-                           <TableCell className="Table-cell" >{}</TableCell> 
-                           <TableCell className="Table-cell" >{}</TableCell> 
-                           <TableCell className="Table-cell" >{}</TableCell>
-                           <TableCell className="Table-cell">{}</TableCell>  
-                           <TableCell className="Table-cell">
-                             <button variant="outlined" s>
-                               <EditIcon/>  
-                             </button>  
-                           </TableCell>
+                           <TableCell className="Table-cell" >{itr.code}</TableCell>
+                           <TableCell className="Table-cell" >{itr.name}</TableCell> 
+                          <TableCell className="Table-cell" >
+                          
+                            {itr.subjects?.map((sub,index)=>(
+                             
+                            <div className="Table-cell" type="index">
+                              
+                              {sub}
+                              
+                              </div> 
+                               
+                            ),
+                            
+                            ) 
+                            
+                            }
+                             </TableCell>
                            <TableCell className="Table-cell">          
-                             <button variant="contained" color="error" >
+                             <button variant="contained" color="error" onClick={() =>{handleDelete(itr.code)}} >
                                <DeleteIcon/>
                              </button>
                            </TableCell>
                          </Stack>
                        </TableRow>
                      ),) }
-                   </TableRow> */}
-                   <TableRow>          
-                         <Stack  direction="row">
-                           <TableCell className="Table-cell" >C1</TableCell>
-                           <TableCell className="Table-cell" >1</TableCell> 
-                           <TableCell className="Table-cell" >
-                        
-                            Maths
-                            <Divider style={{border:"0px"}}/>
-                            Science
-                            <Divider style={{border:"0px"}} />
-                            English
-                           </TableCell> 
-                          
-                           <TableCell className="Table-cell">
-                             <button onClick={() =>{handleUpdate()}} >
-                               <EditIcon/>  
-                             </button>  
-                           </TableCell>
-                           <TableCell className="Table-cell">          
-                             <button onClick={() =>{handleDelete()}}  >
-                               <DeleteIcon/>
-                             </button>
-                           </TableCell>
-                         </Stack>
-                       </TableRow>
+                   </TableRow>
+                  
          </Table>
  
  
- 
+         {classes?.length===0 ?
+  <div style={{ float: "right" }}>
+    <Button onClick={PreviousPage}>Prev</Button>
+    Page {totalPages} 
+    <Button onClick={NextPage}>Next</Button>
+  </div>
+  :
+  <div style={{ float: "right" }}>
+    <Button onClick={PreviousPage}>Prev</Button>
+    Page {currentPage} 
+    <Button onClick={NextPage}>Next</Button>
+  </div>
+  }
              </Stack>
+            
          </Paper>
          </Box>
           </Grid>
+
+
 
         :
         <Grid item lg={10}>
@@ -410,7 +543,9 @@ const handleSdelete=()=>{
             </div>
             <div className="nosubmit"   >
                
-          <input type="search" placeholder="Search..."/>
+          <input type="search" placeholder="Search..."
+           onChange={(event)=>{handleSubjectSearch(event.target.value)}}>
+            </input>
        
         </div>
         </div>
@@ -426,27 +561,25 @@ const handleSdelete=()=>{
                 <TableCell className="Head-Table-cell">Delete </TableCell>
             </Stack>
             </TableHead>
-            {/* <TableRow>
-                    {classes?.length===0 ?
+            <TableRow>
+                    {subjects1?.length===0 ?
                       <TableCell style={{width:'100%'}} >  
                         <h5>No  Data Available!!!</h5>
                       </TableCell> :
-                        classesPerPage?.map((itr,index) => (
+                        subjectsPerPage?.map((itr,index) => (
                       <TableRow key={index}>          
                         <Stack  direction="row">
-                          <TableCell className="Table-cell" >{}</TableCell>
-                          <TableCell className="Table-cell" >{}</TableCell> 
-                          <TableCell className="Table-cell" >{}</TableCell> 
-                          <TableCell className="Table-cell" >{}</TableCell> 
-                          <TableCell className="Table-cell" >{}</TableCell>
-                          <TableCell className="Table-cell">{}</TableCell>  
+                          <TableCell className="Table-cell" >{itr.subjectCode}</TableCell>
+                          <TableCell className="Table-cell" >{itr.subjectName}</TableCell> 
+                          <TableCell className="Table-cell" >{itr.credits}</TableCell> 
+                          <TableCell className="Table-cell" >{itr.classCode}</TableCell> 
                           <TableCell className="Table-cell">
-                            <button variant="outlined" s>
+                            <button variant="outlined" onClick={()=>handleSupdate(itr.subjectCode,itr)} >
                               <EditIcon/>  
                             </button>  
                           </TableCell>
                           <TableCell className="Table-cell">          
-                            <button variant="contained" color="error" >
+                            <button variant="contained" color="error" onClick={()=>handleSdelete(itr.subjectCode)}>
                               <DeleteIcon/>
                             </button>
                           </TableCell>
@@ -454,27 +587,23 @@ const handleSdelete=()=>{
                       </TableRow>
                       
                     ),) }
-                  </TableRow> */}
-                  <TableRow>          
-                         <Stack  direction="row">
-                         <TableCell className="Table-cell">SPh7</TableCell>
-                           <TableCell className="Table-cell">Physics</TableCell> 
-                           <TableCell className="Table-cell">3</TableCell> 
-                           <TableCell className="Table-cell">7</TableCell> 
-                           <TableCell className="Table-cell">
-                             <button onClick={() =>{handleSupdate()}} >
-                               <EditIcon/>  
-                             </button>  
-                           </TableCell>
-                           <TableCell className="Table-cell">          
-                             <button onClick={() =>{handleSdelete()}}  >
-                               <DeleteIcon/>
-                             </button>
-                           </TableCell>
-                         </Stack>
-                       </TableRow>
+                  </TableRow>
+                  
         </Table>
 
+        {classes?.length===0 ?
+  <div style={{ float: "right" }}>
+    <Button onClick={PreviousPage1}>Prev</Button>
+    Page {totalPages1} 
+    <Button onClick={NextPage1}>Next</Button>
+  </div>
+  :
+  <div style={{ float: "right" }}>
+    <Button onClick={PreviousPage1}>Prev</Button>
+    Page {currentPage1} 
+    <Button onClick={NextPage1}>Next</Button>
+  </div>
+  }
 
 
             </Stack>
