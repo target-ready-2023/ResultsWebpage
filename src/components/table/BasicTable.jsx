@@ -13,7 +13,7 @@ import {
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import Switch from "@mui/material/Switch";
-import DltPop from "../ExamMainPage/dltpopover";
+import DltPop from "../SchedulePage/dltpopover";
 import { AiTwotoneDelete, AiTwotoneEdit, AiTwotoneSave } from "react-icons/ai";
 import {GiCancel} from "react-icons/gi";
 

@@ -25,19 +25,20 @@ import Input from '@mui/material/Input';
 
 
 
-const ExamMainPage = () => {
+const SchedulePage = () => {
 
   const [anchor, setAnchor] = React.useState(null);
   const [classNameSelect, setClassNameSelect] = useState('');
   const [classNameoptions, setClassNameOptions] = useState([]);
   const [scheduleNameSelect, setScheduleNameSelect] = useState('');
   const [scheduleType, setScheduleType]=useState('');  
-
+  const [rows, setRows]=useState([]);
 
 
 
   useEffect( ()=>{
 
+    
     axios.get ('http://localhost:8080/results/v1/classes')
     .then( (response)=>{
       //console.log(response.data);
@@ -91,44 +92,70 @@ const ExamMainPage = () => {
       ),
     },
   ]);
-  const [rows, setRows] = React.useState([
-    {
-      id: 1,
-      code: "M101",
-      name: "Mathematics",
-      timing: randomCreatedDate(),
-    },
-    {
-      id: 2,
-      code: "Ph101",
-      name: "Physics",
-      timing: randomCreatedDate(),
-    },
-    { id: 3, code: "Ch101", name: "Chemistry", timing: randomCreatedDate() },
-    {
-      id: 4,
-      code: "Co101",
-      name: "Computer Science",
-      timing: randomCreatedDate(),
-    },
-  ]);
+  // const [rows, setRows] = React.useState([
+  //   {
+  //     id: 1,
+  //     code: "M101",
+  //     name: "Mathematics",
+  //     timing: randomCreatedDate(),
+  //   },
+  //   {
+  //     id: 2,
+  //     code: "Ph101",
+  //     name: "Physics",
+  //     timing: randomCreatedDate(),
+  //   },
+  //   { id: 3, code: "Ch101", name: "Chemistry", timing: randomCreatedDate() },
+  //   {
+  //     id: 4,
+  //     code: "Co101",
+  //     name: "Computer Science",
+  //     timing: randomCreatedDate(),
+  //   },
+  // ]);
 
   const handleAddRow = () => {
-    const newRow = { id: "", code: "", name: "", age: "" };
+
+    
+    const newRow = {
+      id: rows.length + 1,
+      code: '',
+      name: '',
+      timing: null,
+    };
     setRows((prevRows) => [...prevRows, newRow]);
+    // const newRow = { id: "", name: "", timing: "" };
+    // setRows((prevRows) => [...prevRows, newRow]);
   };
 
   const handleCellEditCommit = (params) => {
-    const { id, field, value } = params;
 
-    setRows((prevRows) =>
-      prevRows.map((row) => {
-        if (row.id === id) {
-          return { ...row, [field]: value };
-        }
-        return row;
-      })
-    );
+
+    // const newRow = {
+    //   id: rows.length + 1,
+    //   code: '',
+    //   name: '',
+    //   timing: null,
+    // };
+    // setRows((prevRows) => [...prevRows, newRow]);
+
+    // setRows((prevRows) =>{
+    //   prevRows.map((row) =>(
+    //     row.id === params.id ? {...row, [params.field]:params.value} : row
+    //   ))
+    // })
+
+    // console.log(rows)
+    // const { id, field, value } = params;
+
+    // setRows((prevRows) =>
+    //   prevRows.map((row) => {
+    //     if (row.id === id) {
+    //       return { ...row, [field]: value };
+    //     }
+    //     return row;
+    //   })
+    // );
   };
   const handleDeleteRow = (id) => {
     setRows((prevRows) => prevRows.filter((row) => row.id !== id));
@@ -148,6 +175,11 @@ const ExamMainPage = () => {
       setScheduleType("Exam")
     }
   }
+  const handleSaveToJSON = () => {
+    console.log("rows " + rows)
+    const jsonData = JSON.stringify(rows);
+    console.log(jsonData); // You can do whatever you want with jsonData, e.g., send it to a server.
+  };
 
   return (
     <>
@@ -218,6 +250,10 @@ const ExamMainPage = () => {
                     hideFooterSelectedRowCount
                     hideFooter
                     //onCellEditCommit={handleCellEditCommit}
+                    onCellEditCommit={({ id, field, value }) => {
+                      const updatedRows = rows.map((row) => (row.id === id ? { ...row, [field]: value } : row));
+                      setRows(updatedRows);
+                    }}
                   />
                 </div>
                 <div className="add">
@@ -226,7 +262,7 @@ const ExamMainPage = () => {
                 </div>
                 <div className="buttons-right-align">
                   <button type="cancel">Cancel {<GiCancel />}</button>
-                  <button type="submit">Save Schedule {<AiTwotoneSave />}</button></div>
+                  <button type="submit" onClick={handleSaveToJSON}>Save Schedule {<AiTwotoneSave />}</button></div>
               </div>
             </Typography>
           </Popover>
@@ -235,7 +271,7 @@ const ExamMainPage = () => {
           <Box className="label">
             <FormControl fullWidth variant="filled">
               <InputLabel>Class</InputLabel>
-              <Select className="dropdown-class-main">
+              <Select className="dropdown-class-main" value={classNameSelect}>
                 <MenuItem value={10}>10</MenuItem>
                 <MenuItem value={9}>9</MenuItem>
                 <MenuItem value={8}>8</MenuItem>
@@ -253,4 +289,4 @@ const ExamMainPage = () => {
   );
 };
 
-export default ExamMainPage;
+export default SchedulePage;

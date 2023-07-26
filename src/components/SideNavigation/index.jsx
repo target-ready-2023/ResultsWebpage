@@ -43,10 +43,10 @@ const SideNavigation = () => {
   }
   const handleSchedule = () => {
     if (userPersona=="student") {
-      navigate('/examstudent')
+      navigate('/schedule+student')
     }
     else {
-    navigate('/exam')}
+    navigate('/schedule')}
     handleClose()
   }
   
