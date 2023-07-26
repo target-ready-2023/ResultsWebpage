@@ -205,7 +205,7 @@ const ExamMainPage = () => {
                   <Box className="dd2">
                     <FormControl fullWidth variant="filled" sx={{ m: 1 }}>
                       <InputLabel>Schedule Type</InputLabel>
-                      <Input value={scheduleNameSelect} readOnly />
+                      <Input value={scheduleType} readOnly />
                     </FormControl>
                   </Box>
                 </div>
