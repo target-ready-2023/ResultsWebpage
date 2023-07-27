@@ -46,7 +46,7 @@ const SchedulePage = () => {
   const [classNameSelectforAll, setClassNameSelectForAll] = useState("");
   useEffect(() => {
     axios
-      .get("http://localhost:8080/results/v1/classes")
+      .get("http://localhost:8080/classes/v1/classes")
       .then((response) => {
         //console.log(response.data);
         setClassNameOptions(response.data);
@@ -59,6 +59,13 @@ const SchedulePage = () => {
   const handleClick = (event) => {
     setAnchor(event.currentTarget);
   };
+
+  useEffect(() => {
+    axios.get(`http://localhost:8080/classes/v1/classes/${classNameSelect}`)
+    .then((response)=>{
+      console.log(response);
+    })
+  }, [classNameSelect]);
 
   useEffect(() => {
     // Log the updated rows whenever the rows state changes
@@ -241,6 +248,7 @@ const SchedulePage = () => {
                         <Select
                           value={scheduleNameSelect}
                           onChange={handleScheduleNameSelect}
+                          
                         >
                           <MenuItem value={"Test 1"}>Test 1</MenuItem>
                           <MenuItem value={"Test 2"}>Test 2</MenuItem>
