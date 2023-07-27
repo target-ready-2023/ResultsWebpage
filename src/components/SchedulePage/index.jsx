@@ -15,46 +15,55 @@ import {
   randomTraderName,
   randomUpdatedDate,
 } from "@mui/x-data-grid-generator";
-import { AiOutlinePlus, AiFillSchedule, AiTwotoneDelete, BsFillPencilFill,AiTwotoneSave,AiTwotoneCloseSquare } from "react-icons/ai";
-import {GiCancel} from "react-icons/gi";
-import {GrAdd} from "react-icons/gr";
+import {
+  AiOutlinePlus,
+  AiFillSchedule,
+  AiTwotoneDelete,
+  BsFillPencilFill,
+  AiTwotoneSave,
+  AiTwotoneCloseSquare,
+} from "react-icons/ai";
+import { GiCancel } from "react-icons/gi";
+import { GrAdd } from "react-icons/gr";
 import { useState, useEffect } from "react";
 import { setSelectionRange } from "@testing-library/user-event/dist/utils";
 import axios from "axios";
-import Input from '@mui/material/Input';
+import Input from "@mui/material/Input";
 
 
+let classCode="";
 
 const SchedulePage = () => {
 
+  
+  
   const [anchor, setAnchor] = React.useState(null);
-  const [classNameSelect, setClassNameSelect] = useState('');
+  const [classNameSelect, setClassNameSelect] = useState("");
   const [classNameoptions, setClassNameOptions] = useState([]);
-  const [scheduleNameSelect, setScheduleNameSelect] = useState('');
-  const [scheduleType, setScheduleType]=useState('');  
-  const [rows, setRows]=useState([]);
-
-
-
-  useEffect( ()=>{
-
-    
-    axios.get ('http://localhost:8080/results/v1/classes')
-    .then( (response)=>{
-      //console.log(response.data);
-      setClassNameOptions(response.data)
-    })
-    .catch((error)=>{
-      console.log(error);
-    })
-
-    
-
-  })
+  const [scheduleNameSelect, setScheduleNameSelect] = useState("");
+  const [scheduleType, setScheduleType] = useState("");
+  const [rows, setRows] = useState([]);
+  const [classNameSelectforAll, setClassNameSelectForAll] = useState("");
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/results/v1/classes")
+      .then((response) => {
+        //console.log(response.data);
+        setClassNameOptions(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  });
 
   const handleClick = (event) => {
     setAnchor(event.currentTarget);
   };
+
+  useEffect(() => {
+    // Log the updated rows whenever the rows state changes
+    console.log("Updated rows:", rows);
+  }, [rows]);
 
   function handleChange() {}
 
@@ -115,12 +124,10 @@ const SchedulePage = () => {
   // ]);
 
   const handleAddRow = () => {
-
-    
     const newRow = {
       id: rows.length + 1,
-      code: '',
-      name: '',
+      code: "",
+      name: "",
       timing: null,
     };
     setRows((prevRows) => [...prevRows, newRow]);
@@ -129,8 +136,6 @@ const SchedulePage = () => {
   };
 
   const handleCellEditCommit = (params) => {
-
-
     // const newRow = {
     //   id: rows.length + 1,
     //   code: '',
@@ -138,16 +143,13 @@ const SchedulePage = () => {
     //   timing: null,
     // };
     // setRows((prevRows) => [...prevRows, newRow]);
-
     // setRows((prevRows) =>{
     //   prevRows.map((row) =>(
     //     row.id === params.id ? {...row, [params.field]:params.value} : row
     //   ))
     // })
-
     // console.log(rows)
     // const { id, field, value } = params;
-
     // setRows((prevRows) =>
     //   prevRows.map((row) => {
     //     if (row.id === id) {
@@ -161,132 +163,165 @@ const SchedulePage = () => {
     setRows((prevRows) => prevRows.filter((row) => row.id !== id));
   };
 
-  const handleClassNameSelect = (event) =>{
-    setClassNameSelect(event.target.value)
+  const handleClassNameSelect = (event) => {
+    setClassNameSelect(event.target.value);
     //console.log(classNameSelect)
-  }
-  const handleScheduleNameSelect = (event) =>{
-    setScheduleNameSelect(event.target.value)
+  };
+
+  const handleClassNameSelectForAll = (event) => {
+    setClassNameSelectForAll(event.target.value);
+    console.log(classNameSelectforAll)
+    classCode=event.target.value
+  };
+
+  const handleScheduleNameSelect = (event) => {
+    setScheduleNameSelect(event.target.value);
     const scName = scheduleNameSelect;
-    if(scName === "Test 1" || scName === "Test 2"|| scName === "Test 3"|| scName === "Test 4"){
-      setScheduleType("Test")
+    if (
+      scName === "Test 1" ||
+      scName === "Test 2" ||
+      scName === "Test 3" ||
+      scName === "Test 4"
+    ) {
+      setScheduleType("Test");
+    } else {
+      setScheduleType("Exam");
     }
-    else{
-      setScheduleType("Exam")
-    }
-  }
+  };
   const handleSaveToJSON = () => {
-    console.log("rows " + rows)
+    console.log("rows " + rows);
     const jsonData = JSON.stringify(rows);
     console.log(jsonData); // You can do whatever you want with jsonData, e.g., send it to a server.
   };
 
   return (
     <>
-    <div className="main-div">
-      <div className="top-part">
-        <div className="add-button">
-          <Button variant="contained" onClick={handleClick}>
-            {" "}
-            <AiFillSchedule className="icon" /> Add Schedule
-          </Button>
-          <Popover
-            open={Boolean(anchor)}
-            anchorEl={anchor}
-            onClose={() => setAnchor(null)}
-            anchorOrigin={{
-              vertical: "center",
-              horizontal: "center",
-            }}
-          >
-            <Typography sx={{ p: 2 }}>
-              <div>
-                <div className="add-sh-dropdowns">
-                  
-                  <Box className="dd1">
-                    <FormControl fullWidth variant="filled" sx={{ m: 1 }}>
-                      <InputLabel>Class Name</InputLabel>
-                      <Select className="classForAdmin" value={classNameSelect} onChange={handleClassNameSelect}>
-                        {/* <MenuItem value={10}>10th</MenuItem>
+      <div className="main-div">
+        <div className="top-part">
+          <div className="add-button">
+            <Button variant="contained" onClick={handleClick}>
+              {" "}
+              <AiFillSchedule className="icon" /> Add Schedule
+            </Button>
+            <Popover
+              open={Boolean(anchor)}
+              anchorEl={anchor}
+              onClose={() => setAnchor(null)}
+              anchorOrigin={{
+                vertical: "center",
+                horizontal: "center",
+              }}
+            >
+              <Typography sx={{ p: 2 }}>
+                <div>
+                  <div className="add-sh-dropdowns">
+                    <Box className="dd1">
+                      <FormControl fullWidth variant="filled" sx={{ m: 1 }}>
+                        <InputLabel>Class Name</InputLabel>
+                        <Select
+                          className="classForAdmin"
+                          value={classNameSelect}
+                          onChange={handleClassNameSelect}
+                        >
+                          {/* <MenuItem value={10}>10th</MenuItem>
                         <MenuItem value={9}>9th</MenuItem>
                         <MenuItem value={8}>8th</MenuItem> */}
-                        {
-                          classNameoptions.map(option =>(
-                            <MenuItem key={option.name} value={option.code}>{option.name}</MenuItem>
-                          ))
-                        }
-                      </Select>
-                    </FormControl>
-                  </Box>
-                  
-                  <Box className="dd3">
-                    <FormControl fullWidth variant="filled" sx={{ m: 1 }}>
-                      <InputLabel>Schedule Name</InputLabel>
-                      <Select value={scheduleNameSelect} onChange={handleScheduleNameSelect}>
-                        <MenuItem value={"Test 1"}>Test 1</MenuItem>
-                        <MenuItem value={"Test 2"}>Test 2</MenuItem>
-                        <MenuItem value={"Mid-Term"}>Mid-Term</MenuItem>
-                        <MenuItem value={"Test 3"}>Test 3</MenuItem>
-                        <MenuItem value={"Test 4"}>Test 4</MenuItem>
-                        <MenuItem value={"Pre-Preparatory"}>Pre-Preparatory</MenuItem>
-                        <MenuItem value={"Preparatory"}>Preparatory</MenuItem>
-                        <MenuItem value={"Final"}>Final</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Box>
-                  <Box className="dd2">
-                    <FormControl fullWidth variant="filled" sx={{ m: 1 }}>
-                      <InputLabel>Schedule Type</InputLabel>
-                      <Input value={scheduleType} readOnly />
-                    </FormControl>
-                  </Box>
+                          {classNameoptions.map((option) => (
+                            <MenuItem key={option.name} value={option.code}>
+                              {option.name}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Box>
+
+                    <Box className="dd3">
+                      <FormControl fullWidth variant="filled" sx={{ m: 1 }}>
+                        <InputLabel>Schedule Name</InputLabel>
+                        <Select
+                          value={scheduleNameSelect}
+                          onChange={handleScheduleNameSelect}
+                        >
+                          <MenuItem value={"Test 1"}>Test 1</MenuItem>
+                          <MenuItem value={"Test 2"}>Test 2</MenuItem>
+                          <MenuItem value={"Mid-Term"}>Mid-Term</MenuItem>
+                          <MenuItem value={"Test 3"}>Test 3</MenuItem>
+                          <MenuItem value={"Test 4"}>Test 4</MenuItem>
+                          <MenuItem value={"Pre-Preparatory"}>
+                            Pre-Preparatory
+                          </MenuItem>
+                          <MenuItem value={"Preparatory"}>Preparatory</MenuItem>
+                          <MenuItem value={"Final"}>Final</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Box>
+                    <Box className="dd2">
+                      <FormControl fullWidth variant="filled" sx={{ m: 1 }}>
+                        <InputLabel>Schedule Type</InputLabel>
+                        <Input value={scheduleType} readOnly />
+                      </FormControl>
+                    </Box>
+                  </div>
+                  <div class="Table">
+                    <DataGrid
+                      //editMode="row"
+                      key={rows.length}
+                      rows={rows}
+                      columns={columns}
+                      hideFooterPagination
+                      hideFooterSelectedRowCount
+                      hideFooter
+                      //onCellEditCommit={handleCellEditCommit}
+                      onCellEditCommit={({ id, field, value }) => {
+                        const updatedRows = rows.map((row) =>
+                          row.id === id ? { ...row, [field]: value } : row
+                        );
+                        setRows(updatedRows);
+                      }}
+                    />
+                  </div>
+                  <div className="add">
+                    <button onClick={handleAddRow}>
+                      <GrAdd /> Subject{" "}
+                    </button>
+                  </div>
+                  <div className="buttons-right-align">
+                    <button type="cancel">Cancel {<GiCancel />}</button>
+                    <button type="submit" onClick={handleSaveToJSON}>
+                      Save Schedule {<AiTwotoneSave />}
+                    </button>
+                  </div>
                 </div>
-                <div class="Table">
-                  <DataGrid
-                    editMode="row"
-                    rows={rows}
-                    columns={columns}
-                    hideFooterPagination
-                    hideFooterSelectedRowCount
-                    hideFooter
-                    //onCellEditCommit={handleCellEditCommit}
-                    onCellEditCommit={({ id, field, value }) => {
-                      const updatedRows = rows.map((row) => (row.id === id ? { ...row, [field]: value } : row));
-                      setRows(updatedRows);
-                    }}
-                  />
-                </div>
-                <div className="add">
-                  <button onClick={handleAddRow}><GrAdd/> Subject </button>
-                  
-                </div>
-                <div className="buttons-right-align">
-                  <button type="cancel">Cancel {<GiCancel />}</button>
-                  <button type="submit" onClick={handleSaveToJSON}>Save Schedule {<AiTwotoneSave />}</button></div>
-              </div>
-            </Typography>
-          </Popover>
+              </Typography>
+            </Popover>
+          </div>
+          <div className="drop-down">
+            <Box className="label">
+              <FormControl fullWidth variant="filled">
+                <InputLabel>Class</InputLabel>
+                <Select
+                  className="dropdown-class-main"
+                  value={classNameSelectforAll}
+                  onChange={handleClassNameSelectForAll}
+                >
+                  {classNameoptions.map((option) => (
+                    <MenuItem key={option.name} value={option.code}>
+                      {option.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
+          </div>
         </div>
-        <div className="drop-down">
-          <Box className="label">
-            <FormControl fullWidth variant="filled">
-              <InputLabel>Class</InputLabel>
-              <Select className="dropdown-class-main" value={classNameSelect}>
-                <MenuItem value={10}>10</MenuItem>
-                <MenuItem value={9}>9</MenuItem>
-                <MenuItem value={8}>8</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
-        </div>
-      </div>    
-    </div>
-    
-        <div className="table">
-        <BasicTable/>
-        </div>
-      </>
+      </div>
+
+      <div className="table">
+        <BasicTable />
+      </div>
+    </>
   );
 };
 
 export default SchedulePage;
+export {classCode}

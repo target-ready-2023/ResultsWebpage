@@ -25,40 +25,73 @@ import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import {GrAdd} from "react-icons/gr";
 import axios from "axios";
+import { classCode } from "../SchedulePage";
 
-
-
-function BasicTable() {
-
+const BasicTable = () => {
 
   const [data, setData] = useState([]);  
   const [isChecked, setIsChecked] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState(null);
   //GET CALL URL
   const getUrl = " http://localhost:8080/schedule/v1/all"
+
+  //GET ALL BY CLASSCODE
+  const geturlClassCode = `http://localhost:8080/schedule/v1/${classCode}/all`
+
   const [schedule, setSchedule] = useState([]);
   useEffect(() => {
-    axios.get(getUrl).then((response) => {
-      console.log(response.data)
-       setSchedule(response.data);
-      const modifiedData = response.data.map((item) => ({
-        ...item,
-        id: item.scheduleCode,
-        className: item.className,
-        status: item.scheduleStatus
-      }));
-      setSchedule(modifiedData);
 
-      const initialCheckedState = response.data.reduce((acc, item) => {
-        acc[item.id] = item.scheduleStatus === 'active';
-        return acc;
-      }, {});
-      setIsChecked(initialCheckedState);
-    })
-    .catch((error) => {
-      console.error('Error fetching data:', error);
-    });
-  },[]);
+    console.log("table : " + classCode)
+    if(classCode.trim()=== ""){
+      axios.get(getUrl).then((response) => {
+        console.log(response.data)
+         setSchedule(response.data);
+        const modifiedData = response.data.map((item) => ({
+          ...item,
+          id: item.scheduleCode,
+          className: item.className,
+          status: item.scheduleStatus
+        }));
+        setSchedule(modifiedData);
+  
+        const initialCheckedState = response.data.reduce((acc, item) => {
+          acc[item.id] = item.scheduleStatus === 'active';
+          return acc;
+        }, {});
+        setIsChecked(initialCheckedState);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+    }
+    else{
+
+
+      axios.get(geturlClassCode).then((response) => {
+        console.log("class code "+ classCode)
+        console.log(response.data)
+         setSchedule(response.data);
+        const modifiedData = response.data.map((item) => ({
+          ...item,
+          id: item.scheduleCode,
+          className: item.className,
+          status: item.scheduleStatus
+        }));
+        setSchedule(modifiedData);
+  
+        const initialCheckedState = response.data.reduce((acc, item) => {
+          acc[item.id] = item.scheduleStatus === 'active';
+          return acc;
+        }, {});
+        setIsChecked(initialCheckedState);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+
+    }
+
+  },[classCode]);
 
   const handleStatusChange = (event, id) => {
     const newStatus = event.target.checked;
@@ -131,7 +164,7 @@ function BasicTable() {
 
 
   const columns = [
-    { field: "className", headerName: "Class Name", width: 200 },
+    { field: "classCode", headerName: "Class Name", width: 200 },
     { field: "scheduleType", headerName: "Schedule Type", width: 200 },
     {
       field: "status",
@@ -180,7 +213,7 @@ function BasicTable() {
     },
     {
       field: "date",
-      headerName: "Subject Name",
+      headerName: "Date",
       editable: true,
       width: 180,
       align: "left",
@@ -188,7 +221,7 @@ function BasicTable() {
     },
     {
       field: "time",
-      headerName: "Date & Time",
+      headerName: "Time",
       //type: "dateTime",
       width: 220,
       //valueGetter: ({ value }) => value && new Date(value),
@@ -215,6 +248,7 @@ function BasicTable() {
 
   return (
     <div>
+     
       <div>
         <DataGrid
           className="schedule-display"
