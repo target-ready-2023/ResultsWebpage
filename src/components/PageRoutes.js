@@ -9,6 +9,8 @@ import BasicTable from "./table/BasicTable"
 import BasicTableStudent from "./table-student/Basictable"
 import SchedulePage from "./SchedulePage"
 import SchedulePageStudent from "./SchedulePageStudent"
+import EditResultsAdmin from "./Results/EditResultsAdmin"
+import Leaderboard from "./Results/Leaderboard"
 
 const PageRoutes = () => {
     return (
@@ -20,6 +22,8 @@ const PageRoutes = () => {
           <Route exact path="/classes+subjects" element={<ClassesAndSubjects />} />
           <Route exact path="/schedule" element={<SchedulePage />} />
           <Route exact path="/schedule+student" element={<SchedulePageStudent />} />
+          <Route exact path="/admin+result" element={<EditResultsAdmin/>} />
+          <Route exact path="/leaderboard" element={<Leaderboard/>}/>
           <Route path='*' element={<NotFound />}/>
         </Routes>
     )
