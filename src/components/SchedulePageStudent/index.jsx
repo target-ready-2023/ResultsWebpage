@@ -10,17 +10,9 @@ import {
   randomCreatedDate,
 } from "@mui/x-data-grid-generator";
 
-const ExamMainPageStudent = () => {
+const SchedulePageStudent = () => {
  
   const [anchor, setAnchor] = React.useState(null);
-
-  
-
-
-  
-
-  
-  
 
   return (
     <>
@@ -49,4 +41,4 @@ const ExamMainPageStudent = () => {
   );
 };
 
-export default ExamMainPageStudent;
+export default SchedulePageStudent;

@@ -1,0 +1,43 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    /* height: 100vh; Optional: Set the height to fill the viewport */
+}
+
+
+.dd-container{
+    display: flex;
+
+}
+
+.lb-year-dd{
+    width: 200px;
+    padding: 10px;
+    display: inline-block;
+    left: 2%;
+    top: 0px;
+    position: relative; 
+}
+
+.lb-class-dd{
+    width: 200px;
+    padding: 10px;
+    display: inline-block;
+    left: 68%;
+    top: 0px;
+    position: relative;
+}
+
+.lb-table{
+    width : 600px;
+    margin: 0 auto;
+    padding: 30px;
+}
+
+.footnote{
+    width : 600px;
+    margin: 0 auto;
+    padding: 30px;
+    
+}

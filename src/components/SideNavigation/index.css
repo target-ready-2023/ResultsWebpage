@@ -1,5 +1,5 @@
 .dd{
-    left : 78%;
+    left : 70%;
     position: absolute;
     transform: translateY(-10px);
    
@@ -9,15 +9,8 @@
     padding: 25px;
     width: 180px;
     float: right;
-    
 }
 .menuItem
 {
     text-emphasis-color: white;
-}
-.dd .selectBox{
-    color: azure;
-    text-decoration: none;
-    background-color:#EEE7E7;
-    height: 50px;
 }
