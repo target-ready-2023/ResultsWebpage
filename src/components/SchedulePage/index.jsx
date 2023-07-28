@@ -10,6 +10,7 @@ import Popover from "@mui/material/Popover";
 import Typography from "@mui/material/Typography";
 import BasicTable from "../table/BasicTable";
 import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
+import { TextField } from "@mui/material";
 import {
   randomCreatedDate,
   randomTraderName,
@@ -30,25 +31,34 @@ import { setSelectionRange } from "@testing-library/user-event/dist/utils";
 import axios from "axios";
 import Input from "@mui/material/Input";
 
-
-let classCode="";
+let classCode = "";
 
 const SchedulePage = () => {
-
-  
-  
   const [anchor, setAnchor] = React.useState(null);
-  const [classNameSelect, setClassNameSelect] = useState("");
   const [classNameoptions, setClassNameOptions] = useState([]);
-  const [scheduleNameSelect, setScheduleNameSelect] = useState("");
-  const [scheduleType, setScheduleType] = useState("");
+  const [scheduleN, setScheduleN] = useState("");
+  const [scheduleT, setScheduleT] = useState("");
+  const [classN, setClassN] = useState("");
   const [rows, setRows] = useState([]);
   const [classNameSelectforAll, setClassNameSelectForAll] = useState("");
+  const [subjectsClass, setSubjectClass]= useState("");
+  const [rowsDisplay, setRowsDisplay]=useState("")
+  const [subjects, setSubjects] = useState([]);
+
+
+  let classNameSelect=""
+  let scheduleNameSelect="" 
+  let scheduleType=""
+  let subjectsJson=""
+  let updatedData=""
+  let row=""
   useEffect(() => {
     axios
       .get("http://localhost:8080/classes/v1/classes")
       .then((response) => {
         //console.log(response.data);
+        // const subjectsArray = response.data.map((item) => item.subjects);
+        // console.log(subjectsArray);
         setClassNameOptions(response.data);
       })
       .catch((error) => {
@@ -61,128 +71,264 @@ const SchedulePage = () => {
   };
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/classes/v1/classes/${classNameSelect}`)
-    .then((response)=>{
-      console.log(response);
-    })
-  }, [classNameSelect]);
-
-  useEffect(() => {
     // Log the updated rows whenever the rows state changes
     console.log("Updated rows:", rows);
   }, [rows]);
 
+  const jsonData = subjects.map((subject) => {
+    return {
+      subjectName: subject,
+    };
+  });
+
+
+
   function handleChange() {}
+
+  // const [columns, setColumns] = React.useState([
+  //   {
+  //     field: "subjectCode",
+  //     headerName: "Subject Code",
+  //     type: "String",
+  //     editable: true,
+  //   },
+  //   {
+  //     field: "subjectName",
+  //     headerName: "Subject Name",
+  //     editable: true,
+  //     width: 180,
+  //     align: "left",
+  //     headerAlign: "left",
+  //   },
+  //   // {
+  //   //   field: "timing",
+  //   //   headerName: "Date & Time",
+  //   //   type: "dateTime",
+  //   //   width: 220,
+  //   //   valueGetter: ({ value }) => value && new Date(value),
+  //   //   editable: true,
+  //   // },
+  //   {
+  //     field: "date",
+  //     headerName: "Date",
+  //     type: "date",
+  //     width: 150,
+  //     editable: true,
+  //     onEditCellProps: (params) => ({
+        
+  //       // Disable editing for cells where subjectCode is 'N/A'
+  //       disabled: params.row.subjectCode === "N/A",
+  //     }),
+
+  //   },
+  //   {
+  //     field: "time",
+  //     headerName: "Time",
+  //     type: "time",
+  //     width: 150,
+  //     editable: true,
+  //     onEditCellProps: (params) => ({
+  //       // Disable editing for cells where subjectCode is 'N/A'
+  //       disabled: params.row.subjectCode === "N/A",
+  //     }),
+  //   },
+
+    
+  //   // {
+  //   //   field: "actions",
+  //   //   headerName: "",
+  //   //   width: 50,
+  //   //   renderCell: (params) => (
+  //   //     <button onClick={() => handleDeleteRow(params.row.id)}>
+  //   //       <AiTwotoneDelete />
+  //   //     </button>
+  //   //   ),
+  //   // },
+  // ]);
+  
 
   const [columns, setColumns] = React.useState([
     {
-      field: "code",
+      field: "subjectCode",
       headerName: "Subject Code",
-      type: "String",
+      type: "string",
+      width: 150,
       editable: true,
     },
     {
-      field: "name",
+      field: "subjectName",
       headerName: "Subject Name",
+      type: "string",
+      width: 150,
       editable: true,
-      width: 180,
-      align: "left",
-      headerAlign: "left",
     },
     {
-      field: "timing",
+      field: "dateTime",
       headerName: "Date & Time",
       type: "dateTime",
-      width: 220,
-      valueGetter: ({ value }) => value && new Date(value),
+      width: 200,
       editable: true,
-    },
-    {
-      field: "actions",
-      headerName: "",
-      width: 50,
       renderCell: (params) => (
-        <button onClick={() => handleDeleteRow(params.row.id)}>
-          <AiTwotoneDelete />
-        </button>
+        <TextField
+          type="datetime-local"
+          value={params.value}
+          onChange={(e) => handleDateTimeChange(params, e.target.value)}
+        />
       ),
     },
   ]);
-  // const [rows, setRows] = React.useState([
-  //   {
-  //     id: 1,
-  //     code: "M101",
-  //     name: "Mathematics",
-  //     timing: randomCreatedDate(),
-  //   },
-  //   {
-  //     id: 2,
-  //     code: "Ph101",
-  //     name: "Physics",
-  //     timing: randomCreatedDate(),
-  //   },
-  //   { id: 3, code: "Ch101", name: "Chemistry", timing: randomCreatedDate() },
-  //   {
-  //     id: 4,
-  //     code: "Co101",
-  //     name: "Computer Science",
-  //     timing: randomCreatedDate(),
-  //   },
-  // ]);
+  
+  // const handleDateTimeChange = (params) => {
+  //   const { id, field, value } = params;
+  //   setUpdateValues((prevData) =>
+  //     prevData.map((row) =>
+  //       row.id === id ? { ...row, [field]: value } : row
+  //     )
+  //   );
+  //   //console.log(updateValues)
+  // };
+  const [editedRows, setEditedRows] = useState([]);
 
-  const handleAddRow = () => {
-    const newRow = {
-      id: rows.length + 1,
-      code: "",
-      name: "",
-      timing: null,
-    };
-    setRows((prevRows) => [...prevRows, newRow]);
-    // const newRow = { id: "", name: "", timing: "" };
-    // setRows((prevRows) => [...prevRows, newRow]);
+  const handleDateTimeChange = (params, newValue) => {
+    const { id, field } = params;
+    setUpdateValues((prevData) =>
+      prevData.map((row) =>
+        row.id === id ? { ...row, [field]: newValue } : row
+      )
+    );
+    console.log("Entered Date & Time:", newValue);
+    let data="";
+    console.log(data)
+    console.log(updateValues)
+    // setEditedRows((prevEditedRows) => {
+    //   if (!prevEditedRows.includes(id)) {
+    //     return [...prevEditedRows, id];
+    //   }
+    //   return prevEditedRows;
+    // });
   };
+  
+
+
+  const [updateValues, setUpdateValues] = useState([]);
+
+  //const [selectedDateAndTime, setSelectedDateAndTime] = useState({});
+  
+  let selectedDateAndTime="";
 
   const handleCellEditCommit = (params) => {
-    // const newRow = {
-    //   id: rows.length + 1,
-    //   code: '',
-    //   name: '',
-    //   timing: null,
-    // };
-    // setRows((prevRows) => [...prevRows, newRow]);
-    // setRows((prevRows) =>{
-    //   prevRows.map((row) =>(
-    //     row.id === params.id ? {...row, [params.field]:params.value} : row
-    //   ))
-    // })
-    // console.log(rows)
-    // const { id, field, value } = params;
-    // setRows((prevRows) =>
-    //   prevRows.map((row) => {
-    //     if (row.id === id) {
-    //       return { ...row, [field]: value };
-    //     }
-    //     return row;
-    //   })
-    // );
+    const { id, field, value } = params;
+    setRowsDisplay((prevRows) =>
+      prevRows.map((row) => {
+        if (row.id === id) {
+          return { ...row, [field]: value };
+        }
+        return row;
+        console.log(row)
+      })
+    );
+  
+    // Create a new copy of the subjects array and update the date and time for the specific row
+    setSubjects((prevSubjects) => {
+      const updatedSubjects = prevSubjects.map((subject) => {
+        if (subject.subjectCode === id) {
+          return { ...subject, [field]: value };  
+        }
+        return subject;
+      });
+      return updatedSubjects;
+    });
   };
-  const handleDeleteRow = (id) => {
-    setRows((prevRows) => prevRows.filter((row) => row.id !== id));
+  
+
+
+  const getClassSubjects = (classCode) => {
+    const classData = classNameoptions.find((item) => item.code === classCode);
+    return classData ? classData.subjects : [];
   };
 
+
+  const convertToJSONData = (array) => {
+    const jsonData = array.map((subjectName) => {
+      return { subjectName };
+    });
+  
+    return jsonData;
+  };
+
+  const fetchSubjectCode = async (subjectName, classCode) => {
+    try {
+      const response = await axios.get(`http://localhost:8080/subjects/v1/search?subjectName=${subjectName}`);
+      const subjectData = response.data.find((item) => item.classCode === classCode);
+      return subjectData ? subjectData.subjectCode : null;
+    } catch (error) {
+      console.error(`Error fetching subjectCode for ${subjectName}:`, error);
+      return null;
+    }
+  };
+
+  const processData = async () => {
+    updatedData = await Promise.all(
+      subjectsJson.map(async (item) => {
+        const subjectName = item.subjectName;
+        const subjectCode = await fetchSubjectCode(subjectName, classNameSelect);
+        return {
+          ...item,
+          subjectCode: subjectCode || 'N/A',
+          date: "",
+          time: "",
+        };
+      })
+    );
+  
+    console.log(updatedData);
+    row = updatedData.map((item) => ({
+      id: item.subjectCode, // Use 'subjectCode' as the 'id'
+      ...item,
+    }));
+    console.log(row)
+    setRowsDisplay(row)
+  };
+
+  const handleSaveSchedule = () => {
+    console.log("Edited Rows Data:");
+  console.log(
+    rowsDisplay.filter((row) => editedRows.includes(row.id))
+  );
+  // Reset the editedRows state after logging the data
+  setEditedRows([]);
+
+    // const updatedSubjects = rowsDisplay.map((row) => ({
+    //   subjectCode: row.subjectCode,
+    //   subjectName: row.subjectName,
+    //   date: selectedDateAndTime[row.id]?.date || "N/A",
+    //   time: selectedDateAndTime[row.id]?.time || "N/A",
+    // }));
+
+    // console.log("Updated Subjects:", updatedSubjects);
+    // Now you can do whatever you want with the updatedSubjects, e.g., send it to a server.
+  };
+
+  //for selected class in add schedule
   const handleClassNameSelect = (event) => {
-    setClassNameSelect(event.target.value);
-    //console.log(classNameSelect)
+    classNameSelect = event.target.value;
+    setClassN(classNameSelect)
+    const subjectsArray= getClassSubjects(classNameSelect);
+    console.log(classNameSelect+" "+subjectsArray);
+    subjectsJson = convertToJSONData(subjectsArray);
+    console.log(subjectsJson);
+    processData();
   };
 
   const handleClassNameSelectForAll = (event) => {
     setClassNameSelectForAll(event.target.value);
-    console.log(classNameSelectforAll)
-    classCode=event.target.value
+    console.log(classNameSelectforAll);
+    classCode = event.target.value;
   };
 
   const handleScheduleNameSelect = (event) => {
-    setScheduleNameSelect(event.target.value);
+    scheduleNameSelect = event.target.value;
+    setScheduleN(scheduleNameSelect)
     const scName = scheduleNameSelect;
     if (
       scName === "Test 1" ||
@@ -190,15 +336,15 @@ const SchedulePage = () => {
       scName === "Test 3" ||
       scName === "Test 4"
     ) {
-      setScheduleType("Test");
+      scheduleType="Test";
     } else {
-      setScheduleType("Exam");
+      scheduleType ="Exam";
     }
+    setScheduleT(scheduleType)
   };
-  const handleSaveToJSON = () => {
-    console.log("rows " + rows);
-    const jsonData = JSON.stringify(rows);
-    console.log(jsonData); // You can do whatever you want with jsonData, e.g., send it to a server.
+  
+  const handleCancelClick = () => {
+    setAnchor(null);
   };
 
   return (
@@ -227,14 +373,11 @@ const SchedulePage = () => {
                         <InputLabel>Class Name</InputLabel>
                         <Select
                           className="classForAdmin"
-                          value={classNameSelect}
+                          value={classN}
                           onChange={handleClassNameSelect}
                         >
-                          {/* <MenuItem value={10}>10th</MenuItem>
-                        <MenuItem value={9}>9th</MenuItem>
-                        <MenuItem value={8}>8th</MenuItem> */}
                           {classNameoptions.map((option) => (
-                            <MenuItem key={option.name} value={option.code}>
+                            <MenuItem key={option.code} value={option.code}>
                               {option.name}
                             </MenuItem>
                           ))}
@@ -246,9 +389,9 @@ const SchedulePage = () => {
                       <FormControl fullWidth variant="filled" sx={{ m: 1 }}>
                         <InputLabel>Schedule Name</InputLabel>
                         <Select
-                          value={scheduleNameSelect}
+                        className="classForAdmin"
+                          value={scheduleN}
                           onChange={handleScheduleNameSelect}
-                          
                         >
                           <MenuItem value={"Test 1"}>Test 1</MenuItem>
                           <MenuItem value={"Test 2"}>Test 2</MenuItem>
@@ -263,39 +406,22 @@ const SchedulePage = () => {
                         </Select>
                       </FormControl>
                     </Box>
-                    <Box className="dd2">
-                      <FormControl fullWidth variant="filled" sx={{ m: 1 }}>
-                        <InputLabel>Schedule Type</InputLabel>
-                        <Input value={scheduleType} readOnly />
-                      </FormControl>
-                    </Box>
                   </div>
-                  <div class="Table">
+                  <div className="Table">
                     <DataGrid
-                      //editMode="row"
-                      key={rows.length}
-                      rows={rows}
+                      key={row.length}
+                      rows={rowsDisplay}
                       columns={columns}
                       hideFooterPagination
                       hideFooterSelectedRowCount
                       hideFooter
-                      //onCellEditCommit={handleCellEditCommit}
-                      onCellEditCommit={({ id, field, value }) => {
-                        const updatedRows = rows.map((row) =>
-                          row.id === id ? { ...row, [field]: value } : row
-                        );
-                        setRows(updatedRows);
-                      }}
+                      onEditCellChange={handleDateTimeChange}
+                      //onEditCellChange={handleCellEditCommit}
                     />
                   </div>
-                  <div className="add">
-                    <button onClick={handleAddRow}>
-                      <GrAdd /> Subject{" "}
-                    </button>
-                  </div>
                   <div className="buttons-right-align">
-                    <button type="cancel">Cancel {<GiCancel />}</button>
-                    <button type="submit" onClick={handleSaveToJSON}>
+                    <button type="cancel" onClick={handleCancelClick}>Cancel {<GiCancel />}</button>
+                    <button type="submit" onClick={handleSaveSchedule}>
                       Save Schedule {<AiTwotoneSave />}
                     </button>
                   </div>
@@ -332,4 +458,4 @@ const SchedulePage = () => {
 };
 
 export default SchedulePage;
-export {classCode}
+export { classCode };
