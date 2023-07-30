@@ -1,12 +1,14 @@
 import React from "react";
 import "./EditResultsAdmin.css";
 import { useNavigate } from 'react-router-dom';
-import { Box, Grid,Button, Paper,Select,MenuItem, Stack, Table, Divider,TableHead, TableCell ,TableRow,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle, Typography} from "@mui/material";
+import { Box, Grid,Button, Paper,Select,MenuItem,Table, Divider,TableHead, TableCell ,TableRow,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle, Typography, TextField} from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import EditIcon  from '@mui/icons-material/Edit';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import DeleteIcon  from '@mui/icons-material/Delete'
+import DeleteIcon  from '@mui/icons-material/Delete';
 import { Input } from "@mui/base";
+import Stack from '@mui/material/Stack';
+import { Height } from "@mui/icons-material";
 
 const EditResultsAdmin=()=>{
     const [students, setStudents] = React.useState([]);
@@ -77,26 +79,66 @@ const EditResultsAdmin=()=>{
   
     return(
         <>
-        <Dialog open={openAdd} onClose={handleCloseAdd}>
+        {/* Add Result */}
+        <Dialog open={openAdd} onClose={handleCloseAdd} fullWidth maxWidth="sm">
             <DialogTitle>Add Result</DialogTitle>
             <DialogContent>
-
+            <div style={{ display: 'flex', justifyContent: 'space-between'}}>
+            <Typography variant="body1">SID: 11</Typography>    
+            <Typography variant="body1">Name: John</Typography>
+            <Typography variant="body1">Class: 4</Typography>
+            <Typography variant="body1">Type: Test1</Typography>
+            </div>
+            <br/><br/>
+            <div style={{ display: 'flex'}}>
+            <Typography variant="body1">Subject 1:</Typography>    
+            <TextField type="number" inputProps={{maxLength:3}}/>
+            <Typography variant="body1">/ 100</Typography>
+            </div>
+            <br/>
+            <div style={{ display: 'flex'}}>
+            <Typography variant="body1">Subject 2:</Typography>    
+            <TextField type="number" inputProps={{maxLength:3}}/>
+            <Typography variant="body1">/ 100</Typography>
+            <br/>
+            </div> 
             </DialogContent>
-            <DialogActions>
-          <button onClick={handleCloseAdd}>Close</button>
-          <button   >Add</button>
-        </DialogActions>
+          <DialogActions>
+             <button onClick={handleCloseAdd}>Close</button>
+              <button>Add</button>
+           </DialogActions>
         </Dialog>
+
+        {/* Update Result */}
         <Dialog open={openUpdate} onClose={handleCloseUpdate}>
             <DialogTitle>Update Result</DialogTitle>
             <DialogContent>
-
+            <div style={{ display: 'flex', justifyContent: 'space-between'}}>
+            <Typography variant="body1">SID: 11</Typography>    
+            <Typography variant="body1">Name: John</Typography>
+            <Typography variant="body1">Class: 4</Typography>
+            <Typography variant="body1">Type: Test1</Typography>
+            </div>
+            <br/><br/>
+            <div style={{ display: 'flex'}}>
+            <Typography variant="body1">Subject 1:</Typography>    
+            <TextField type="number" inputProps={{maxLength:3}}/>
+            <Typography variant="body1">/ 100</Typography>
+            </div>
+            <br/>
+            <div style={{ display: 'flex'}}>
+            <Typography variant="body1">Subject 2:</Typography>    
+            <TextField type="number" inputProps={{maxLength:3}}/>
+            <Typography variant="body1">/ 100</Typography>
+            <br/>
+            </div>
             </DialogContent>
             <DialogActions>
           <button onClick={handleCloseUpdate}>Close</button>
-          <button   >Update</button>
+          <button>Update</button>
         </DialogActions>
         </Dialog>
+
         <Dialog open={openView} onClose={handleCloseView}>
             <DialogTitle>Result</DialogTitle>
             <DialogContent>
@@ -116,7 +158,13 @@ const EditResultsAdmin=()=>{
                         <div>
                             <Table>
                                 <TableRow className="table-row1">
-                                        <Typography className="text1">Class:  4 </Typography>
+                                    <Typography className="text1">Class: &nbsp; &nbsp;
+                                        <select id="test" className="select" value={testName} onChange={handleTestNameChange}>
+                                        <option className="text4" disabled selected value="">--select--</option>
+                                        <option className="text3" value="test1">1</option>
+                                        <option className="text3" value="test2">2</option>
+                                        </select>
+                                    </Typography>
                                         <TableCell><button className="button-design" onClick={OpenAllResults}>View all results</button></TableCell>
                                         <TableCell width="1%"><button className="button-design" onClick={OpenLeaderboard}>Leaderboard</button></TableCell>
                                         
