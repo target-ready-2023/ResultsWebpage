@@ -6,16 +6,6 @@
          
   }
 
-.paper-design{
-    position:absolute;
-    border-radius: 3px;
-    height: 76%;
-    width:81%;
-    background-color: #EEE7E7;
-    display: flex;
-   
-    justify-content: center;
-}
 
 .table-row1{
   padding-top: 0%;
@@ -47,6 +37,12 @@
     padding-top: 5%;
     margin-top: 5%;
     
+}
+
+
+.div-design{
+    overflow: scroll;
+    height: 10.5cm;
 }
 .button-design{
     background: #6c88c8;
@@ -96,11 +92,11 @@
 
 .Class-table{
   box-shadow: 0px 0px 1px 1px rgba(105, 104, 104, 0.2);
-  /* margin-left: 0.5%;
-  margin-right: 0.5%; */
+  margin-top: 0.5%;
   padding-top: 0%;
   align-self: center;
-  
+  width:100%;
+  height:100%;
 }
 
 .Class-table .Table-head{
@@ -117,14 +113,8 @@
   }
   
 .Class-table  .Table-cell{
-    /* width:150px; */
     font-size: 14px;
     font-family:Georgia, 'Times New Roman', Times, serif;
     padding-top: 1%;
     padding-bottom: 1%;
-} 
-.page-design{
-    padding-top:2%;
-    padding-right: 2%;
-    float:right;
 } 
