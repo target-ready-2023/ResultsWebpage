@@ -1,4 +1,4 @@
-import { Box, Grid, Paper,Select,Button,MenuItem, Stack, Table, Divider,TableHead, TableCell ,TableRow,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle} from "@mui/material";
+import { Box, Grid, Paper,Select,Button,MenuItem, Stack, Table, Divider,TableHead, TableCell ,TableRow,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle, TableContainer} from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import EditIcon  from '@mui/icons-material/Edit'
 import DeleteIcon  from '@mui/icons-material/Delete'
@@ -7,15 +7,10 @@ import swal from "sweetalert";
 import "./index.css";
 import React, { useState } from "react";
 
+
 const ClassesAndSubjects = () => {
+     let  x=0;
     const[classes,setClasses]=new useState()
-    const [page, setPage] = React.useState(0);
-    const [usersPerPage, setUsersPerPage] = React.useState(2);
-    const[currentPage,setCurrentPage] = React.useState(1);
-    const lastIndex = currentPage * usersPerPage;
-    const firstIndex = lastIndex - usersPerPage;
-    const classesPerPage = classes && classes.slice(firstIndex,lastIndex);
-    const totalPages = Math.ceil(classes?.length/usersPerPage);
     const [button,setButton]=useState("classes");
     const [open, setOpen] = React.useState(false);
     const [open1, setOpen1] = React.useState(false);
@@ -23,14 +18,16 @@ const ClassesAndSubjects = () => {
     const [sopen, setSopen] = React.useState(false);
     const [sopen1, setSopen1] = React.useState(false);
     const [sopen2, setSopen2] = React.useState(false);
-    const [code,setCode]=React.useState("");
-    const [name,setName]=React.useState("");
+    const [code,setCode]=React.useState('');
+    const [name,setName]=React.useState('');
     const[subjects,setSubjects]=React.useState([]);
     const [class1,setClass1]=React.useState({
-      code:"",
-      name:"",
+      code:'',
+      name:'',
       subjects:[]
     })
+    const [exist,setExist]=useState(0);
+    const [classNames,setClassNames]=React.useState([]);
     const [subjects1,setSubjects1]=React.useState([]);
     const [subjectCode,setSubjectCode]=React.useState("");
     const [subjectName,setSubjectName]=React.useState("");
@@ -42,37 +39,11 @@ const ClassesAndSubjects = () => {
       credits:"",
       classCode:""
     })
-    const [page1, setPage1] = React.useState(0);
-    const [usersPerPage1, setUsersPerPage1] = React.useState(4);
-    const[currentPage1,setCurrentPage1] = React.useState(1);
-    const lastIndex1 = currentPage1 * usersPerPage1;
-    const firstIndex1 = lastIndex1 - usersPerPage1;
-    const subjectsPerPage = subjects1 && subjects1.slice(firstIndex1,lastIndex1);
-    const totalPages1 = Math.ceil(subjects1?.length/usersPerPage1);
-
-    const PreviousPage= (event) =>{
-      if(currentPage>1){
-        setCurrentPage(currentPage-1);
-      }
-  }
-  const NextPage = (event) =>{
-    if(currentPage<totalPages){
-  
-      setCurrentPage(currentPage+1);
-    
-  }}
-
-  const PreviousPage1= (event) =>{
-    if(currentPage1>1){
-      setCurrentPage1(currentPage1-1);
-    }
-}
-const NextPage1 = (event) =>{
-  if(currentPage1<totalPages1){
-
-    setCurrentPage1(currentPage1+1);
-  
-}}
+    const [classError, setClassError] = useState('');
+    const [subjectError, setSubjectError] = useState('');
+    const [creditError, setCreditError] = useState('');
+    const [subjectClassError, setSubjectClassError] = useState('');
+   
     const handleButton=(str)=>{
       setButton(str);
     
@@ -85,6 +56,7 @@ const NextPage1 = (event) =>{
     
     const handleClose = () => {
       setOpen(false);
+      setClassError('')
     };
 
     const handleClickOpen2 = () => {
@@ -103,6 +75,9 @@ const NextPage1 = (event) =>{
   
   const handleSclose = () => {
     setSopen(false);
+    setSubjectError('');
+    setCreditError('');
+    setSubjectClassError('');
   };
 
   const handleClickSopen1 = () => {
@@ -133,25 +108,38 @@ const classDetailsHandle=()=>{
   .catch(err=>{
     console.log(err.message)
   })
+
+
 }
 
 const subjectDetailsHandle=()=>{
-  axios.get('http://localhost:8080/subjects/v1/subjects').then(result =>setSubjects1(result?.data))
+  axios.get('http://localhost:8080/subjects/v1/subject').then(result =>setSubjects1(result?.data))
   .catch(err=>{
     console.log(err.message)
   })
 }
 
 const addClass = (e) => {
-setOpen(false);
-  axios.post("http://localhost:8080/classes/v1/classes",class1).then(result=> {
-    swal({
-      title: "Class Added Successfully",
-      icon: "success",
-      button: "OK",
-    }); 
-  classDetailsHandle();
-  });
+
+  const isClassValid = validateClassName();
+  if(isClassValid){
+    setOpen(false);
+    axios.post("http://localhost:8080/classes/v1/classes",class1).then(result=> {
+      swal({
+        title: "Class Added Successfully",
+        icon: "success",
+        button: "OK",
+      }); 
+    classDetailsHandle();
+    });
+  }
+  
+  setClass1({
+    code:'',
+    name:'',
+    subjects:[]
+  })
+
 }
 
 const handleDelete=(class_id)=>{
@@ -173,6 +161,11 @@ const deleteClass=()=>{
 }
 
 const addSubject = (e) => {
+  const isSubjectValid = validateSubject();
+  const isCreditValid = validateCredit();
+  const isSubjectClassValid = validateSubjectClass();
+
+  if(isSubjectValid && isCreditValid && isSubjectClassValid){
   setSopen(false);
     axios.post("http://localhost:8080/subjects/v1/subject",subject).then(result=> {
       swal({
@@ -183,6 +176,7 @@ const addSubject = (e) => {
     subjectDetailsHandle();
     });
   }
+}
   const handleSupdate=(sub_id,itr)=>{
     setSopen1(true);
     setSubject(itr);
@@ -240,9 +234,95 @@ const updateSubject=(e)=>{
     })
   }
 
+  const validateClassName= () => {
+    setExist(0)
+    x=0;
+    const classRegex =  /^[0-9]*[A-Za-z]*$/;
+    console.log(class1.name);
+
+    if(class1.name === ''){
+      setClassError('*Class Name is required.*')
+      return false;
+  }
+  else if(!classRegex.test(class1.name)){
+    setClassError('*Class Name must start with number.*');
+    return false;
+  } 
+  else{
+    classes.forEach((class2) => {
+      console.log(class2.name)
+        if(class1.name===class2.name){
+          console.log(class2.name)
+          setClassError('*Class Name already exists.*')
+          setExist(1)
+          x=1;
+          return false;
+        }
+        console.log(exist)
+      })
+
+   if(x===0){
+        console.log("add")
+        setClassError('')
+        return true;
+      }   
+  }
+};
+
+const validateSubject= () => {
+  const subjectRegex =  /^[A-Za-z]*$/;
+  
+  if(subject.subjectName === ''){
+    setSubjectError('*Subject Name is required.*')
+    return false;
+}
+else if(!subjectRegex.test(subject.subjectName)){
+  setSubjectError('*Subject Name must start with alphabet.*');
+  return false;
+} 
+else{
+  setSubjectError('')
+  return true;
+}
+
+};
+
+const validateCredit= () => {
+  const creditRegex =  /^[0-9]*$/;
+  
+
+  if(subject.credits === ''){
+    setCreditError('*Credits is required.*')
+    return false;
+}
+else if(!creditRegex.test(subject.credits)){
+  setCreditError('*Credits must be a number.*');
+  return false;
+} 
+else{
+  setCreditError('')
+  return true;
+}
+
+};
+const validateSubjectClass= () => {
+ 
+
+  if(subject.classCode === ''){
+    setSubjectClassError('*Class Name is required.*')
+    return false;
+}
+else {
+  setSubjectClassError('')
+  return true;
+} 
+
+};
+
 
     return (
        <>
+       <Grid>
        {/* Add class */}
       <div >
       <Dialog open={open} onClose={handleClose} className="Dialog" >
@@ -251,14 +331,23 @@ const updateSubject=(e)=>{
        
         <DialogContent>
           <div>
-         
+        
                     <label className="input-label"> Class Name </label>
                   
                   <input className="input"
                   onChange={(event)=>setClass1({...class1,name:event.target.value})}
                   >
                    </input>
-                  
+                   <br></br>
+                   {classError && (
+                                <tr style={{paddingTop:"2px"}}>
+                                    <td></td>
+                                    <td>
+                                        <span style={{ color: 'red' }}>{classError}</span>
+                                    </td>
+                                </tr>
+                            )}
+            
         
           </div>
 
@@ -285,10 +374,28 @@ const updateSubject=(e)=>{
                   <input className="input"
                   onChange={(event)=>setSubject({...subject,subjectName:event.target.value})}></input>
                   <br/>
+                  {subjectError && (
+                                <tr style={{paddingTop:"2px"}}>
+                                    <td></td>
+                                    <td>
+                                        <span style={{ color: 'red' }}>{subjectError}</span>
+                                    </td>
+                                </tr>
+                            )}
+                            <br></br>
                   <label className="input-label"> Credit </label>
                   <input className="input"
                    onChange={(event)=>setSubject({...subject,credits:event.target.value})}></input>
                    <br />
+                   {creditError && (
+                                <tr style={{paddingTop:"2px"}}>
+                                    <td></td>
+                                    <td>
+                                        <span style={{ color: 'red' }}>{creditError}</span>
+                                    </td>
+                                </tr>
+                            )}
+                            <br></br>
                   <label className="input-label"> Class </label>
                   <select className="select"
                   onChange={(event)=>setSubject({...subject,classCode:event.target.value})}
@@ -297,9 +404,19 @@ const updateSubject=(e)=>{
                     <option value="Select">Select</option>
                     {classes?.map((classes,id) => (
                       
-                        <option key={id} value={classes.code}>{classes.code}</option>
+                        <option key={id} value={classes.code}>{classes.name}</option>
                         ))}
                    </select>
+                   <br>
+                   </br>
+                   {subjectClassError && (
+                                <tr style={{paddingTop:"2px"}}>
+                                    <td></td>
+                                    <td>
+                                        <span style={{ color: 'red' }}>{subjectClassError}</span>
+                                    </td>
+                                </tr>
+                            )}
         
           </div>
 
@@ -350,7 +467,7 @@ const updateSubject=(e)=>{
                     <option value="Select">Select</option>
                     {classes?.map((classes,id) => (
                       
-                        <option key={id} value={classes.code}>{classes.code}</option>
+                        <option key={id} value={classes.code}>{classes.name}</option>
                         ))}
 
                   </select>
@@ -460,10 +577,10 @@ const updateSubject=(e)=>{
          </div>
          </div>
          <br></br>
+         <TableContainer className="tableContainer">
          <Table className="Class-table">
              <TableHead className="Table-head">
              <Stack direction="row">
-                 <TableCell className="Head-Table-cell">Class Code</TableCell>
                  <TableCell className="Head-Table-cell">Class Name</TableCell>
                  <TableCell className="Head-Table-cell">Subjects</TableCell>
                  <TableCell className="Head-Table-cell">Delete</TableCell>
@@ -475,10 +592,9 @@ const updateSubject=(e)=>{
                        <TableCell style={{width:'100%'}} >  
                          <h5>No  Data Available!!!</h5>
                        </TableCell> :
-                         classesPerPage?.map((itr,index) => (
+                         classes?.map((itr,index) => (
                        <TableRow key={index}>          
                          <Stack  direction="row">
-                           <TableCell className="Table-cell" >{itr.code}</TableCell>
                            <TableCell className="Table-cell" >{itr.name}</TableCell> 
                           <TableCell className="Table-cell" >
                           
@@ -507,21 +623,9 @@ const updateSubject=(e)=>{
                    </TableRow>
                   
          </Table>
+         </TableContainer>
  
- 
-         {classes?.length===0 ?
-  <div style={{ float: "right" }}>
-    <Button onClick={PreviousPage}>Prev</Button>
-    Page {totalPages} 
-    <Button onClick={NextPage}>Next</Button>
-  </div>
-  :
-  <div style={{ float: "right" }}>
-    <Button onClick={PreviousPage}>Prev</Button>
-    Page {currentPage} 
-    <Button onClick={NextPage}>Next</Button>
-  </div>
-  }
+
              </Stack>
             
          </Paper>
@@ -550,10 +654,10 @@ const updateSubject=(e)=>{
         </div>
         </div>
         <br></br>
+        <TableContainer className="tableContainer">
         <Table className="Subject-table">
             <TableHead className="Table-head">
             <Stack direction="row">
-                <TableCell className="Head-Table-cell">Subject Code</TableCell>
                 <TableCell className="Head-Table-cell">Name</TableCell>
                 <TableCell className="Head-Table-cell">Credit</TableCell>
                 <TableCell className="Head-Table-cell">Class</TableCell>
@@ -566,10 +670,9 @@ const updateSubject=(e)=>{
                       <TableCell style={{width:'100%'}} >  
                         <h5>No  Data Available!!!</h5>
                       </TableCell> :
-                        subjectsPerPage?.map((itr,index) => (
+                        subjects1?.map((itr,index) => (
                       <TableRow key={index}>          
                         <Stack  direction="row">
-                          <TableCell className="Table-cell" >{itr.subjectCode}</TableCell>
                           <TableCell className="Table-cell" >{itr.subjectName}</TableCell> 
                           <TableCell className="Table-cell" >{itr.credits}</TableCell> 
                           <TableCell className="Table-cell" >{itr.classCode}</TableCell> 
@@ -590,22 +693,7 @@ const updateSubject=(e)=>{
                   </TableRow>
                   
         </Table>
-
-        {classes?.length===0 ?
-  <div style={{ float: "right" }}>
-    <Button onClick={PreviousPage1}>Prev</Button>
-    Page {totalPages1} 
-    <Button onClick={NextPage1}>Next</Button>
-  </div>
-  :
-  <div style={{ float: "right" }}>
-    <Button onClick={PreviousPage1}>Prev</Button>
-    Page {currentPage1} 
-    <Button onClick={NextPage1}>Next</Button>
-  </div>
-  }
-
-
+        </TableContainer>
             </Stack>
         </Paper>
         </Box>
@@ -614,6 +702,7 @@ const updateSubject=(e)=>{
         }
 
        
+    </Grid>
     </Grid>
     </>
     )

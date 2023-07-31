@@ -10,6 +10,7 @@ import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import "./index.css"
 import { colors } from "@mui/material";
+import swal from "sweetalert";
 
 const SideNavigation = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -38,7 +39,21 @@ const SideNavigation = () => {
     handleClose()
   }
   const handleClasses = () => {
+    if(userPersona=="student"){
+      swal({
+        title: "Students have no access to this  page",
+        icon: "error",
+        button: "OK",
+      });
+      navigate('/')
+    }
+    else{
     navigate('/classes+subjects')
+    handleClose()
+    }
+  }
+  const handleExams=() => {
+    navigate('/ExamMainPage')
     handleClose()
   }
   const handleSchedule = () => {
@@ -55,7 +70,8 @@ const SideNavigation = () => {
     <>
      {/* < className="persona-drop-down"> */}
         <Box className="dd">
-          <FormControl  className="label-persona" fullWidth variant="filled" sx={{ m: 1  }}>
+
+          <FormControl  className="label-persona"   sx={{ m: 1, minWidth: 150 }} size="small">
             <InputLabel className="LabelName">User Persona</InputLabel>
               <Select  className="selectBox" value={userPersona} onChange={handleUserPersonaChange} >
                   <MenuItem className="menus" value="admin">Admin</MenuItem>
@@ -87,6 +103,7 @@ const SideNavigation = () => {
         <MenuItem onClick={handleHome}>Home</MenuItem>
         <MenuItem onClick={handleStudent}>Student</MenuItem>
         <MenuItem onClick={handleClasses}>Classes and Subjects</MenuItem>
+        <MenuItem onClick={handleExams}>Exam Main Page</MenuItem>
         <MenuItem onClick={handleSchedule}>Exam Schedule</MenuItem>
       </Menu>
     </>

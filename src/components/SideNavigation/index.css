@@ -1,14 +1,19 @@
 .dd{
     left : 70%;
     position: absolute;
-    transform: translateY(-10px);
-   
-    /* right : 10%; */
-    margin-left: 20px;
+    margin-left: 150px;
     top: -13px;
     padding: 25px;
     width: 180px;
     float: right;
+    color: white;
+
+}
+.selectBox{
+    background-color: white;
+}
+.LabelName{
+    color: black;
 }
 .menuItem
 {

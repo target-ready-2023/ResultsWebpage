@@ -29,8 +29,7 @@
    
     justify-content: center;
     /* overflow: auto; */
-   
-  
+
   
   }
   
@@ -84,6 +83,11 @@
     padding: 9px 4px 9px 40px;
      background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' class='bi bi-search' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'%3E%3C/path%3E%3C/svg%3E") no-repeat 13px center;
   }
+
+  .tableContainer::-webkit-scrollbar:vertical{
+    width: 10cm;
+
+  }
   
   .Class-table .Table-head{
     background: #6c88c8;
@@ -92,18 +96,18 @@
   
   .Class-table{
     box-shadow: 0px 0px 1px 1px rgba(105, 104, 104, 0.2);
+
   }
   
   .Class-table .Head-Table-cell{
     font-weight:bold;
-    width:150px;
+    width:200px;
     font-family:Georgia, 'Times New Roman', Times, serif;
   }
   
   .Class-table  .Table-cell{
-    width:150px;
+    width:200px;
     font-size: 14px;
-    font-family:Georgia, 'Times New Roman', Times, serif;
     
   }
   
@@ -126,7 +130,7 @@
   .Subject-table  .Table-cell{
     width:120px;
     color:black;
-    font-family:Georgia, 'Times New Roman', Times, serif;
+  
     
   }
   
@@ -152,7 +156,7 @@
     padding-Bottom:8px;
     margin-top:20px;
     border:solid 1px rgb(97, 94, 94);
-    ;
+    
   
   }
   .Dialog .DialogTitle{
