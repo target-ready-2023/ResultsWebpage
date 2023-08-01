@@ -1,143 +1,133 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import {
-  randomCreatedDate,
-  randomTraderName,
-  randomUpdatedDate,
-} from "@mui/x-data-grid-generator";
+import axios from "axios";
+import './Basictable.css';
 
-function BasicTableStudent() {
-  const [jsonData,setJsonData] = useState( [
-    {
-      id: 1,
-      editable:false,
-      scheduleCode: "t1",
-      classCode: "C1",
-      className: 1,
-      status:"active",
-      scheduleType: "Test 1",
-      nestedData: [
-        {
-          id: 1,
-          code: "M101",
-          name: "Mathematics",
-          timing: randomCreatedDate(),
-        },
-        {
-          id: 2,
-          code: "Ph101",
-          name: "Physics",
-          timing: randomCreatedDate(),
-        },
-        { 
-          id: 3, 
-          code: "Ch101", 
-          name: "Chemistry", 
-          timing: randomCreatedDate() 
-        
-        }
-      ],
-    },
-    {
-      id: 2,
-      scheduleCode: "t2",
-      classCode: "C2",
-      className: 3,
-      status:"active",
-      scheduleType: "Test 2",
-      editable:false,
-      nestedData: [
-        {
-          id: 1,
-          code: "M101",
-          name: "Mathematics",
-          timing: randomCreatedDate()
-        },
-        {
-          id: 2,
-          code: "Ph101",
-          name: "Physics",
-          timing: randomCreatedDate(),
-        }
-      ],
-    },
-  ]);
+const BasicTable = ({ handleClassNameSelect, classNameSelect }) => {
+  const handleClick = () => {
+    // Execute the handleClassNameSelect function to test it
+    if (typeof handleClassNameSelect === "function") {
+      handleClassNameSelect({ target: { value: classNameSelect } });
+    } else {
+      console.log("handleClassNameSelect is not a function");
+    }
 
-  const [openDialog, setOpenDialog] = useState(false);
-  const [dialogData, setDialogData] = useState([]);
-
-  const handleNestedDataClick = (nestedData) => {
-    setDialogData(nestedData);
-    setOpenDialog(true);
+    // Print the current value of classNameSelect
+    console.log("Current classNameSelect value:", classNameSelect);
+    
   };
-
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-    setDialogData([]);
+  const handleSubData = (rowData) => {
+    
+    const subData = rowData.subjectSchedule.map((subjectSchedule) => ({
+      ...subjectSchedule,
+      id: subjectSchedule.subjectCode,
+    }))
+    return subData;
+    
   };
-
 
   const columns = [
-    { 
-      field: "status", headerName: "Status", width: 150 },
     {
-      field: "actions", headerName: "View", width: 220,
-      renderCell: (params) => (
-        <Button onClick={() => handleNestedDataClick(params.row.nestedData)}>
-          view
-        </Button>
-      ),
-    },
-       
-  ];
-
-  const dialogColumns = [
-    {
-      field: "code",
+      field: "id",
       headerName: "Subject Code",
-      type: "String",
-      editable: false,
+      headerAlign: "center",
+      align: "center",
+      width: "200",
     },
     {
-      field: "name",
+      field: "subjectName",
       headerName: "Subject Name",
-      editable: false,
-      width: 180,
-      align: "left",
-      headerAlign: "left",
+      headerAlign: "center",
+      align: "center",
+      width: "200",
     },
     {
-      field: "timing",
-      headerName: "Date & Time",
-      type: "dateTime",
-      width: 220,
-      valueGetter: ({ value }) => value && new Date(value),
-      editable: false,
+      field: "date",
+      headerName: "Date",
+      headerAlign: "center",
+      align: "center",
+      width: "200",
     },
-    
+    {
+      field: "time",
+      headerName: "Time",
+      headerAlign: "center",
+      align: "center",
+      width: "200",
+    },
   ];
 
+  const [rows, setRows] = useState([]);
+  const [sCode, setSCode] = useState([]);
+
+  const [subjectNames, setSubjectNames] = useState({});
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (classNameSelect) {
+        try {
+          const response = await axios.get(
+            `http://localhost:8080/schedule/v1/${classNameSelect}/active`
+          );
+  
+          const subjectCodes = response.data.map((item) =>
+            item.subjectSchedule.map((subjectSchedule) => subjectSchedule.subjectCode)
+          ).flat();
+  
+          const subjectPromises = subjectCodes.map((subjectCode) =>
+            axios.get(`http://localhost:8080/subjects/v1/subject/${subjectCode}`)
+          );
+
+  
+          const subjectResponses = await Promise.all(subjectPromises);
+          
+  
+          const subjectNameMap = {};
+          subjectResponses.forEach((subjectResponse, index) => {
+            const subjectCode = subjectCodes[index];
+            const subjectName = subjectResponse.data.subjectName;
+            console.log(subjectName);
+            subjectNameMap[subjectCode] = subjectName;
+          });
+  
+          const modifiedData = [];
+          response.data.forEach((item) => {
+            item.subjectSchedule.forEach((subjectSchedule) => {
+              modifiedData.push({
+                id: subjectSchedule.subjectCode,
+                date: subjectSchedule.date,
+                time: subjectSchedule.time,
+                subjectName: subjectNameMap[subjectSchedule.subjectCode],
+              });
+            });
+          });
+  
+          setRows(modifiedData);
+          setSCode(response.data.map((item) => item.scheduleCode));
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+    fetchData();
+  }, [classNameSelect]);
   return (
-    <div>
-      <div >
-        <DataGrid className="schedule-display"  rows={jsonData} columns={columns} hideFooter hideFooterPagination hideFooterSelectedRowCount/>
-      </div>
-      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md">
-        <DialogTitle>Schedule</DialogTitle>
-        <DialogContent className="content-dialog" >
-          <DataGrid rows={dialogData} columns={dialogColumns}  hideFooter hideFooterPagination hideFooterSelectedRowCount/>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>Close</Button>
-        </DialogActions>
-      </Dialog>
+    <div className="content">
+      {rows.length > 0 ? (
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          hideFooter
+          hideFooterPagination
+          hideFooterSelectedRowCount
+          autoHeight
+          
+        />
+      ) : (
+        <p>Loading...</p>
+      )}
     </div>
   );
-}
+};
 
-export default BasicTableStudent;
+export default BasicTable;
