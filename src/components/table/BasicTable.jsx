@@ -162,6 +162,12 @@ const BasicTable = () => {
     setPopoverData((prevRows) => [...prevRows, newRow]);
   };
 
+  const handleDeleteSchedule = (scheduleCode) => {
+    // Filter out the deleted schedule from the schedule state
+    setSchedule((prevSchedule) =>
+      prevSchedule.filter((item) => item.scheduleCode !== scheduleCode)
+    );
+  };
 
   const columns = [
     { field: "classCode", headerName: "Class Name", width: 200 },
@@ -197,7 +203,10 @@ const BasicTable = () => {
     {
       field: "remove",
       renderCell: (cellValues) => {
-        return <DltPop />;
+        return <DltPop 
+                   scheduleCode={cellValues.row.id}
+                   onDelete={handleDeleteSchedule}
+                />;
       },
       headerName: "Remove",
       width: 250,

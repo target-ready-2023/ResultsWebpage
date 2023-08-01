@@ -84,6 +84,11 @@ const SchedulePage = () => {
 
 
   function handleChange() {}
+  const handleDeleteRow = (id) => {
+    console.log("Got in handleDeletefunction")
+    setRows((prevRows) => prevRows.filter((row) => row.id !== id));
+    console.log(id);
+  };
 
   // const [columns, setColumns] = React.useState([
   //   {
@@ -169,11 +174,17 @@ const SchedulePage = () => {
       width: 200,
       editable: true,
       renderCell: (params) => (
+<<<<<<< HEAD
         <TextField
           type="datetime-local"
           value={params.value}
           onChange={(e) => handleDateTimeChange(params, e.target.value)}
         />
+=======
+        <button onClick={ handleDeleteRow(params.row.id)}>
+          <AiTwotoneDelete />
+        </button>
+>>>>>>> daad6ea (delete schedule integrated)
       ),
     },
   ]);
@@ -239,6 +250,7 @@ const SchedulePage = () => {
       return updatedSubjects;
     });
   };
+<<<<<<< HEAD
   
 
 
@@ -246,6 +258,9 @@ const SchedulePage = () => {
     const classData = classNameoptions.find((item) => item.code === classCode);
     return classData ? classData.subjects : [];
   };
+=======
+ 
+>>>>>>> daad6ea (delete schedule integrated)
 
 
   const convertToJSONData = (array) => {
