@@ -83,8 +83,6 @@ function BasicTableStudent() {
 
 
   const columns = [
-    { field: "className", headerName: "Class Name", width: 300 },
-    { field: "scheduleType", headerName: "Schedule Type", width: 300 },
     { 
       field: "status", headerName: "Status", width: 150 },
     {
