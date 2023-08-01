@@ -3,34 +3,22 @@ import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Select from "@mui/material/Select";
 import "./index.css";
 import Button from "@mui/material/Button";
 import Popover from "@mui/material/Popover";
 import Typography from "@mui/material/Typography";
 import BasicTable from "../table/BasicTable";
-import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid";
 import { TextField } from "@mui/material";
 import {
-  randomCreatedDate,
-  randomTraderName,
-  randomUpdatedDate,
-} from "@mui/x-data-grid-generator";
-import {
-  AiOutlinePlus,
   AiFillSchedule,
-  AiTwotoneDelete,
-  BsFillPencilFill,
   AiTwotoneSave,
-  AiTwotoneCloseSquare,
 } from "react-icons/ai";
 import { GiCancel } from "react-icons/gi";
-import { GrAdd } from "react-icons/gr";
 import { useState, useEffect } from "react";
-import { setSelectionRange } from "@testing-library/user-event/dist/utils";
 import axios from "axios";
-import Input from "@mui/material/Input";
-import { Contrast } from "@mui/icons-material";
+
 
 let classCode = "";
 
@@ -40,17 +28,13 @@ const SchedulePage = () => {
   const [scheduleN, setScheduleN] = useState("");
   const [scheduleT, setScheduleT] = useState("");
   const [classN, setClassN] = useState("");
-  const [rows, setRows] = useState([]);
   const [classNameSelectforAll, setClassNameSelectForAll] = useState("");
-  const [subjectsClass, setSubjectClass] = useState("");
   const [rowsDisplay, setRowsDisplay] = useState("");
   const [subjects, setSubjects] = useState([]);
 
-  const [selectedDateAndTime, setSelectedDateAndTime] = useState({});
+  
 
-  // Using let to store the data for API calls
-  let scheduleDataForApi = [];
-
+ 
   let classNameSelect = "";
   let scheduleNameSelect = "";
   let scheduleType = "";
@@ -62,9 +46,6 @@ const SchedulePage = () => {
     axios
       .get("http://localhost:8080/classes/v1/classes")
       .then((response) => {
-        //console.log(response.data);
-        // const subjectsArray = response.data.map((item) => item.subjects);
-        // console.log(subjectsArray);
         setClassNameOptions(response.data);
       })
       .catch((error) => {
@@ -76,84 +57,7 @@ const SchedulePage = () => {
     setAnchor(event.currentTarget);
   };
 
-  useEffect(() => {
-    // Log the updated rows whenever the rows state changes
-    console.log("Updated rows:", rows);
-  }, [rows]);
-
-  const jsonData = subjects.map((subject) => {
-    return {
-      subjectName: subject,
-    };
-  });
-
-  function handleChange() {}
-  const handleDeleteRow = (id) => {
-    console.log("Got in handleDeletefunction")
-    setRows((prevRows) => prevRows.filter((row) => row.id !== id));
-    console.log(id);
-  };
-
-  // const [columns, setColumns] = React.useState([
-  //   {
-  //     field: "subjectCode",
-  //     headerName: "Subject Code",
-  //     type: "String",
-  //     editable: true,
-  //   },
-  //   {
-  //     field: "subjectName",
-  //     headerName: "Subject Name",
-  //     editable: true,
-  //     width: 180,
-  //     align: "left",
-  //     headerAlign: "left",
-  //   },
-  //   // {
-  //   //   field: "timing",
-  //   //   headerName: "Date & Time",
-  //   //   type: "dateTime",
-  //   //   width: 220,
-  //   //   valueGetter: ({ value }) => value && new Date(value),
-  //   //   editable: true,
-  //   // },
-  //   {
-  //     field: "date",
-  //     headerName: "Date",
-  //     type: "date",
-  //     width: 150,
-  //     editable: true,
-  //     onEditCellProps: (params) => ({
-
-  //       // Disable editing for cells where subjectCode is 'N/A'
-  //       disabled: params.row.subjectCode === "N/A",
-  //     }),
-
-  //   },
-  //   {
-  //     field: "time",
-  //     headerName: "Time",
-  //     type: "time",
-  //     width: 150,
-  //     editable: true,
-  //     onEditCellProps: (params) => ({
-  //       // Disable editing for cells where subjectCode is 'N/A'
-  //       disabled: params.row.subjectCode === "N/A",
-  //     }),
-  //   },
-
-  //   // {
-  //   //   field: "actions",
-  //   //   headerName: "",
-  //   //   width: 50,
-  //   //   renderCell: (params) => (
-  //   //     <button onClick={() => handleDeleteRow(params.row.id)}>
-  //   //       <AiTwotoneDelete />
-  //   //     </button>
-  //   //   ),
-  //   // },
-  // ]);
-
+  
   const [columns, setColumns] = React.useState([
     {
       field: "subjectCode",
@@ -189,18 +93,8 @@ const SchedulePage = () => {
     },
   ]);
 
-  // const handleDateTimeChange = (params) => {
-  //   const { id, field, value } = params;
-  //   setUpdateValues((prevData) =>
-  //     prevData.map((row) =>
-  //       row.id === id ? { ...row, [field]: value } : row
-  //     )
-  //   );
-  //   //console.log(updateValues)
-  // };
-  const [editedRows, setEditedRows] = useState([]);
-  const [x, setX] = useState("");
 
+ 
   const handleDateTimeChange = (params, newValue) => {
     const { id, field } = params;
 
@@ -208,23 +102,16 @@ const SchedulePage = () => {
     const offset = localDate.getTimezoneOffset();
     const convertedDate = new Date(localDate.getTime() - offset * 60 * 1000);
 
-    // setSelectedDateAndTime((prevData) =>
-    //   prevData.map((row) =>
-    //     row.id === id ? { ...row, [field]: convertedDate.toISOString() } : row
-    //   )
-    // );
+   
     setRowsDisplay((prevRows) =>
     prevRows.map((row) =>
       row.id === id ? { ...row, [field]: convertedDate.toISOString() } : row
     )
   );
-  
-    scheduleDataForApi = scheduleDataForApi.map((item) =>
-      item.id === id ? { ...item, [field]: convertedDate.toISOString() } : item
-    );
+
 
     console.log("Selected Date & Time:", convertedDate.toISOString());
-    console.log("Schedule Data for API:", scheduleDataForApi);
+  
 
    
   };
@@ -346,11 +233,12 @@ const SchedulePage = () => {
   };
 
   const handleClassNameSelectForAll = (event) => {
-    setClassNameSelectForAll(event.target.value);
-    console.log(classNameSelectforAll);
-    classCode = event.target.value;
+    setClassNameSelectForAll(event.target.value);//useState
+    console.log("useState" + classNameSelectforAll);
+    classCode = event.target.value;//let
+    console.log("let " + classCode)
   };
-
+  
   const handleScheduleNameSelect = (event) => {
     scheduleNameSelect = event.target.value;
     setScheduleN(scheduleNameSelect);
@@ -442,7 +330,6 @@ const SchedulePage = () => {
                       hideFooterSelectedRowCount
                       hideFooter
                       onEditCellChange={handleDateTimeChange}
-                      //onEditCellChange={handleCellEditCommit}
                     />
                   </div>
                   <div className="buttons-right-align">

@@ -221,6 +221,12 @@ const BasicTable = () => {
       editable: true,
     },
     {
+      field: "subjectName",
+      headerName: "Subject Name",
+      type: "String",
+      editable: true,
+    },
+    {
       field: "date",
       headerName: "Date",
       editable: true,
@@ -228,6 +234,7 @@ const BasicTable = () => {
       align: "left",
       headerAlign: "left",
     },
+
     {
       field: "time",
       headerName: "Time",
@@ -237,17 +244,19 @@ const BasicTable = () => {
       editable: true,
     },
     {
-      field: "actions",
-      headerName: "",
-      width: 50,
-      renderCell: (params) => (
-        <button onClick={ 
-          () => handleDeleteRow(params.row.id) 
-          }>
-          <AiTwotoneDelete />
-        </button>
-      ),
-    },
+      
+      field: "status",
+      renderCell: (params) => {
+        return (
+          <Switch  
+          checked={isChecked[params.id]}
+          onChange={(event) => handleStatusChange(event, params.id)} />
+        );
+      },
+      headerName: "Status",
+      width: 80,
+      type: Boolean,
+    }
   ];
 
   const handleClosePopover = () => {
@@ -284,34 +293,6 @@ const BasicTable = () => {
       >
         <Typography sx={{ p: 2 }}>
           <div>
-            <div className="add-sh-dropdowns">
-              <Box className="dd1">
-                <FormControl fullWidth variant="filled" sx={{ m: 1 }}>
-                  <InputLabel>Class Name</InputLabel>
-                  <Select>
-                    <MenuItem value={10}>10th</MenuItem>
-                    <MenuItem value={9}>9th</MenuItem>
-                    <MenuItem value={8}>8th</MenuItem>
-                  </Select>
-                </FormControl>
-              </Box>
-
-              <Box className="dd3">
-                <FormControl fullWidth variant="filled" sx={{ m: 1 }}>
-                  <InputLabel>Schedule Name</InputLabel>
-                  <Select>
-                    <MenuItem value={1}>Test 1</MenuItem>
-                    <MenuItem value={2}>Test 2</MenuItem>
-                    <MenuItem value={4}>Mid-Term</MenuItem>
-                    <MenuItem value={5}>Test 3</MenuItem>
-                    <MenuItem value={6}>Test 4</MenuItem>
-                    <MenuItem value={7}>Pre-Preparatory</MenuItem>
-                    <MenuItem value={8}>Preparatory</MenuItem>
-                    <MenuItem value={9}>Final</MenuItem>
-                  </Select>
-                </FormControl>
-              </Box>
-            </div >
             <div class="Table">
               <DataGrid
                 rows={popoverData}
@@ -328,9 +309,7 @@ const BasicTable = () => {
             </div> */}
 
             <div className="add">
-              <button onClick={handleAddRow}>
-                <GrAdd /> Subject
-              </button>
+              
               <button type="cancel">Cancel {<GiCancel />}</button>
                   <button type="submit">Save Changes {<AiTwotoneSave />}</button>
             </div>
