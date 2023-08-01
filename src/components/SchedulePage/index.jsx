@@ -88,6 +88,11 @@ const SchedulePage = () => {
   });
 
   function handleChange() {}
+  const handleDeleteRow = (id) => {
+    console.log("Got in handleDeletefunction")
+    setRows((prevRows) => prevRows.filter((row) => row.id !== id));
+    console.log(id);
+  };
 
   // const [columns, setColumns] = React.useState([
   //   {
@@ -223,14 +228,14 @@ const SchedulePage = () => {
 
    
   };
-
-  const [updateValues, setUpdateValues] = useState([]);
+  
 
  
   const getClassSubjects = (classCode) => {
     const classData = classNameoptions.find((item) => item.code === classCode);
     return classData ? classData.subjects : [];
   };
+
 
   const convertToJSONData = (array) => {
     const jsonData = array.map((subjectName) => {
