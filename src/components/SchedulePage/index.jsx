@@ -30,6 +30,7 @@ import { useState, useEffect } from "react";
 import { setSelectionRange } from "@testing-library/user-event/dist/utils";
 import axios from "axios";
 import Input from "@mui/material/Input";
+import { Contrast } from "@mui/icons-material";
 
 let classCode = "";
 
@@ -41,17 +42,22 @@ const SchedulePage = () => {
   const [classN, setClassN] = useState("");
   const [rows, setRows] = useState([]);
   const [classNameSelectforAll, setClassNameSelectForAll] = useState("");
-  const [subjectsClass, setSubjectClass]= useState("");
-  const [rowsDisplay, setRowsDisplay]=useState("")
+  const [subjectsClass, setSubjectClass] = useState("");
+  const [rowsDisplay, setRowsDisplay] = useState("");
   const [subjects, setSubjects] = useState([]);
 
+  const [selectedDateAndTime, setSelectedDateAndTime] = useState({});
 
-  let classNameSelect=""
-  let scheduleNameSelect="" 
-  let scheduleType=""
-  let subjectsJson=""
-  let updatedData=""
-  let row=""
+  // Using let to store the data for API calls
+  let scheduleDataForApi = [];
+
+  let classNameSelect = "";
+  let scheduleNameSelect = "";
+  let scheduleType = "";
+  let subjectsJson = "";
+  let updatedData = "";
+  let row = "";
+  let subjectsFetch=""
   useEffect(() => {
     axios
       .get("http://localhost:8080/classes/v1/classes")
@@ -80,8 +86,6 @@ const SchedulePage = () => {
       subjectName: subject,
     };
   });
-
-
 
   function handleChange() {}
 
@@ -115,7 +119,7 @@ const SchedulePage = () => {
   //     width: 150,
   //     editable: true,
   //     onEditCellProps: (params) => ({
-        
+
   //       // Disable editing for cells where subjectCode is 'N/A'
   //       disabled: params.row.subjectCode === "N/A",
   //     }),
@@ -133,7 +137,6 @@ const SchedulePage = () => {
   //     }),
   //   },
 
-    
   //   // {
   //   //   field: "actions",
   //   //   headerName: "",
@@ -145,7 +148,6 @@ const SchedulePage = () => {
   //   //   ),
   //   // },
   // ]);
-  
 
   const [columns, setColumns] = React.useState([
     {
@@ -168,16 +170,20 @@ const SchedulePage = () => {
       type: "dateTime",
       width: 200,
       editable: true,
+      valueGetter: (params) => {
+        const value = params.row.dateTime;
+        return value ? new Date(value) : null;
+      },
       renderCell: (params) => (
         <TextField
           type="datetime-local"
-          value={params.value}
+          value={params.value ? params.value.toISOString().slice(0, -8) : ""}
           onChange={(e) => handleDateTimeChange(params, e.target.value)}
         />
       ),
     },
   ]);
-  
+
   // const handleDateTimeChange = (params) => {
   //   const { id, field, value } = params;
   //   setUpdateValues((prevData) =>
@@ -188,78 +194,60 @@ const SchedulePage = () => {
   //   //console.log(updateValues)
   // };
   const [editedRows, setEditedRows] = useState([]);
+  const [x, setX] = useState("");
 
   const handleDateTimeChange = (params, newValue) => {
     const { id, field } = params;
-    setUpdateValues((prevData) =>
-      prevData.map((row) =>
-        row.id === id ? { ...row, [field]: newValue } : row
-      )
-    );
-    console.log("Entered Date & Time:", newValue);
-    let data="";
-    console.log(data)
-    console.log(updateValues)
-    // setEditedRows((prevEditedRows) => {
-    //   if (!prevEditedRows.includes(id)) {
-    //     return [...prevEditedRows, id];
-    //   }
-    //   return prevEditedRows;
-    // });
-  };
-  
 
+    const localDate = new Date(newValue);
+    const offset = localDate.getTimezoneOffset();
+    const convertedDate = new Date(localDate.getTime() - offset * 60 * 1000);
+
+    // setSelectedDateAndTime((prevData) =>
+    //   prevData.map((row) =>
+    //     row.id === id ? { ...row, [field]: convertedDate.toISOString() } : row
+    //   )
+    // );
+    setRowsDisplay((prevRows) =>
+    prevRows.map((row) =>
+      row.id === id ? { ...row, [field]: convertedDate.toISOString() } : row
+    )
+  );
+  
+    scheduleDataForApi = scheduleDataForApi.map((item) =>
+      item.id === id ? { ...item, [field]: convertedDate.toISOString() } : item
+    );
+
+    console.log("Selected Date & Time:", convertedDate.toISOString());
+    console.log("Schedule Data for API:", scheduleDataForApi);
+
+   
+  };
 
   const [updateValues, setUpdateValues] = useState([]);
 
-  //const [selectedDateAndTime, setSelectedDateAndTime] = useState({});
-  
-  let selectedDateAndTime="";
-
-  const handleCellEditCommit = (params) => {
-    const { id, field, value } = params;
-    setRowsDisplay((prevRows) =>
-      prevRows.map((row) => {
-        if (row.id === id) {
-          return { ...row, [field]: value };
-        }
-        return row;
-        console.log(row)
-      })
-    );
-  
-    // Create a new copy of the subjects array and update the date and time for the specific row
-    setSubjects((prevSubjects) => {
-      const updatedSubjects = prevSubjects.map((subject) => {
-        if (subject.subjectCode === id) {
-          return { ...subject, [field]: value };  
-        }
-        return subject;
-      });
-      return updatedSubjects;
-    });
-  };
-  
-
-
+ 
   const getClassSubjects = (classCode) => {
     const classData = classNameoptions.find((item) => item.code === classCode);
     return classData ? classData.subjects : [];
   };
 
-
   const convertToJSONData = (array) => {
     const jsonData = array.map((subjectName) => {
       return { subjectName };
     });
-  
+
     return jsonData;
   };
 
   const fetchSubjectCode = async (subjectName, classCode) => {
     try {
-      const response = await axios.get(`http://localhost:8080/subjects/v1/search?subjectName=${subjectName}`);
-      const subjectData = response.data.find((item) => item.classCode === classCode);
+      const response = await axios.get(
+        `http://localhost:8080/subjects/v1/search?subjectName=${subjectName}`
+      );
+      const subjectData = response.data.find(
+        (item) => item.classCode === classCode
+      );
       return subjectData ? subjectData.subjectCode : null;
     } catch (error) {
       console.error(`Error fetching subjectCode for ${subjectName}:`, error);
@@ -271,53 +259,85 @@ const SchedulePage = () => {
     updatedData = await Promise.all(
       subjectsJson.map(async (item) => {
         const subjectName = item.subjectName;
-        const subjectCode = await fetchSubjectCode(subjectName, classNameSelect);
+        const subjectCode = await fetchSubjectCode(
+          subjectName,
+          classNameSelect
+        );
         return {
           ...item,
-          subjectCode: subjectCode || 'N/A',
-          date: "",
-          time: "",
+          subjectCode: subjectCode,
+          dateTime: "",
         };
       })
     );
-  
+
     console.log(updatedData);
     row = updatedData.map((item) => ({
       id: item.subjectCode, // Use 'subjectCode' as the 'id'
       ...item,
     }));
-    console.log(row)
-    setRowsDisplay(row)
+    console.log(row);
+    setRowsDisplay(row);
   };
 
   const handleSaveSchedule = () => {
-    console.log("Edited Rows Data:");
-  console.log(
-    rowsDisplay.filter((row) => editedRows.includes(row.id))
-  );
-  // Reset the editedRows state after logging the data
-  setEditedRows([]);
 
-    // const updatedSubjects = rowsDisplay.map((row) => ({
-    //   subjectCode: row.subjectCode,
-    //   subjectName: row.subjectName,
-    //   date: selectedDateAndTime[row.id]?.date || "N/A",
-    //   time: selectedDateAndTime[row.id]?.time || "N/A",
-    // }));
 
-    // console.log("Updated Subjects:", updatedSubjects);
-    // Now you can do whatever you want with the updatedSubjects, e.g., send it to a server.
+
+    console.log("DataGrid Values:", rowsDisplay);
+    subjectsFetch = rowsDisplay
+    console.log("in const : ", JSON.stringify(subjectsFetch,null,2));
+
+
+
+    subjectsFetch.forEach((subject) => {
+
+      const [datePart, timePart] = subject.dateTime.split('T');
+      subject.date = datePart;
+      subject.time = timePart.slice(0, 5); 
+      subject.status = true;
+      delete subject.id;
+      delete subject.subjectName;
+      delete subject.dateTime;
+    });
+    const classCode = classN;
+    const scheduleName= scheduleN;
+    const scType = scheduleT;
+    console.log("code" + classCode + "Name" + scheduleName + "Type" + scType)
+    console.log(subjectsFetch);
+
+    axios.post(`http://localhost:8080/schedule/v1`,
+    {
+      classCode : classCode,
+      subjectSchedule : subjectsFetch,
+      scheduleName : scheduleName,
+      scheduleType : scType,
+      scheduleStatus: true
+    }
+    ).then((Response)=>{
+      if(Response.data === "Successful"){
+        setRowsDisplay([]);
+        setClassN('');
+        setScheduleN('');
+        setScheduleT('')
+        setAnchor(null);
+
+      }
+    })
+    
   };
 
-  //for selected class in add schedule
+  
   const handleClassNameSelect = (event) => {
     classNameSelect = event.target.value;
-    setClassN(classNameSelect)
-    const subjectsArray= getClassSubjects(classNameSelect);
-    console.log(classNameSelect+" "+subjectsArray);
+    setClassN(classNameSelect);
+    console.log(classNameSelect)
+    const subjectsArray = getClassSubjects(classNameSelect);
+    console.log(classNameSelect + " " + subjectsArray);
     subjectsJson = convertToJSONData(subjectsArray);
     console.log(subjectsJson);
     processData();
+    console.log("process data : " + rowsDisplay);
   };
 
   const handleClassNameSelectForAll = (event) => {
@@ -328,21 +348,22 @@ const SchedulePage = () => {
 
   const handleScheduleNameSelect = (event) => {
     scheduleNameSelect = event.target.value;
-    setScheduleN(scheduleNameSelect)
+    setScheduleN(scheduleNameSelect);
     const scName = scheduleNameSelect;
+    console.log(scName)
     if (
       scName === "Test 1" ||
       scName === "Test 2" ||
       scName === "Test 3" ||
       scName === "Test 4"
     ) {
-      scheduleType="Test";
+      scheduleType = "Test";
     } else {
-      scheduleType ="Exam";
+      scheduleType = "Exam";
     }
-    setScheduleT(scheduleType)
+    setScheduleT(scheduleType);
   };
-  
+
   const handleCancelClick = () => {
     setAnchor(null);
   };
@@ -389,7 +410,7 @@ const SchedulePage = () => {
                       <FormControl fullWidth variant="filled" sx={{ m: 1 }}>
                         <InputLabel>Schedule Name</InputLabel>
                         <Select
-                        className="classForAdmin"
+                          className="classForAdmin"
                           value={scheduleN}
                           onChange={handleScheduleNameSelect}
                         >
@@ -420,7 +441,9 @@ const SchedulePage = () => {
                     />
                   </div>
                   <div className="buttons-right-align">
-                    <button type="cancel" onClick={handleCancelClick}>Cancel {<GiCancel />}</button>
+                    <button type="cancel" onClick={handleCancelClick}>
+                      Cancel {<GiCancel />}
+                    </button>
                     <button type="submit" onClick={handleSaveSchedule}>
                       Save Schedule {<AiTwotoneSave />}
                     </button>
