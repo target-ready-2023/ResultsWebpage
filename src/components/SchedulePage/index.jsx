@@ -31,7 +31,10 @@ const SchedulePage = () => {
   const [classNameSelectforAll, setClassNameSelectForAll] = useState("");
   const [rowsDisplay, setRowsDisplay] = useState("");
   const [subjects, setSubjects] = useState([]);
-
+  const [classSelectError, setClassSelectError]=useState("")
+  const [scheduleSelectError, setScheduleSelectError]=useState("")
+  const [dateTimeError, setDateTimeError]=useState("")
+ let errorData= "";
   
 
  
@@ -42,16 +45,33 @@ const SchedulePage = () => {
   let updatedData = "";
   let row = "";
   let subjectsFetch=""
+  // useEffect(() => {
+  //   axios
+  //     .get("http://localhost:8080/classes/v1/classes")
+  //     .then((response) => {
+  //       setClassNameOptions(response.data);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // });
+
   useEffect(() => {
     axios
       .get("http://localhost:8080/classes/v1/classes")
       .then((response) => {
-        setClassNameOptions(response.data);
+        // Sort the classNameOptions array based on the 'name' property
+        const sortedClassNames = response.data.sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
+        console.log("X : ",sortedClassNames)
+        setClassNameOptions(sortedClassNames);
       })
       .catch((error) => {
         console.log(error);
       });
-  });
+  }, []);
+  
 
   const handleClick = (event) => {
     setAnchor(event.currentTarget);
@@ -64,14 +84,14 @@ const SchedulePage = () => {
       headerName: "Subject Code",
       type: "string",
       width: 150,
-      editable: true,
+      editable: false,
     },
     {
       field: "subjectName",
       headerName: "Subject Name",
       type: "string",
       width: 150,
-      editable: true,
+      editable: false,
     },
     {
       field: "dateTime",
@@ -102,6 +122,22 @@ const SchedulePage = () => {
     const offset = localDate.getTimezoneOffset();
     const convertedDate = new Date(localDate.getTime() - offset * 60 * 1000);
 
+    const minTime = new Date(convertedDate);
+    minTime.setHours(9, 0, 0, 0); // Set the minimum time to 9:00 AM
+  
+    const maxTime = new Date(convertedDate);
+    maxTime.setHours(16, 0, 0, 0); // Set the maximum time to 4:00 PM
+    
+    // if (convertedDate < minTime || convertedDate > maxTime) {
+    //   //setDateTimeError("Select a time between 9AM and 4PM")
+    //   errorData="Select a time between 9AM and 4PM"
+    //   console.log("Selected time must be between 9 AM and 4 PM.");
+    //   //return;
+    // }
+    // else{
+    //   //setDateTimeError("")
+    //   errorData=""
+    // }
    
     setRowsDisplay((prevRows) =>
     prevRows.map((row) =>
@@ -174,15 +210,10 @@ const SchedulePage = () => {
 
   const handleSaveSchedule = () => {
 
+    const copiedRows = JSON.parse(JSON.stringify(rowsDisplay));
+    console.log("x : ", copiedRows)
 
-
-    console.log("DataGrid Values:", rowsDisplay);
-    subjectsFetch = rowsDisplay
-    console.log("in const : ", JSON.stringify(subjectsFetch,null,2));
-
-
-
-    subjectsFetch.forEach((subject) => {
+    copiedRows.forEach((subject) => {
 
       const [datePart, timePart] = subject.dateTime.split('T');
       subject.date = datePart;
@@ -192,6 +223,7 @@ const SchedulePage = () => {
       delete subject.subjectName;
       delete subject.dateTime;
     });
+
     const classCode = classN;
     const scheduleName= scheduleN;
     const scType = scheduleT;
@@ -201,13 +233,15 @@ const SchedulePage = () => {
     axios.post(`http://localhost:8080/schedule/v1`,
     {
       classCode : classCode,
-      subjectSchedule : subjectsFetch,
+      subjectSchedule : copiedRows,
       scheduleName : scheduleName,
       scheduleType : scType,
       scheduleStatus: true
     }
     ).then((Response)=>{
+      console.log(Response)
       if(Response.data === "Successful"){
+
         setRowsDisplay([]);
         setClassN('');
         setScheduleN('');
@@ -238,7 +272,6 @@ const SchedulePage = () => {
     classCode = event.target.value;//let
     console.log("let " + classCode)
   };
-  
   const handleScheduleNameSelect = (event) => {
     scheduleNameSelect = event.target.value;
     setScheduleN(scheduleNameSelect);
@@ -258,7 +291,11 @@ const SchedulePage = () => {
   };
 
   const handleCancelClick = () => {
-    setAnchor(null);
+    setRowsDisplay([]);
+        setClassN('');
+        setScheduleN('');
+        setScheduleT('')
+        setAnchor(null);
   };
 
   return (
@@ -321,7 +358,9 @@ const SchedulePage = () => {
                       </FormControl>
                     </Box>
                   </div>
-                  <div className="Table">
+                  <div 
+                  className="Table" 
+                  >
                     <DataGrid
                       key={row.length}
                       rows={rowsDisplay}
@@ -331,14 +370,17 @@ const SchedulePage = () => {
                       hideFooter
                       onEditCellChange={handleDateTimeChange}
                     />
+                    {/* {errorData && (
+                      <span style={{ color: 'red' }}>{dateTimeError}</span>
+                    )} */}
                   </div>
                   <div className="buttons-right-align">
-                    <button type="cancel" onClick={handleCancelClick}>
+                    <Button type="cancel" onClick={handleCancelClick}>
                       Cancel {<GiCancel />}
-                    </button>
-                    <button type="submit" onClick={handleSaveSchedule}>
+                    </Button>
+                    <Button type="submit" onClick={handleSaveSchedule}>
                       Save Schedule {<AiTwotoneSave />}
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </Typography>
