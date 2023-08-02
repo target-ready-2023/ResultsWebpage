@@ -175,7 +175,14 @@ const addSubject = (e) => {
       }); 
     subjectDetailsHandle();
     });
+
   }
+  setSubject({
+    subjectCode:"",
+    subjectName:"",
+    credits:"",
+    classCode:""
+  })
 }
   const handleSupdate=(sub_id,itr)=>{
     setSopen1(true);

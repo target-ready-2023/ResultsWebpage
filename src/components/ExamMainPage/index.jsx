@@ -1,16 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 import {Box,Divider,FormControl,InputLabel,MenuItem,NativeSelect,Paper,Select,Stack,Grid, Card,CardContent,CardActions,Button,Typography} from "@mui/material";
 import "./index.css";
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import EditNoteIcon from '@mui/icons-material/EditNote';
+import axios from "axios";
+
 
 const ExamMainPage = () => {
+  const[classes,setClasses]=useState([])
+  React.useEffect(() => {  
+    classDetailsHandle();
+   },[]) 
+
+   const classDetailsHandle=()=>{
+    axios.get('http://localhost:8080/classes/v1/classes').then(result =>setClasses(result?.data))
+    .catch(err=>{
+      console.log(err.message)
+    })
+  
+  
+  }
     const card1 = (
         <React.Fragment>
           <CardContent>
             
             <Typography variant="h5" component="div">
-            <CalendarTodayIcon className="calender" ></CalendarTodayIcon>
+            <CalendarTodayIcon className="calender" style={{height:"130px",width: "130px", marginTop: "30px",marginBottom: "20px"}} ></CalendarTodayIcon>
             </Typography>
            
             <Typography variant="body2">
@@ -28,7 +43,7 @@ const ExamMainPage = () => {
           <CardContent>
             
             <Typography variant="h5" component="div">
-            <EditNoteIcon className="result"></EditNoteIcon>
+            <EditNoteIcon className="result" style={{height:"160px",width: "160px", marginTop: "0px",marginBottom: "20px"}} ></EditNoteIcon>
             </Typography>
             
             <Typography variant="body2">
@@ -62,6 +77,11 @@ const ExamMainPage = () => {
           labelId="demo-simple-select-standard-label"
           id="demo-simple-select-standard"
         >
+          <MenuItem value="Select">Select</MenuItem>
+                    {classes?.map((classes,id) => (
+                      
+                        <MenuItem key={id} value={classes.code}>{classes.name}</MenuItem>
+                        ))}
         </Select>
                 </FormControl>
                
