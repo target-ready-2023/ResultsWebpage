@@ -2,14 +2,17 @@ import React from "react";
 import "./EditResultsAdmin.css";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Box, Grid,Button,Table,TableHead, TableCell ,TableRow,Dialog,DialogActions,DialogContent,DialogTitle, Typography, TextField} from "@mui/material";
+import { Box,Stack, Grid,Button,Table,TableHead, TableCell ,TableRow,Dialog,DialogActions,DialogContent,DialogTitle, Typography, TextField} from "@mui/material";
 import EditIcon  from '@mui/icons-material/Edit';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 
 const EditResultsAdmin=()=>{
     const [testNames,setTestNames] =React.useState([]);
     const [result, setResult] =React.useState([]);
-    const [test,setTest] =React.useState([]);
+    const [test,setTest] =React.useState("");
+    const [classNames,setClassNames] = React.useState([]);
+    const [classes, setClasses] = React.useState("");
+    let classLevel;
     const [openAdd, setOpenAdd] = React.useState(false);
     const [openUpdate, setOpenUpdate] = React.useState(false);
     const [openView, setOpenView] = React.useState(false);
@@ -17,22 +20,30 @@ const EditResultsAdmin=()=>{
     const navigate = useNavigate()
 
     React.useEffect(()=>{
-        getStudents();
+        getClasses();
         getTestOrExam();
     },[]);
 
-    const getStudents = async() =>{ 
-    await axios.get('http://localhost:8080/student/v1/student/C4')
+    const getStudents = async(classLevel) =>{ 
+        console.log(classLevel)
+    await axios.get('http://localhost:8080/student/v1/student/'+classLevel)
     .then(res => setDisplayStudent(res?.data))
     .catch(err => {console.log(err.message)})
-    
-     
+    console.log(displayStudent) 
+    console.log(displayStudent?.length)  
 }
 
     const getTestOrExam = async() =>{
         await axios.get('http://localhost:8080/schedule/v1/C4/all')
     .then(res => setTestNames(res?.data))
     .catch(err => {console.log(err.message)})
+    }
+
+    const getClasses= async() =>{
+        await axios.get('http://localhost:8080/classes/v1/classes')
+    .then(res => setClassNames(res?.data))
+    .catch(err => {console.log(err.message)})
+    console.log(classNames);
     }
 
     const OpenAllResults=()=>{
@@ -44,6 +55,13 @@ const EditResultsAdmin=()=>{
     const handleTestNameChange=(event)=>{
         setTest(event.target.value);
         console.log(test);
+    }
+
+    const handleClassNameChange=(event)=>{
+        classLevel=event.target.value;
+        setClasses(event.target.value);
+        setDisplayStudent();
+        getStudents(classLevel);
     }
     const handleClickOpenAdd = () => {
         setOpenAdd(true);
@@ -147,12 +165,13 @@ const EditResultsAdmin=()=>{
                         <div>
                             <Table className="table-design">
                                 <TableRow className="table-row1">
-                                    <Typography className="text1">Class: &nbsp; &nbsp;
-                                        <select id="test" className="select" value={testName} onChange={handleTestNameChange}>
+                                <Typography className="text1">Class: &nbsp; &nbsp;
+                                    <select id="classes" className="select" value={classes} onChange={handleClassNameChange}>
                                         <option className="text4" disabled selected value="">--select--</option>
-                                        <option className="text3" value="test1">1</option>
-                                        <option className="text3" value="test2">2</option>
-                                        </select>
+                                        {classNames.map((classes,index) =>(
+                                        <option id={index} className="text3" value={classes.code}>{classes?.name}</option>
+                                        ) )}
+                                    </select>
                                     </Typography>
                                         <TableCell><button className="button-design" onClick={OpenAllResults}>View all results</button></TableCell>
                                         <TableCell width="1%"><button className="button-design" onClick={OpenLeaderboard}>Leaderboard</button></TableCell>
@@ -182,6 +201,16 @@ const EditResultsAdmin=()=>{
                                         <TableCell className="Head-Table-cell">Add/Update</TableCell>
                                         <TableCell className="Head-Table-cell">View</TableCell>
                                 </TableHead>
+                                {classes?.length === 0?
+                                <TableRow>
+                                    <TableCell><Typography className="text4">Please Select Class to view students</Typography> </TableCell>
+                                </TableRow>
+                                : 
+                                <>{displayStudent?.length === undefined || displayStudent?.length === 0?
+                                    <TableRow>
+                                    <TableCell><Typography className="text4">NO data available</Typography> </TableCell>
+                                </TableRow>:
+                                <>
                                 {displayStudent?.map((student,index) =>(
                                 <TableRow key={index}>
                                     <TableCell className="Table-cell">{student.rollNumber}</TableCell>
@@ -196,21 +225,9 @@ const EditResultsAdmin=()=>{
                                     <TableCell className="Table-cell"><Button className="table-button" onClick={handleClickOpenView}><VisibilityOutlinedIcon style={{ color: "black" }}/></Button></TableCell>
                                     </TableRow> 
                                 ))}
-                                {displayStudent?.map((student,index) =>(
-                                <TableRow key={index}>
-                                    <TableCell className="Table-cell">{student.rollNumber}</TableCell>
-                                    <TableCell className="Table-cell">{student.name}</TableCell>
-                                    <TableCell className="Table-cell">
-                                     {   (result.length==0)?
-                                     <button  className="table-button" onClick={handleClickOpenAdd}>Add</button>
-                                     :
-                                     <button  className="table-button" onClick={handleClickOpenUpdate}><EditIcon/></button>
-                                     }
-                                     </TableCell>
-                                    <TableCell className="Table-cell"><Button className="table-button" onClick={handleClickOpenView}><VisibilityOutlinedIcon style={{ color: "black" }}/></Button></TableCell>
-                                    </TableRow> 
-                                ))}
-                            </Table>
+                                </>}
+                                </>}
+                                </Table>
                             </div>                        
                     </Stack>
                 </Grid>
