@@ -4,10 +4,13 @@ import "./index.css";
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 
 const ExamMainPage = () => {
+  let navigate=useNavigate();
   const[classes,setClasses]=useState([])
+  const user=window.sessionStorage.getItem("userPersona");
   React.useEffect(() => {  
     classDetailsHandle();
    },[]) 
@@ -17,9 +20,22 @@ const ExamMainPage = () => {
     .catch(err=>{
       console.log(err.message)
     })
-  
+  }
+   const handleSchedule=()=>{
+    console.log(user)
+    if(user==="admin"){
+      navigate('/schedule')
+
+    }
+    else if (user=="student") {
+      navigate('/schedule+student')
+   }
   
   }
+  const handleResults=()=>{
+
+  }
+
     const card1 = (
         <React.Fragment>
           <CardContent>
@@ -32,7 +48,7 @@ const ExamMainPage = () => {
             All Examination schedules 
             </Typography>
             <br></br>
-            <Button size="small" className="view-button">View</Button>
+            <Button size="small" className="view-button" onClick={()=>handleSchedule()}>View</Button>
           </CardContent>
           
         </React.Fragment>
@@ -50,7 +66,7 @@ const ExamMainPage = () => {
             All Examination Results
             </Typography>
             <br></br>
-            <Button size="small" className="view-button">View</Button>
+            <Button size="small" className="view-button" onClick={()=>handleResults()}>View</Button>
           </CardContent>
           
             

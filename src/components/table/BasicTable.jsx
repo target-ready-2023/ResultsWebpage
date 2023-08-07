@@ -14,7 +14,9 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import Switch from "@mui/material/Switch";
 import DltPop from "../SchedulePage/dltpopover";
-import { AiTwotoneDelete } from "react-icons/ai";
+import { AiTwotoneDelete, AiTwotoneEdit, AiTwotoneSave } from "react-icons/ai";
+import {GiCancel} from "react-icons/gi";
+import "./BasicTable.css"
 import { Popover } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
@@ -23,41 +25,97 @@ import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import {GrAdd} from "react-icons/gr";
 import axios from "axios";
-import { AiTwotoneEdit, AiTwotoneSave } from "react-icons/ai";
-import {GiCancel} from "react-icons/gi";
+import { classCode } from "../SchedulePage";
 
 
-function BasicTable() {
 
+
+const fetchSubjectName = (subjectCode) => {
+  return axios.get(`http://localhost:8080/subjects/v1/subject/${subjectCode}`)
+    .then(response => response.data.subjectName)
+    .catch(error => {
+      console.error("Error fetching subjectName:", error);
+      return null;
+    });
+};
+
+
+const getModifiedData = (row) => {
+  const promises = row.map(item => {
+    return fetchSubjectName(item.subjectCode).then(subjectName => ({
+      ...item,
+      id: item.subjectCode,
+      subjectName: subjectName || "",
+    }));
+  });
+
+  return Promise.all(promises);
+};
+const BasicTable = () => {
 
   const [data, setData] = useState([]);  
   const [isChecked, setIsChecked] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState(null);
   //GET CALL URL
   const getUrl = " http://localhost:8080/schedule/v1/all"
+
+  //GET ALL BY CLASSCODE
+  const geturlClassCode = `http://localhost:8080/schedule/v1/${classCode}/all`
+
   const [schedule, setSchedule] = useState([]);
   useEffect(() => {
-    axios.get(getUrl).then((response) => {
-      console.log(response.data)
-       setSchedule(response.data);
-      const modifiedData = response.data.map((item) => ({
-        ...item,
-        id: item.scheduleCode,
-        className: item.className,
-        status: item.scheduleStatus
-      }));
-      setSchedule(modifiedData);
 
-      const initialCheckedState = response.data.reduce((acc, item) => {
-        acc[item.id] = item.scheduleStatus === 'active';
-        return acc;
-      }, {});
-      setIsChecked(initialCheckedState);
-    })
-    .catch((error) => {
-      console.error('Error fetching data:', error);
-    });
-  },[]);
+    console.log("table : " + classCode)
+    if(classCode.trim()=== ""){
+      axios.get(getUrl).then((response) => {
+        console.log(response.data)
+         setSchedule(response.data);
+        const modifiedData = response.data.map((item) => ({
+          ...item,
+          id: item.scheduleCode,
+          className: item.className,
+          status: item.scheduleStatus
+        }));
+        setSchedule(modifiedData);
+  
+        const initialCheckedState = response.data.reduce((acc, item) => {
+          acc[item.id] = item.scheduleStatus === 'active';
+          return acc;
+        }, {});
+        setIsChecked(initialCheckedState);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+    }
+    else{
+
+
+      axios.get(geturlClassCode).then((response) => {
+        console.log("class code "+ classCode)
+        console.log(response.data)
+         setSchedule(response.data);
+        const modifiedData = response.data.map((item) => ({
+          ...item,
+          id: item.scheduleCode,
+          className: item.className,
+          status: item.scheduleStatus
+        }));
+        setSchedule(modifiedData);
+  
+        const initialCheckedState = response.data.reduce((acc, item) => {
+          acc[item.id] = item.scheduleStatus === 'active';
+          return acc;
+        }, {});
+        setIsChecked(initialCheckedState);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+
+    }
+
+  },[classCode]);
 
   const handleStatusChange = (event, id) => {
     const newStatus = event.target.checked;
@@ -99,39 +157,143 @@ function BasicTable() {
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [popoverData, setPopoverData] = useState([]);
-  const popoverOpen = Boolean(anchorEl);
-
-  // const [openDialog, setOpenDialog] = useState(false);
-  // const [dialogData, setDialogData] = useState([]);
+  //const popoverOpen = Boolean(anchorEl);
+  const [popoverOpen, setPopoverOpen] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [dialogData, setDialogData] = useState([]);
   
-  const handleNestedDataClick = (event, row) => {
-    const nestedDataWithIdFromBackend = row.map((item) => ({
-      ...item,
-      id: item.subjectCode,
-    }));
-    setPopoverData(nestedDataWithIdFromBackend);
+  // const handleNestedDataClick = (event, row) => {
+  //   const nestedDataWithIdFromBackend = row.map((item) => ({
+  //     ...item,
+  //     id: item.subjectCode,
+  //   }));
+  //   setPopoverData(nestedDataWithIdFromBackend);
+  //   setAnchorEl(event.currentTarget);
+  //   console.log(anchorEl)
+  //   console.log(popoverOpen)
+  // };
+
+  // const handleNestedDataClick = (event, row) => {
+  //   getModifiedData(row).then(modifiedData => {
+  //     // Use the modifiedData locally without setting it to the state
+  //     console.log('Modified Data:', modifiedData);
+  
+  //     // Now, setAnchorEl to open the Popover and update popoverData
+  //     setPopoverData(modifiedData);
+  
+  //     // Set event.currentTarget directly as the value of anchorEl
+  //     setAnchorEl(event.currentTarget);
+  //   });
+  // };
+
+  // const handleNestedDataClick = async (event, row) => {
+  //   const modifiedData = await getModifiedData(row);
+
+  //   // Use the modifiedData locally without setting it to the state
+  //   console.log('Modified Data:', modifiedData);
+
+  //   // Now, setAnchorEl to open the Popover and update popoverData
+  //   setPopoverData(modifiedData);
+  //   // setAnchorEl(event.currentTarget);
+  //   setAnchorEl(event.currentTarget);
+  //   console.log(popoverOpen)
+  // };
+
+  // const handleNestedDataClick = async (event, row) => {
+  //   const modifiedData = await Promise.all(
+  //     row.map(async (item) => {
+  //       const response = await axios.get(
+  //         `http://localhost:8080/subjects/v1/subject/${item.subjectCode}`
+  //       );
+  
+  //       const subjectName = response.data.subjectName;
+        
+  //       return {
+  //         ...item,
+  //         id: item.subjectCode,
+  //         subjectName: subjectName,
+  //       };
+  //     })
+  //   );
+  
+  //   // Use the modifiedData locally without setting it to the state
+  //   console.log('Modified Data:', modifiedData);
+  
+  //   // Now, setAnchorEl to open the Popover and update popoverData
+  //   setPopoverData(modifiedData);
+  //   console.log("x" , popoverData)
+  //   setAnchorEl(event.currentTarget);
+  // };
+  
+  const handleNestedDataClick = async (event, row) => {
     setAnchorEl(event.currentTarget);
+    try{
+    const modifiedData = await Promise.all(
+      row.map(async (item) => {
+        const response = await axios.get(
+          `http://localhost:8080/subjects/v1/subject/${item.subjectCode}`
+        );
+  
+        const subjectName = response.data.subjectName;
+  
+        return {
+          ...item,
+          id: item.subjectCode,
+          subjectName: subjectName,
+        };
+      })
+    );
+  
+    // Use the modifiedData locally without setting it to the state
+    console.log('Modified Data:', modifiedData);
+  
+    // Now, setAnchorEl to open the Popover
+    setPopoverData(modifiedData);
+
+   
+    } catch(error){
+      console.error("Error fetching nested data:", error);
+    }
   };
+  
 
-
+  // const handleNestedDataClick = async (event, row) => {
+  //   const modifiedData = await Promise.all(
+  //     row.map(async (item) => {
+  //       const response = await axios.get(
+  //         `http://localhost:8080/subjects/v1/subject/${item.subjectCode}`
+  //       );
+  
+  //       const subjectName = response.data.subjectName;
+        
+  //       return {
+  //         ...item,
+  //         id: item.subjectCode,
+  //         subjectName: subjectName,
+  //       };
+  //     })
+  //   );
+  
+  //   setPopoverData(modifiedData);
+  //   setAnchorEl(event.currentTarget);
+  // };
   // const handleCloseDialog = () => {
   //   setOpenDialog(false);
   //   setDialogData([]);
   // };
 
-  const handleDeleteRow = (id) => {
-    setPopoverData((prevRows)=>prevRows.filter((row)=> row.id !== id));
-  };
 
-  const handleAddRow = () => {
-     const newRow = { id: "", code: "", name: "", age: "" };
-    setPopoverData((prevRows) => [...prevRows, newRow]);
-  };
 
+  const handleDeleteSchedule = (scheduleCode) => {
+    // Filter out the deleted schedule from the schedule state
+    setSchedule((prevSchedule) =>
+      prevSchedule.filter((item) => item.scheduleCode !== scheduleCode)
+    );
+  };
 
   const columns = [
-    { field: "className", headerName: "Class Name", width: 200 },
-    { field: "scheduleType", headerName: "Schedule Type", width: 200 },
+    { field: "classCode", headerName: "Class Name", width: 200 },
+    { field: "scheduleName", headerName: "Schedule Name", width: 200 },
     {
       field: "status",
       renderCell: (params) => {
@@ -163,7 +325,10 @@ function BasicTable() {
     {
       field: "remove",
       renderCell: (cellValues) => {
-        return <DltPop />;
+        return <DltPop 
+                   scheduleCode={cellValues.row.id}
+                   onDelete={handleDeleteSchedule}
+                />;
       },
       headerName: "Remove",
       width: 250,
@@ -175,36 +340,47 @@ function BasicTable() {
       field: "id",
       headerName: "Subject Code",
       type: "String",
-      editable: true,
+      width: 180,
+      editable: false,
+    },
+    {
+      field: "subjectName",
+      headerName: "Subject Name",
+      type: "String",
+      width: 180,
+      editable: false,
     },
     {
       field: "date",
-      headerName: "Subject Name",
+      headerName: "Date",
       editable: true,
       width: 180,
       align: "left",
       headerAlign: "left",
     },
+
     {
       field: "time",
-      headerName: "Date & Time",
+      headerName: "Time",
       //type: "dateTime",
       width: 220,
       //valueGetter: ({ value }) => value && new Date(value),
       editable: true,
     },
     {
-      field: "actions",
-      headerName: "",
-      width: 50,
-      renderCell: (params) => (
-        <button onClick={ 
-          () => handleDeleteRow(params.row.id) 
-          }>
-          <AiTwotoneDelete />
-        </button>
-      ),
-    },
+      
+      field: "status",
+      renderCell: (params) => {
+        return (
+          <Switch  
+          checked={isChecked[params.id]}
+          onChange={(event) => handleStatusChange(event, params.id)} />
+        );
+      },
+      headerName: "Status",
+      width: 80,
+      type: Boolean,
+    }
   ];
 
   const handleClosePopover = () => {
@@ -214,7 +390,8 @@ function BasicTable() {
 
   return (
     <div>
-      <div>
+     
+      <div className="table-data">
         <DataGrid
           className="schedule-display"
           rows={schedule}
@@ -226,11 +403,11 @@ function BasicTable() {
       </div>
 
       <Popover
-        open={popoverOpen}
+        open={Boolean(anchorEl)}
         anchorEl={anchorEl}
         onClose={handleClosePopover}
         anchorOrigin={{
-          vertical: "center",
+          vertical: "top",
           horizontal: "center",
         }}
         transformOrigin={{
@@ -240,35 +417,10 @@ function BasicTable() {
       >
         <Typography sx={{ p: 2 }}>
           <div>
-            <div className="add-sh-dropdowns">
-              <Box className="dd1">
-                <FormControl fullWidth variant="filled" sx={{ m: 1 }}>
-                  <InputLabel>Class Name</InputLabel>
-                  <Select>
-                    <MenuItem value={10}>10th</MenuItem>
-                    <MenuItem value={9}>9th</MenuItem>
-                    <MenuItem value={8}>8th</MenuItem>
-                  </Select>
-                </FormControl>
-              </Box>
-
-              <Box className="dd3">
-                <FormControl fullWidth variant="filled" sx={{ m: 1 }}>
-                  <InputLabel>Schedule Name</InputLabel>
-                  <Select>
-                    <MenuItem value={1}>Test 1</MenuItem>
-                    <MenuItem value={2}>Test 2</MenuItem>
-                    <MenuItem value={4}>Mid-Term</MenuItem>
-                    <MenuItem value={5}>Test 3</MenuItem>
-                    <MenuItem value={6}>Test 4</MenuItem>
-                    <MenuItem value={7}>Pre-Preparatory</MenuItem>
-                    <MenuItem value={8}>Preparatory</MenuItem>
-                    <MenuItem value={9}>Final</MenuItem>
-                  </Select>
-                </FormControl>
-              </Box>
-            </div >
-            <div class="Table">
+            <div 
+            className="Table-display"
+           
+            >
               <DataGrid
                 rows={popoverData}
                 columns={popoverColumns}
@@ -277,18 +429,11 @@ function BasicTable() {
                 hideFooter
               />
             </div>
-            {/* <div className="add">
-              <button onClick={handleAddRow}>
-                <GrAdd /> Subject{" "}
-              </button>
-            </div> */}
 
             <div className="add">
-              <button onClick={handleAddRow}>
-                <GrAdd /> Subject
-              </button>
-              <button type="cancel">Cancel {<GiCancel />}</button>
-                  <button type="submit">Save Changes {<AiTwotoneSave />}</button>
+              
+              <Button type="cancel">Cancel {<GiCancel />}</Button>
+                  <Button type="submit">Save Changes {<AiTwotoneSave />}</Button>
             </div>
           </div>
         </Typography>

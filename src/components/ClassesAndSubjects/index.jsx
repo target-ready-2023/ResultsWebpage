@@ -588,9 +588,9 @@ else {
          <Table className="Class-table">
              <TableHead className="Table-head">
              <Stack direction="row">
-                 <TableCell className="Head-Table-cell">Class Name</TableCell>
-                 <TableCell className="Head-Table-cell">Subjects</TableCell>
-                 <TableCell className="Head-Table-cell">Delete</TableCell>
+                 <TableCell className="Table-cell"><b>Class Name</b></TableCell>
+                 <TableCell className="Table-cell"><b>Subjects</b></TableCell>
+                 <TableCell className="Table-cell"><b>Delete</b></TableCell>
  
                  </Stack>
              </TableHead>

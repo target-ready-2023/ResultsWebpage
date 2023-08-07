@@ -1,11 +1,6 @@
-.table-data{
-    height: 200px;
-}
-.schedule-display{
-    height: 500px;
-     width: 800px;
-}
-.content-dialog{
+
+.content{
+    margin: auto;
     height: 300;
-     width: "100%";
+    max-width: 800px;
 }

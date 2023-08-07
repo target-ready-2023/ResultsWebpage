@@ -18,6 +18,7 @@ const SideNavigation = () => {
   const open = Boolean(anchorEl);
   //for User Persona Selection
   const [userPersona, setUserPersona] = React.useState('');
+  window.sessionStorage.setItem("userPersona",userPersona);
   const handleUserPersonaChange = (event) => {
     // setSelectedOption(event.target.value);
     const value = event.target.value;
@@ -31,6 +32,7 @@ const SideNavigation = () => {
     setAnchorEl(null);
   };
   const handleHome = () => {
+    
     navigate('/')
     handleClose()
   }
@@ -64,7 +66,10 @@ const SideNavigation = () => {
     navigate('/schedule')}
     handleClose()
   }
-  
+  const handleResults=() => {
+    navigate('/admin+result')
+    handleClose()
+  }
    
   return (
     <>
@@ -73,12 +78,14 @@ const SideNavigation = () => {
 
           <FormControl  className="label-persona"   sx={{ m: 1, minWidth: 150 }} size="small">
             <InputLabel className="LabelName">User Persona</InputLabel>
+            
               <Select  className="selectBox" value={userPersona} onChange={handleUserPersonaChange} >
                   <MenuItem className="menus" value="admin">Admin</MenuItem>
                   <MenuItem className="menus"  value="teacher">Teacher</MenuItem>
                   <MenuItem className="menus"  value="coordinator">Coordinator</MenuItem>
                   <MenuItem className="menus"  value="student">Student</MenuItem>
               </Select>
+              
           </FormControl>
           </Box>
         
@@ -105,6 +112,7 @@ const SideNavigation = () => {
         <MenuItem onClick={handleClasses}>Classes and Subjects</MenuItem>
         <MenuItem onClick={handleExams}>Exam Main Page</MenuItem>
         <MenuItem onClick={handleSchedule}>Exam Schedule</MenuItem>
+        <MenuItem onClick={handleResults}>Exam Results</MenuItem>
       </Menu>
     </>
   );

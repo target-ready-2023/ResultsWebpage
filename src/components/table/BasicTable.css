@@ -1,5 +1,12 @@
 .table-data{
-    height: 200px;
+    padding-left: 130px;
+    padding-right: 130px;
+    height: 330px;
+        display: flex;
+        justify-content: center;
+        /* width: 1000px; */
+    
+      
 }
 .schedule-display{
     height: 500px;
@@ -9,7 +16,7 @@
     height: 300;
      width: "100%";
 }
-.Table{
+.Table-display{
     
     height: 265px;
 }
