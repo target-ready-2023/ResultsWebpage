@@ -26,7 +26,7 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import {GrAdd} from "react-icons/gr";
 import axios from "axios";
 import { classCode } from "../SchedulePage";
-
+import { Stack } from '@mui/material'
 
 
 
@@ -111,6 +111,7 @@ const BasicTable = () => {
       })
       .catch((error) => {
         console.error('Error fetching data:', error);
+        setSchedule([])
       });
 
     }
@@ -157,73 +158,10 @@ const BasicTable = () => {
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [popoverData, setPopoverData] = useState([]);
-  //const popoverOpen = Boolean(anchorEl);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogData, setDialogData] = useState([]);
   
-  // const handleNestedDataClick = (event, row) => {
-  //   const nestedDataWithIdFromBackend = row.map((item) => ({
-  //     ...item,
-  //     id: item.subjectCode,
-  //   }));
-  //   setPopoverData(nestedDataWithIdFromBackend);
-  //   setAnchorEl(event.currentTarget);
-  //   console.log(anchorEl)
-  //   console.log(popoverOpen)
-  // };
-
-  // const handleNestedDataClick = (event, row) => {
-  //   getModifiedData(row).then(modifiedData => {
-  //     // Use the modifiedData locally without setting it to the state
-  //     console.log('Modified Data:', modifiedData);
-  
-  //     // Now, setAnchorEl to open the Popover and update popoverData
-  //     setPopoverData(modifiedData);
-  
-  //     // Set event.currentTarget directly as the value of anchorEl
-  //     setAnchorEl(event.currentTarget);
-  //   });
-  // };
-
-  // const handleNestedDataClick = async (event, row) => {
-  //   const modifiedData = await getModifiedData(row);
-
-  //   // Use the modifiedData locally without setting it to the state
-  //   console.log('Modified Data:', modifiedData);
-
-  //   // Now, setAnchorEl to open the Popover and update popoverData
-  //   setPopoverData(modifiedData);
-  //   // setAnchorEl(event.currentTarget);
-  //   setAnchorEl(event.currentTarget);
-  //   console.log(popoverOpen)
-  // };
-
-  // const handleNestedDataClick = async (event, row) => {
-  //   const modifiedData = await Promise.all(
-  //     row.map(async (item) => {
-  //       const response = await axios.get(
-  //         `http://localhost:8080/subjects/v1/subject/${item.subjectCode}`
-  //       );
-  
-  //       const subjectName = response.data.subjectName;
-        
-  //       return {
-  //         ...item,
-  //         id: item.subjectCode,
-  //         subjectName: subjectName,
-  //       };
-  //     })
-  //   );
-  
-  //   // Use the modifiedData locally without setting it to the state
-  //   console.log('Modified Data:', modifiedData);
-  
-  //   // Now, setAnchorEl to open the Popover and update popoverData
-  //   setPopoverData(modifiedData);
-  //   console.log("x" , popoverData)
-  //   setAnchorEl(event.currentTarget);
-  // };
   
   const handleNestedDataClick = async (event, row) => {
     setAnchorEl(event.currentTarget);
@@ -256,33 +194,6 @@ const BasicTable = () => {
     }
   };
   
-
-  // const handleNestedDataClick = async (event, row) => {
-  //   const modifiedData = await Promise.all(
-  //     row.map(async (item) => {
-  //       const response = await axios.get(
-  //         `http://localhost:8080/subjects/v1/subject/${item.subjectCode}`
-  //       );
-  
-  //       const subjectName = response.data.subjectName;
-        
-  //       return {
-  //         ...item,
-  //         id: item.subjectCode,
-  //         subjectName: subjectName,
-  //       };
-  //     })
-  //   );
-  
-  //   setPopoverData(modifiedData);
-  //   setAnchorEl(event.currentTarget);
-  // };
-  // const handleCloseDialog = () => {
-  //   setOpenDialog(false);
-  //   setDialogData([]);
-  // };
-
-
 
   const handleDeleteSchedule = (scheduleCode) => {
     // Filter out the deleted schedule from the schedule state
@@ -399,6 +310,13 @@ const BasicTable = () => {
           hideFooter
           hideFooterPagination
           hideFooterSelectedRowCount
+          components={{
+            noRowsOverlay: ()=>(
+              <Stack height="100%" alignItems="center" justifyContent="center">
+              No schedules available
+            </Stack>
+            )
+          }}
         />
       </div>
 
@@ -427,6 +345,7 @@ const BasicTable = () => {
                 hideFooterPagination
                 hideFooterSelectedRowCount
                 hideFooter
+                
               />
             </div>
 
