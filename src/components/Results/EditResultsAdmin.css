@@ -15,7 +15,7 @@ height:auto;
 
 .text1{
   padding-left: 7%;
-  padding-top: 3%;
+  padding-top: 0.5%;
   font-family:Georgia, 'Times New Roman', Times, serif;
 }
 .text2{
@@ -38,7 +38,14 @@ font-family:Georgia, 'Times New Roman', Times, serif;
   margin-top: 5%;
   
 }
-
+.text{
+  font-family:Georgia, 'Times New Roman', Times, serif;
+}
+.txt{
+  margin-left: 2%;
+  margin-right: 2%;
+  font-family:Georgia, 'Times New Roman', Times, serif;
+}
 
 .div-design{
   overflow: scroll;
@@ -60,10 +67,32 @@ font-family:Georgia, 'Times New Roman', Times, serif;
   float: right;
   font-family:Georgia, 'Times New Roman', Times, serif;
 }
+.button-dialog{
+  background: #6c88c8;
+  border: 0.5px solid rgb(173, 172, 172);
+  border-radius: 3px;
+  padding-top: 1%;
+  padding-right: 1%;
+  padding-left :1%;
+  padding-bottom: 1%;
+  margin-right: 3%;
+
+  color:black;
+  float: right;
+  font-size: medium;
+  font-family:Georgia, 'Times New Roman', Times, serif;
+}
+.DialogTitle{
+  background:#6c88c8;
+  font-weight: bold;
+  margin-bottom: 1%;
+  font-family:Georgia, 'Times New Roman', Times, serif;
+  
+}
 .table-button{
   background: #ffffff;
   border: 0.5px solid rgb(155, 170, 224);
-   border-radius: 3px;
+  border-radius: 3px;
   padding-top: 1%;
   padding-right: 1%;
   padding-left :1%;
@@ -73,10 +102,16 @@ font-family:Georgia, 'Times New Roman', Times, serif;
  
  color:black;
  font-size: 14px;
-  font-family:Georgia, 'Times New Roman', Times, serif;
+ font-family:Georgia, 'Times New Roman', Times, serif;
 }
 .table-button:hover{
   border:1.5px solid #314ad4;
+}
+
+.text-add{
+  width: 80px;
+  font-size: medium;
+  font-family:Georgia, 'Times New Roman', Times, serif;
 }
 
 .select{
