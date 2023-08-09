@@ -2,7 +2,7 @@ import React from "react";
 import "./EditResultsAdmin.css";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Box, Grid,Button,Table,TableHead, TableCell ,TableRow,Dialog,DialogActions,DialogContent,DialogTitle, Typography, TextField} from "@mui/material";
+import { Box, Grid,Button,Table,TableHead, TableCell ,TableRow,Dialog,DialogActions,DialogContent,DialogTitle, Typography, TextField,Stack} from "@mui/material";
 import EditIcon  from '@mui/icons-material/Edit';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 
@@ -148,7 +148,7 @@ const EditResultsAdmin=()=>{
                             <Table className="table-design">
                                 <TableRow className="table-row1">
                                     <Typography className="text1">Class: &nbsp; &nbsp;
-                                        <select id="test" className="select" value={testName} onChange={handleTestNameChange}>
+                                        <select id="test" className="select" value={test} onChange={handleTestNameChange}>
                                         <option className="text4" disabled selected value="">--select--</option>
                                         <option className="text3" value="test1">1</option>
                                         <option className="text3" value="test2">2</option>

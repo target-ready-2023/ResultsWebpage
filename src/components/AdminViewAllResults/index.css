@@ -1,13 +1,13 @@
 
 .class-drop-down{
-    width:200px;
+    width:150px;
     padding: 10px;
     float: left;
     
 }
 .test-drop-down{
     padding: 10px;
-    width: 200px;
+    width: 150px;
     float: right; 
     position: relative;
     margin: 0px; 
@@ -16,7 +16,7 @@
 }
 .year-drop-down{
     padding: 10px;
-    width: 200px;
+    width: 150px;
     float: left; 
     margin: 0px; 
     margin-right: 20px;
@@ -25,9 +25,9 @@
 .view-button
 {
     
-    color:dimgray;
+    color:dimgrey;
     font-size: 20px;
-    width: 180px;
+    width: 150px;
     height: 50px;
     cursor: pointer;
     float: right;
@@ -41,9 +41,16 @@
     justify-content:center ;
     align-content:center ;
 }
+.table-block
+{
+  padding-top: 20px;
+  padding-left: 120px;
+  padding-right: 120px;
+}
 .Results-table
 {
     box-shadow: 0px 0px 1px 1px rgba(105, 104, 104, 0.2);
+    border-width: 2px;
 }
 .Results-table .Table-head{
     background: #6c88c8;
@@ -52,14 +59,24 @@
   .Results-table .Head-Table-cell{
     font-weight:bold;
     width:50px;
-    height: 15px ;
+    height: 25px ;
+    text-align: center;
     justify-content: center;
     font-family:Georgia, 'Times New Roman', Times, serif;
+    
   }
   .Results-table  .Table-cell{
     width:50px;
     font-size: 14px;
     font-family:Georgia, 'Times New Roman', Times, serif;
+    text-align: center;
+    justify-content: center;
+    /* border-left: 1px solid black ; */
     
+  }
+  .tableContainer{
+    overflow: scroll;
+    height: 7.5cm;
+
   }
   
