@@ -304,13 +304,13 @@ const BasicTable = () => {
         );
       },
       headerName: "Status",
-      width: 80,
+      width: 120,
       type: Boolean,
     },
     {
       field: "actions",
       headerName: "View/Edit",
-      width: 220,
+      width: 150,
       renderCell: (params) => (
         <Button
           onClick={(event) =>
@@ -331,7 +331,7 @@ const BasicTable = () => {
                 />;
       },
       headerName: "Remove",
-      width: 250,
+      width: 150,
     },
   ];
 

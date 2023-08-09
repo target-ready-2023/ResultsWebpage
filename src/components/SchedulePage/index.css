@@ -1,26 +1,40 @@
 /* .top-part{
     margin: 30px;
 } */
-.drop-down{
+/* .drop-down{
     padding: 25px;
     width: 200px;
     float: right; 
     margin: 0px; 
     margin-right: 20px;
-}
+} */
 .add-button{
     margin: 0px; 
     margin-left: 20px;
     padding: 25px;
     width: 200px;
     float: left;
+    
 }
+
+.add-button .button{
+    background-color: #6c88c8;
+    
+    color: black;
+   
+}
+.add-button .button:hover{
+    background-color: #6c88c8;
+    
+    
+}
+
 .icon{
     font-size: 25px;
     padding-right: 5px;
 }
 .label{
-    background-color: #6d94ed;
+    background-color: #6c88c8;
 }
 
 .Table{
@@ -29,7 +43,7 @@
 }
 
 .table{
-    padding: 100px;
+    padding: 0px;
 }
 
 .add{
@@ -63,3 +77,17 @@
     padding: 10px;
     display: inline-block;
 }
+.classdiv{
+    padding: 25px;
+}
+
+.classdiv .classlabel{
+    color: black;
+}
+
+.classdiv .dropdown-class-main{
+    margin-top: 60;
+    background-color: #6c88c8;
+    color: black;
+}
+

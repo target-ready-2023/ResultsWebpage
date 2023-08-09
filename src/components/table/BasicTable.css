@@ -1,15 +1,18 @@
 .table-data{
-    padding-left: 130px;
-    padding-right: 130px;
+    padding-left: 100px;
+    padding-right: 100px;
+    padding-top :0px;
     height: 330px;
+   
         display: flex;
+        /* position: absolute; */
         justify-content: center;
         /* width: 1000px; */
     
       
 }
 .schedule-display{
-    height: 500px;
+    
      width: 800px;
 }
 .content-dialog{

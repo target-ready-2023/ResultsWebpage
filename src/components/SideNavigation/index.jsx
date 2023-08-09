@@ -111,8 +111,8 @@ const SideNavigation = () => {
         <MenuItem onClick={handleStudent}>Student</MenuItem>
         <MenuItem onClick={handleClasses}>Classes and Subjects</MenuItem>
         <MenuItem onClick={handleExams}>Exam Main Page</MenuItem>
-        <MenuItem onClick={handleSchedule}>Exam Schedule</MenuItem>
-        <MenuItem onClick={handleResults}>Exam Results</MenuItem>
+        {/* <MenuItem onClick={handleSchedule}>Exam Schedule</MenuItem>
+        <MenuItem onClick={handleResults}>Exam Results</MenuItem> */}
       </Menu>
     </>
   );

@@ -136,15 +136,16 @@
   }
   
   .Dialog .input-label{
-  float:left;
+
   padding-top:20px;
   padding-right:5px;
   font-weight:bold;
   width:100px;
   display:inline-block;
+  float: left;
   }
   .Dialog .input{
-    float:left;
+    float:right;
     width:200px;
     padding-top:8px;
     padding-Bottom:8px;

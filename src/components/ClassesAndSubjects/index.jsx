@@ -32,12 +32,16 @@ const ClassesAndSubjects = () => {
     const [subjectCode,setSubjectCode]=React.useState("");
     const [subjectName,setSubjectName]=React.useState("");
     const [credits,setCredits]=React.useState("");
+    const [maxTestMarks,setMaxTestMarks]=React.useState("");
+    const [maxExamMarks,setMaxExamMarks]=React.useState("");
     const [classCode,setClassCode]=React.useState("");
     const [subject,setSubject]=React.useState({
       subjectCode:"",
       subjectName:"",
       credits:"",
-      classCode:""
+      classCode:"",
+      maxTestMarks:"", 
+      maxExamMarks:""
     })
     const [classError, setClassError] = useState('');
     const [subjectError, setSubjectError] = useState('');
@@ -381,6 +385,7 @@ else {
                   <input className="input"
                   onChange={(event)=>setSubject({...subject,subjectName:event.target.value})}></input>
                   <br/>
+                  <br></br>
                   {subjectError && (
                                 <tr style={{paddingTop:"2px"}}>
                                     <td></td>
@@ -394,6 +399,7 @@ else {
                   <input className="input"
                    onChange={(event)=>setSubject({...subject,credits:event.target.value})}></input>
                    <br />
+                   <br></br>
                    {creditError && (
                                 <tr style={{paddingTop:"2px"}}>
                                     <td></td>
@@ -403,6 +409,35 @@ else {
                                 </tr>
                             )}
                             <br></br>
+                            <label className="input-label"> Max Test Marks </label>
+                  <input className="input"
+                  onChange={(event)=>setSubject({...subject,maxTestMarks:event.target.value})}></input>
+                  <br/>
+                  <br></br>
+                  {subjectError && (
+                                <tr style={{paddingTop:"2px"}}>
+                                    <td></td>
+                                    <td>
+                                        <span style={{ color: 'red' }}>{subjectError}</span>
+                                    </td>
+                                </tr>
+                            )}
+                  <br></br>
+                 
+                   <label className="input-label"> Max Exam Marks </label>
+                  <input className="input"
+                  onChange={(event)=>setSubject({...subject,maxExamMarks:event.target.value})}></input>
+                  <br/>
+                  <br></br>
+                  {subjectError && (
+                                <tr style={{paddingTop:"2px"}}>
+                                    <td></td>
+                                    <td>
+                                        <span style={{ color: 'red' }}>{subjectError}</span>
+                                    </td>
+                                </tr>
+                            )}
+                       <br></br>
                   <label className="input-label"> Class </label>
                   <select className="select"
                   onChange={(event)=>setSubject({...subject,classCode:event.target.value})}
@@ -414,8 +449,8 @@ else {
                         <option key={id} value={classes.code}>{classes.name}</option>
                         ))}
                    </select>
-                   <br>
-                   </br>
+                  <br></br>
+                   <br></br>
                    {subjectClassError && (
                                 <tr style={{paddingTop:"2px"}}>
                                     <td></td>
@@ -424,6 +459,10 @@ else {
                                     </td>
                                 </tr>
                             )}
+                            <br></br>
+                  
+                        
+                  
         
           </div>
 
@@ -458,6 +497,8 @@ else {
 
                     </input>
                     <br></br>
+                    <br></br>
+                    <br></br>
                     <label className="input-label" >Credit</label>
                   
                   <input 
@@ -466,6 +507,28 @@ else {
                  onChange={(event)=>setSubject({...subject,credits:event.target.value})}
                   ></input>
                   <br></br>
+                  <br></br>
+                    <br></br>
+                  <label className="input-label" >Max Test Marks</label>
+                  
+                  <input 
+                 className="input"
+                 defaultValue={subject.maxTestMarks}
+                 onChange={(event)=>setSubject({...subject,maxTestMarks:event.target.value})}
+                  ></input>
+                  <br></br>
+                  <br></br>
+                    <br></br>
+                  <label className="input-label" >Max Exam Marks</label>
+                  
+                  <input 
+                 className="input"
+                 defaultValue={subject.maxExamMarks}
+                 onChange={(event)=>setSubject({...subject,maxExamMarks:event.target.value})}
+                  ></input>
+                  <br></br>
+                  <br></br>
+                    <br></br>
                   <label className="input-label" > Class</label>
                   
                  <select className="select"
@@ -667,6 +730,8 @@ else {
             <Stack direction="row">
                 <TableCell className="Head-Table-cell">Name</TableCell>
                 <TableCell className="Head-Table-cell">Credit</TableCell>
+                <TableCell className="Head-Table-cell">Max Test Marks</TableCell>
+                <TableCell className="Head-Table-cell">Max Exam Marks</TableCell>
                 <TableCell className="Head-Table-cell">Class</TableCell>
                 <TableCell className="Head-Table-cell">Update</TableCell>
                 <TableCell className="Head-Table-cell">Delete </TableCell>
@@ -682,6 +747,8 @@ else {
                         <Stack  direction="row">
                           <TableCell className="Table-cell" >{itr.subjectName}</TableCell> 
                           <TableCell className="Table-cell" >{itr.credits}</TableCell> 
+                          <TableCell className="Table-cell" >{itr.maxTestMarks}</TableCell> 
+                          <TableCell className="Table-cell" >{itr.maxExamMarks}</TableCell> 
                           <TableCell className="Table-cell" >{itr.classCode}</TableCell> 
                           <TableCell className="Table-cell">
                             <button variant="outlined" onClick={()=>handleSupdate(itr.subjectCode,itr)} >
