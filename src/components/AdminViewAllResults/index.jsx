@@ -5,6 +5,7 @@ import axios from "axios";
 
 
 let testname;
+let testcode;
 let className;
 let acYear;
 let c_code;
@@ -31,7 +32,7 @@ const AdminViewAllResults=()=>
     const [disableYear,setDisableYear]=useState(true);
   
    
-    let testcode;
+    
     let testType;
     let subschedule;
     let subcode;
@@ -149,7 +150,7 @@ const AdminViewAllResults=()=>
   }
      else
      {
-     await axios.get(`http://localhost:8080/results/v1/classTest?className=${className}&academicYear=${acYear}&scheduleName=${testname}`)
+     await axios.get(`http://localhost:8080/results/v1/classTest?classCode=${c_code}&academicYear=${acYear}&scheduleCode=${testCode}`)
     .then(res=>
       {
         resultdetails=res?.data;
@@ -254,7 +255,6 @@ const AdminViewAllResults=()=>
       <FormControl fullWidth variant="filled" sx={{ m: 1 }} >
                <InputLabel >Class</InputLabel>
                <Select required={true} onChange={handleClassNameSelect}>
-               <MenuItem value="Select">Select</MenuItem>
                 {classes?.map((classes,id) => (
                     <MenuItem key={id} value={classes.code}>{classes.name}</MenuItem>
                         ))}
@@ -304,6 +304,7 @@ const AdminViewAllResults=()=>
           </div>
        {view==="yes"?
        <div className="table-block">
+        {resultdetails.length!=0?
        <Box>
         <div className="tableContainer">
        <Table className="Results-table">
@@ -334,6 +335,7 @@ const AdminViewAllResults=()=>
                <TableCell className="Head-Table-cell"  >Percentage</TableCell>
            </TableHead>
            <TableBody>
+  
            {resultdetails?.map((result, index) => {
   return (
     <TableRow key={index}>
@@ -349,14 +351,18 @@ const AdminViewAllResults=()=>
           </Stack>
         </TableCell>
            );})}
+        <TableCell className="Table-cell">{result.totalMarks}</TableCell>
+        <TableCell className="Table-cell">{result.totalPercentage}</TableCell>
     </TableRow>
   );
 })}
+
 
            </TableBody>
        </Table>
        </div>
        </Box>
+     :<p style={{textAlign:"center", color:"red"}}>Results not found</p>}
        </div>
        :
        <p style={{textAlign:"center"}}>Note: select classname, academic year and testname to view test results</p>

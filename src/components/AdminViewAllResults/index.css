@@ -50,11 +50,10 @@
 .Results-table
 {
     box-shadow: 0px 0px 1px 1px rgba(105, 104, 104, 0.2);
-    border-width: 2px;
+    border: 2px solid black
 }
 .Results-table .Table-head{
     background: #6c88c8;
-  
   }
   .Results-table .Head-Table-cell{
     font-weight:bold;
@@ -63,7 +62,7 @@
     text-align: center;
     justify-content: center;
     font-family:Georgia, 'Times New Roman', Times, serif;
-    
+    border-bottom: 1px solid black;
   }
   .Results-table  .Table-cell{
     width:50px;
