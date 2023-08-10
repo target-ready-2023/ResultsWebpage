@@ -373,9 +373,7 @@ const SchedulePage = () => {
                       hideFooter
                       onEditCellChange={handleDateTimeChange}
                     />
-                    {/* {errorData && (
-                      <span style={{ color: 'red' }}>{dateTimeError}</span>
-                    )} */}
+                 
                   </div>
                   <div className="buttons-right-align">
                     <Button type="cancel" onClick={handleCancelClick}>
@@ -391,7 +389,7 @@ const SchedulePage = () => {
           </div>
           <div className="classdiv">
             <Box  >
-              <FormControl sx={{ m: 1, minWidth: 160 }} className="classDropDown" size="medium">
+              <FormControl sx={{ m: 1, minWidth: 160 }}  size="size">
                 <InputLabel className="classlabel">Class Name</InputLabel>
                 <Select
                   className="dropdown-class-main"
@@ -408,11 +406,12 @@ const SchedulePage = () => {
             </Box>
           </div>
         </div>
-      </div>
-
-      <div className="table">
         <BasicTable />
       </div>
+
+      {/* <div className="table">
+       
+      </div> */}
     </>
   );
 };

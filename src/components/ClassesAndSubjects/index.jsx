@@ -47,6 +47,8 @@ const ClassesAndSubjects = () => {
     const [subjectError, setSubjectError] = useState('');
     const [creditError, setCreditError] = useState('');
     const [subjectClassError, setSubjectClassError] = useState('');
+    const [testError,setTestError]=useState('');
+    const[examError,setExamError]=useState('');
    
     const handleButton=(str)=>{
       setButton(str);
@@ -168,8 +170,10 @@ const addSubject = (e) => {
   const isSubjectValid = validateSubject();
   const isCreditValid = validateCredit();
   const isSubjectClassValid = validateSubjectClass();
+  const isTestMarksValid=validateTestMarks();
+  const isExamMarksValid=validateExamMarks();
 
-  if(isSubjectValid && isCreditValid && isSubjectClassValid){
+  if(isSubjectValid && isCreditValid && isSubjectClassValid && isTestMarksValid && isExamMarksValid){
   setSopen(false);
     axios.post("http://localhost:8080/subjects/v1/subject",subject).then(result=> {
       swal({
@@ -185,7 +189,9 @@ const addSubject = (e) => {
     subjectCode:"",
     subjectName:"",
     credits:"",
-    classCode:""
+    classCode:"",
+    maxExamMarks:"",
+    maxTestMarks:""
   })
 }
   const handleSupdate=(sub_id,itr)=>{
@@ -330,6 +336,36 @@ else {
 
 };
 
+const validateTestMarks= () => {
+ 
+
+  if(subject.maxTestMarks === ''){
+    setTestError('*Max Test Marks is required.*')
+    return false;
+}
+else {
+  setTestError('')
+  return true;
+} 
+
+};
+
+const validateExamMarks= () => {
+ 
+
+  if(subject.maxExamMarks === ''){
+    setExamError('*Max Exam Marks is required.*')
+    return false;
+}
+else {
+  setExamError('')
+  return true;
+} 
+
+};
+
+
+
 
     return (
        <>
@@ -349,6 +385,7 @@ else {
                   onChange={(event)=>setClass1({...class1,name:event.target.value})}
                   >
                    </input>
+                  
                    <br></br>
                    {classError && (
                                 <tr style={{paddingTop:"2px"}}>
@@ -418,7 +455,7 @@ else {
                                 <tr style={{paddingTop:"2px"}}>
                                     <td></td>
                                     <td>
-                                        <span style={{ color: 'red' }}>{subjectError}</span>
+                                        <span style={{ color: 'red' }}>{testError}</span>
                                     </td>
                                 </tr>
                             )}
@@ -433,7 +470,7 @@ else {
                                 <tr style={{paddingTop:"2px"}}>
                                     <td></td>
                                     <td>
-                                        <span style={{ color: 'red' }}>{subjectError}</span>
+                                        <span style={{ color: 'red' }}>{examError}</span>
                                     </td>
                                 </tr>
                             )}

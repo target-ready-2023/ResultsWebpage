@@ -41,8 +41,8 @@ import axios from 'axios';
     
 
   return (
-    <div>
-        <Button variant="outlined" startIcon={<DeleteIcon /> } onClick={handleClick}>
+    <div className='delete'>
+        <Button variant="outlined" startIcon={<DeleteIcon /> } onClick={handleClick} className='gridDelete'>
                 Delete
         </Button>
       <Popover
