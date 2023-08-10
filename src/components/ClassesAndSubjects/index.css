@@ -1,7 +1,8 @@
 .Grid-container{
-    padding-top:8px;;
+    padding-top:16px;
     padding-left:10px;
     overflow: auto;
+    margin-top: 10px;
          
   }
   
@@ -103,12 +104,13 @@
   .Class-table .Head-Table-cell{
     font-weight:bold;
     width:200px;
-    font-family:Georgia, 'Times New Roman', Times, serif;
+    /* font-family:Georgia, 'Times New Roman', Times, serif; */
   }
   
   .Class-table  .Table-cell{
     width:200px;
     font-size: 14px;
+    
     
   }
   
@@ -131,6 +133,7 @@
   .Subject-table  .Table-cell{
     width:120px;
     color:black;
+    font-family:Georgia, 'Times New Roman', Times, serif;
   
     
   }

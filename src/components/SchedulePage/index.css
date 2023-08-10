@@ -1,6 +1,6 @@
-/* .top-part{
-    margin: 30px;
-} */
+.top-part{
+    margin: 0px;
+}
 /* .drop-down{
     padding: 25px;
     width: 200px;
@@ -8,10 +8,10 @@
     margin: 0px; 
     margin-right: 20px;
 } */
-.add-button{
+.main-div .add-button{
     margin: 0px; 
-    margin-left: 20px;
-    padding: 25px;
+    margin-left: 0px;
+    padding: 0px;
     width: 200px;
     float: left;
     
@@ -21,6 +21,9 @@
     background-color: #6c88c8;
     
     color: black;
+    margin-top: 26px;
+    height: 40px;
+    
    
 }
 .add-button .button:hover{
@@ -28,10 +31,13 @@
     
     
 }
+.classdiv{
+    padding-left: 70px;
+}
 
 .icon{
     font-size: 25px;
-    padding-right: 5px;
+    padding-right: 0px;
 }
 .label{
     background-color: #6c88c8;
@@ -47,47 +53,54 @@
 }
 
 .add{
-    margin: 5px;
+    margin: 0px;
 }
 
-.add-button button{
-    height: 56px;
-}
+/* .add-button button{
+    height: 50px;
+} */
 .drop-down Select{
     right:auto;
 }
 
 .dd1{
     width: 150px;
-    padding: 10px;
+    padding: 0px;
     display: inline-block;
-    left: -3%;
+    left: -6%;
     top: 0px;
     position: relative;
 }
 
 .dd2{
     width: 150px;
-    padding: 10px;
+    padding: 0px;
     display: inline-block;
 }
 
 .dd3{
     width:200px;
-    padding: 10px;
+    padding: 0px;
     display: inline-block;
 }
-.classdiv{
-    padding: 25px;
-}
+
 
 .classdiv .classlabel{
     color: black;
+    padding-top: 10px;
 }
 
 .classdiv .dropdown-class-main{
-    margin-top: 60;
     background-color: #6c88c8;
     color: black;
+    height: 30px;
+    padding-top: 40px;
+    margin-top: 18px;
+    
 }
 
+.delete .gridDelete{
+    color: black;
+    font-weight: bold;
+    border: 0px;
+}
