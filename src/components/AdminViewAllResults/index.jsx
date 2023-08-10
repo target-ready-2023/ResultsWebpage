@@ -150,7 +150,7 @@ const AdminViewAllResults=()=>
   }
      else
      {
-     await axios.get(`http://localhost:8080/results/v1/classTest?classCode=${c_code}&academicYear=${acYear}&scheduleCode=${testCode}`)
+     await axios.get(`http://localhost:8080/results/v1/classTest?classCode=${c_code}&academicYear=${acYear}&scheduleCode=${testcode}`)
     .then(res=>
       {
         resultdetails=res?.data;
@@ -336,7 +336,7 @@ const AdminViewAllResults=()=>
            </TableHead>
            <TableBody>
   
-           {resultdetails?.map((result, index) => {
+           {results?.map((result, index) => {
   return (
     <TableRow key={index}>
       <TableCell className="Table-cell">{result.studentId}</TableCell>
