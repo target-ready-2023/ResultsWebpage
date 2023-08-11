@@ -43,9 +43,9 @@
 }
 .table-block
 {
-padding-top: 20px;
-padding-left: 120px;
-padding-right: 120px;
+padding-top: 10px;
+padding-left: 80px;
+padding-right: 80px;
 }
 .Results-table
 {
@@ -63,6 +63,8 @@ padding-right: 120px;
   justify-content: center;
   font-family:Georgia, 'Times New Roman', Times, serif;
   border-bottom: 1px solid black;
+   padding-bottom: 5px;
+  padding-top: 5px; 
 }
 .Results-table  .Table-cell{
   width:50px;
@@ -70,7 +72,8 @@ padding-right: 120px;
   font-family:Georgia, 'Times New Roman', Times, serif;
   text-align: center;
   justify-content: center;
- 
+  padding-bottom: 5px;
+  padding-top: 5px; 
   
 }
 .tableContainer{

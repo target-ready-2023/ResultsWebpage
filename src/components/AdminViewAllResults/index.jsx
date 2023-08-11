@@ -33,7 +33,7 @@ const AdminViewAllResults=()=>
   
    
     
-    let testType;
+    let testType='';
     let subschedule;
     let subcode;
     let resultInfo=[];
@@ -62,7 +62,7 @@ const AdminViewAllResults=()=>
         {
           setTestCode(result?.data.scheduleCode)
           testcode=result?.data.scheduleCode
-          testType=result?.data.scheduleType
+          testType=(result?.data.scheduleType).toLowerCase();
           subschedule=result?.data.subjectSchedule;
           getSubMaxMarks(subschedule,testType)
           console.log(testname+" "+testType,subschedule);
@@ -73,22 +73,27 @@ const AdminViewAllResults=()=>
     }
     const getSubMaxMarks=(subschedule,testType)=>
     {
+      setMaxExamMarks([]);
+      setMaxTestMarks([]);
       subschedule.map((subject,index)=>{
       subcode=subject.subjectCode
        axios.get(`http://localhost:8080/subjects/v1/subject/${subcode}`)
        .then(res=>{
          console.log(res?.data)
-        if(testType==="Exam")
+        if(testType==="exam")
         {
           setMaxTestMarks(current => [...current,0])
-          setMaxExamMarks(current => [...current, res?.data.maxExamMarks]);
-          
-          
+          setMaxExamMarks(current => [...current, res?.data.maxExamMarks]); 
         }
-        else if(testType==="Test")
+        else if(testType==="test")
         {
           setMaxTestMarks(current => [...current, res?.data.maxTestMarks]);
           setMaxExamMarks(current => [...current, 0]);
+        }
+        else if(testType==="final")
+        {
+          setMaxExamMarks(current => [...current, res?.data.maxExamMarks]); 
+          setMaxTestMarks(current => [...current, res?.data.maxTestMarks]);
         }
         })
       }
@@ -109,13 +114,15 @@ const AdminViewAllResults=()=>
         .then(res=>{
           students=res?.data;
           console.log(res?.data)
-          resultInfo= resultdetails.map((result,index)=>
+           resultdetails.map((result,index)=>
           {
              const studentDetails = students.find(student => student.studentId === result.studentId)
              result.studentName =studentDetails? studentDetails.name: null 
+             result.rollNumber=studentDetails? studentDetails.rollNumber: null
              return result
           })
-          setResults(resultdetails)
+          resultInfo = [...resultdetails].sort((a, b) => a.rollNumber - b.rollNumber);
+          setResults(resultInfo)
           console.log(resultInfo);
           console.log(resultdetails);
         })
@@ -309,7 +316,7 @@ const AdminViewAllResults=()=>
         <div className="tableContainer">
        <Table className="Results-table">
            <TableHead className="Table-head">
-               <TableCell className="Head-Table-cell" >Student ID </TableCell>
+               <TableCell className="Head-Table-cell" >Roll Number</TableCell>
                <TableCell className="Head-Table-cell"  >Student Name</TableCell>
                {subjects?.map((sub,index) => (
                       <TableCell className="Head-Table-cell"  >
@@ -339,7 +346,7 @@ const AdminViewAllResults=()=>
            {results?.map((result, index) => {
   return (
     <TableRow key={index}>
-      <TableCell className="Table-cell">{result.studentId}</TableCell>
+      <TableCell className="Table-cell">{result.rollNumber}</TableCell>
       <TableCell className="Table-cell">{result.studentName}</TableCell>
       {result.marksList?.map((marks,index)=>
       {return(
