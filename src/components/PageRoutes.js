@@ -13,7 +13,7 @@ import ExamMainPage from "./ExamMainPage"
 import EditResultsAdmin from "./Results/EditResultsAdmin"
 import Leaderboard from "./Results/Leaderboard"
 import AdminViewAllResults from "./AdminViewAllResults"
-
+import StudentViewResults from "./StudentViewResults"
 
 const PageRoutes = () => {
     return (
@@ -29,6 +29,7 @@ const PageRoutes = () => {
           <Route exact path="/admin+result" element={<EditResultsAdmin/>} />
           <Route exact path="/leaderboard" element={<Leaderboard/>}/>
           <Route exact path="/admin+all" element={<AdminViewAllResults/>}/>
+          <Route exact path="/student+results" element={<StudentViewResults/>}/>
           <Route path='*' element={<NotFound />}/>
          
         </Routes>
