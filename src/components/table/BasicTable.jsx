@@ -292,10 +292,11 @@ const BasicTable = () => {
   };
 
   const columns = [
-    { field: "classCode", headerName: "Class Name", width: 200 },
-    { field: "scheduleName", headerName: "Schedule Name", width: 200 },
+    { field: "classCode", headerName: "Class Name", width: 200 ,headerClassName: 'header'},
+    { field: "scheduleName", headerName: "Schedule Name", width: 200 ,headerClassName: 'header'},
     {
       field: "status",
+      headerClassName: 'header',
       renderCell: (params) => {
         return (
           <Switch  
@@ -304,15 +305,17 @@ const BasicTable = () => {
         );
       },
       headerName: "Status",
-      width: 80,
+      width: 120,
       type: Boolean,
     },
     {
       field: "actions",
+      headerClassName: 'header',
       headerName: "View/Edit",
-      width: 220,
+      width: 150,
       renderCell: (params) => (
         <Button
+        style={{color:"black",fontWeight:"bold"}}
           onClick={(event) =>
             handleNestedDataClick(event, params.row.subjectSchedule)
           }
@@ -324,14 +327,17 @@ const BasicTable = () => {
     },
     {
       field: "remove",
+      headerClassName: 'header',
       renderCell: (cellValues) => {
-        return <DltPop 
+        return   <DltPop 
                    scheduleCode={cellValues.row.id}
                    onDelete={handleDeleteSchedule}
+                  
                 />;
       },
       headerName: "Remove",
-      width: 250,
+      width: 195
+      
     },
   ];
 

@@ -33,6 +33,9 @@ const ExamMainPage = () => {
   
   }
   const handleResults=()=>{
+    if(user==="admin"){
+      navigate('/admin+result')
+    }
 
   }
 
@@ -48,7 +51,7 @@ const ExamMainPage = () => {
             All Examination schedules 
             </Typography>
             <br></br>
-            <Button size="small" className="view-button" onClick={()=>handleSchedule()}>View</Button>
+            <Button size="small" className="view-button" style={{backgroundColor:"black",color:"white",width:70,height:28,marginRight:65}} onClick={()=>handleSchedule()}>View</Button>
           </CardContent>
           
         </React.Fragment>
@@ -66,7 +69,7 @@ const ExamMainPage = () => {
             All Examination Results
             </Typography>
             <br></br>
-            <Button size="small" className="view-button" onClick={()=>handleResults()}>View</Button>
+            <Button size="small" className="view-button" style={{backgroundColor:"black",color:"white",width:70,height:28,marginRight:55}}onClick={()=>handleResults()}>View</Button>
           </CardContent>
           
             
@@ -86,7 +89,7 @@ const ExamMainPage = () => {
             <h3>Exam Home </h3>
         </Card>
         </div>
-                <div>
+                {/* <div>
                 <FormControl sx={{ m: 1, minWidth: 120 }} size="small" className="form">
       <InputLabel  id="demo-select-small-label" className="label1">Class Name</InputLabel>
                 <Select className="select1" label="Class name"
@@ -110,7 +113,7 @@ const ExamMainPage = () => {
         </Select>
        
                 </FormControl>
-                </div>
+                </div> */}
                 <Stack direction="row">
                 <div>
                 <Card variant="outlined" className="card">{card1}</Card>

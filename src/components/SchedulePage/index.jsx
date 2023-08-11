@@ -300,10 +300,13 @@ const SchedulePage = () => {
 
   return (
     <>
+    <div>
+      <center><h2>Exam Schedules</h2></center>
+    </div>
       <div className="main-div">
         <div className="top-part">
-          <div className="add-button">
-            <Button variant="contained" onClick={handleClick}>
+          <div className="add-button" >
+            <Button  onClick={handleClick} className="button" sx={{ m: 1, minWidth: 160 ,minHeight:20}} size="small">
               {" "}
               <AiFillSchedule className="icon" /> Add Schedule
             </Button>
@@ -320,7 +323,7 @@ const SchedulePage = () => {
                 <div>
                   <div className="add-sh-dropdowns">
                     <Box className="dd1">
-                      <FormControl fullWidth variant="filled" sx={{ m: 1 }}>
+                      <FormControl  fullWidth variant="filled" sx={{ m: 1 }}>
                         <InputLabel>Class Name</InputLabel>
                         <Select
                           className="classForAdmin"
@@ -370,9 +373,7 @@ const SchedulePage = () => {
                       hideFooter
                       onEditCellChange={handleDateTimeChange}
                     />
-                    {/* {errorData && (
-                      <span style={{ color: 'red' }}>{dateTimeError}</span>
-                    )} */}
+                 
                   </div>
                   <div className="buttons-right-align">
                     <Button type="cancel" onClick={handleCancelClick}>
@@ -386,10 +387,10 @@ const SchedulePage = () => {
               </Typography>
             </Popover>
           </div>
-          <div className="drop-down">
-            <Box className="label">
-              <FormControl fullWidth variant="filled">
-                <InputLabel>Class</InputLabel>
+          <div className="classdiv">
+            <Box  >
+              <FormControl sx={{ m: 1, minWidth: 160 }}  size="size">
+                <InputLabel className="classlabel">Class Name</InputLabel>
                 <Select
                   className="dropdown-class-main"
                   value={classNameSelectforAll}
@@ -405,11 +406,12 @@ const SchedulePage = () => {
             </Box>
           </div>
         </div>
-      </div>
-
-      <div className="table">
         <BasicTable />
       </div>
+
+      {/* <div className="table">
+       
+      </div> */}
     </>
   );
 };
