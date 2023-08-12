@@ -49,4 +49,31 @@
   .drop-downs-block{
     padding-left: 100px;
     padding-right: 100px;
+    align-content: center;
+    justify-content: center;
+    display:flex;
+  }
+
+  .resultdrop-down{
+    width:180px;
+  height:40px;
+  /* margin-bottom: 0.5%; */
+  font-size: medium;
+  font-family:Georgia, 'Times New Roman', Times, serif;
+  background-color: #6c88c8;
+  color: black;
+  float: left;
+  margin-top: 8px;
+  }
+  
+ .view-results-button .view-buttonresult{
+    background: black;
+    border: 0.5px solid rgb(110, 109, 109);
+    border-radius: 4px;
+   font-size: 18px;
+    color: white;
+    width:80px;
+    
+    height:32px;
+    font-family:Georgia, 'Times New Roman', Times, serif;
   }

@@ -251,17 +251,19 @@ const AdminViewAllResults=()=>
       }
     }
     return(
-    <div>
+    <div >
       <div className="top-part">
-        <h3>RESULTS</h3>
+        <h2> ALL RESULTS</h2>
       </div>
-      <div>
+      <div >
+        <div className="results-container">
        <Box >
         <Stack direction="row" justifyContent="space-between">
       <Box className="class-drop-down">
-      <FormControl fullWidth variant="filled" sx={{ m: 1 }} >
-               <InputLabel >Class</InputLabel>
-               <Select required={true} onChange={handleClassNameSelect}>
+      <FormControl sx={{ m: 1 }}  size="small">
+               <InputLabel style={{color:"black"}}>Class Name</InputLabel>
+               <Select required={true} onChange={handleClassNameSelect}
+               className="selectresult">
                 {classes?.map((classes,id) => (
                     <MenuItem key={id} value={classes.code}>{classes.name}</MenuItem>
                         ))}
@@ -269,9 +271,10 @@ const AdminViewAllResults=()=>
             </FormControl>
          </Box>
          <Box className="year-drop-down">
-               <FormControl fullWidth variant="filled" >
-               <InputLabel>Academic Year</InputLabel>
+               <FormControl sx={{ m: 1 }} size="small">
+               <InputLabel style={{color:"black",marginLeft:"20px"}}>Academic Year</InputLabel>
                 <Select value={year} 
+                className="selectresult"
                           onChange={handleYearSelect} disabled={disableClass}>
                             {academicYears.map((years,index)=>
                             (
@@ -281,9 +284,10 @@ const AdminViewAllResults=()=>
                </FormControl>
          </Box>
          <Box className="test-drop-down">
-               <FormControl fullWidth variant="filled" >
-               <InputLabel>Test/Exam</InputLabel>
-                <Select disabled={disableClass||disableYear} onChange={handleTestNameSelect}>
+               <FormControl sx={{ m: 1 }} size="small" >
+               <InputLabel style={{color:"black",marginLeft:"30px"}} >Test/Exam</InputLabel>
+                <Select disabled={disableClass||disableYear} onChange={handleTestNameSelect}
+                className="selectresult">
                             {testList?.map((test,id) => (
                       <MenuItem key={id} value={test}>{test}</MenuItem>
                       ))}
@@ -292,12 +296,13 @@ const AdminViewAllResults=()=>
                </FormControl>
          </Box>
          <Box>
-               <FormControl  variant="filled" >
-               <Button variant="contained" className="view-button" onClick={getresultdetails} >view</Button>
+               <FormControl >
+               <button variant="contained" className="view-button" onClick={getresultdetails} >view</button>
                </FormControl>
          </Box>
          </Stack>
          </Box>
+         </div>
          <div>
                     {classError && (
                       <span style={{ color: "red" }}>{classError}</span>

@@ -23,17 +23,20 @@ const ExamMainPage = () => {
   }
    const handleSchedule=()=>{
     console.log(user)
-    if(user==="admin"){
-      navigate('/schedule')
-
-    }
-    else if (user=="student") {
+    
+   if (user=="student") {
       navigate('/schedule+student')
+   }
+   else{
+      navigate('/schedule')
    }
   
   }
   const handleResults=()=>{
-    if(user==="admin"){
+    if(user=="student"){
+      navigate('/student+results')
+    }
+    else{
       navigate('/admin+result')
     }
 
@@ -51,7 +54,9 @@ const ExamMainPage = () => {
             All Examination schedules 
             </Typography>
             <br></br>
-            <Button size="small" className="view-button" style={{backgroundColor:"black",color:"white",width:70,height:28,marginRight:65}} onClick={()=>handleSchedule()}>View</Button>
+           
+            <Button size="small" className="view-button" style={{backgroundColor:"black",color:"white",width:70,height:28,marginLeft:30}} onClick={()=>handleSchedule()}>View</Button>
+       
           </CardContent>
           
         </React.Fragment>
@@ -69,7 +74,7 @@ const ExamMainPage = () => {
             All Examination Results
             </Typography>
             <br></br>
-            <Button size="small" className="view-button" style={{backgroundColor:"black",color:"white",width:70,height:28,marginRight:55}}onClick={()=>handleResults()}>View</Button>
+            <Button size="small" className="view-buttoncard" style={{backgroundColor:"black",color:"white",width:70,height:28,marginLeft:30}}onClick={()=>handleResults()}>View</Button>
           </CardContent>
           
             

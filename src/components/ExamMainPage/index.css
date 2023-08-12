@@ -28,7 +28,6 @@
     justify-content: center;
     margin-left: 230px;
     margin-top: 0px;
-    /* margin-bottom: 10px; */
     background-color:#8d9fc9;
     border-color: white;
 
@@ -70,8 +69,8 @@
     margin: 0px;
 }
 
-.view-button{
-    margin-left: 40px;
-    background-color:black;
+.view-buttoncard{
+   margin: 30px;
+    background-color:gainsboro;
     color:white;
 }

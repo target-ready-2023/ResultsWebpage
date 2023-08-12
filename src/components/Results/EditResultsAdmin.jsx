@@ -2,7 +2,7 @@ import React from "react";
 import "./EditResultsAdmin.css";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Box,Stack, Grid,Button,Table,TableHead, TableCell ,TableRow,Dialog,DialogActions,DialogContent,DialogTitle, Typography, TextField} from "@mui/material";
+import { Box,Stack, Grid,Button,Table,TableHead, TableCell ,TableRow,Dialog,DialogActions,DialogContent,DialogTitle, Typography, TextField, Select, FormControl, InputLabel, MenuItem} from "@mui/material";
 import EditIcon  from '@mui/icons-material/Edit';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import swal from "sweetalert";
@@ -111,7 +111,7 @@ const EditResultsAdmin=()=>{
     }
 
     const OpenAllResults=()=>{
-        navigate('/student+scchedule')
+        navigate('/admin+all')
     }
     const OpenLeaderboard=()=>{
         navigate('/Leaderboard')
@@ -303,34 +303,44 @@ const EditResultsAdmin=()=>{
                         <div>
                             <Table className="table-design">
                                 <TableRow className="table-row1">
-                                <TableCell><Typography className="text1">Class: &nbsp; &nbsp;
-                                    <select id="classes" className="select" value={classes} onChange={(event)=>{handleClassNameChange( event)}}>
-                                        <option className="text4" disabled selected value="">--select--</option>
+                                <TableCell>
+                                    {/* <Typography className="text1">Class: &nbsp; &nbsp; */}
+                                    <FormControl>
+                                    <InputLabel style={{top:"-8px",color:"black"}}>Class Name</InputLabel>
+                                    <Select id="classes" className="selectstyle" value={classes} onChange={(event)=>{handleClassNameChange( event)}}>
+                                        {/* <option className="text4" disabled selected value="">--select--</option> */}
                                         {classNames.map((classes,index) =>(
-                                        <option id={index} className="text3" value={classes.code}>{classes?.name}</option>
+                                        <MenuItem id={index} className="text3" value={classes.code}>{classes?.name}</MenuItem>
                                         ) )}
-                                    </select>
-                                    </Typography>
+                                    </Select>
+                                    </FormControl>
+                                    {/* </Typography> */}
                                     </TableCell>
                                     <TableCell>
-                                    <Typography className="text2">Academic Year: &nbsp; &nbsp;
-                                    <select id="year" className="select" value={year} onChange={handleAcYearChange}>
-                                        <option className="text4" disabled selected value="">--select--</option>
+                                    {/* <Typography className="text2">Academic Year: &nbsp; &nbsp; */}
+                                    <FormControl>
+                                    <InputLabel style={{top:"-8px",color:"black"}}>Academic Year</InputLabel>
+                                    <Select id="year" className="selectstyle" value={year} onChange={handleAcYearChange}>
+                                        <MenuItem className="text4" disabled selected value="">--select--</MenuItem>
                                         {acYear.map((year,index) =>(
                                         <option id={index} className="text3" value={year}>{year}</option>
                                         ) )}
-                                    </select>
-                                    </Typography>
+                                    </Select>
+                                    </FormControl>
+                                    {/* </Typography> */}
                                     </TableCell>
                                     <TableCell>
-                                    <Typography className="text2">Test/Exam: &nbsp; &nbsp;
-                                    <select id="test" className="select" value={test} onChange={handleTestNameChange}>
+                                    {/* <Typography className="text2">Test/Exam: &nbsp; &nbsp; */}
+                                    <FormControl>
+                                    <InputLabel style={{top:"-8px",color:"black"}}>Test/Exam</InputLabel>
+                                    <Select id="test" className="selectstyle" value={test} onChange={handleTestNameChange}>
                                         <option className="text4" disabled selected value="">--select--</option>
                                         {testNames.map((test,index) =>(
-                                        <option id={index} className="text3" value={test.scheduleCode}>{test?.scheduleName}</option>
+                                        <MenuItem id={index} className="text3" value={test.scheduleCode}>{test?.scheduleName}</ MenuItem>
                                         ) )}
-                                    </select>
-                                    </Typography>
+                                    </Select>
+                                    </FormControl>
+                                    {/* </Typography> */}
                                     </TableCell>
                                         <TableCell><button className="button-design" onClick={OpenAllResults}>View all results</button></TableCell>
                                         <TableCell width="1%"><button className="button-design" onClick={OpenLeaderboard}>Leaderboard</button></TableCell>

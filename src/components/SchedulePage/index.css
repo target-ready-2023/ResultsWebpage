@@ -64,10 +64,8 @@
 }
 
 .dd1{
-    width: 150px;
-    padding: 0px;
+    width: 250px;
     display: inline-block;
-    left: -6%;
     top: 0px;
     position: relative;
 }

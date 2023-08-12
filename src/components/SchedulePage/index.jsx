@@ -376,10 +376,10 @@ const SchedulePage = () => {
                  
                   </div>
                   <div className="buttons-right-align">
-                    <Button type="cancel" onClick={handleCancelClick}>
+                    <Button type="cancel" onClick={handleCancelClick} style={{color:"black"}}>
                       Cancel {<GiCancel />}
                     </Button>
-                    <Button type="submit" onClick={handleSaveSchedule}>
+                    <Button type="submit" onClick={handleSaveSchedule} style={{color:"black"}}>
                       Save Schedule {<AiTwotoneSave />}
                     </Button>
                   </div>

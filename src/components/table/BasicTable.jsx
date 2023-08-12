@@ -292,8 +292,8 @@ const BasicTable = () => {
   };
 
   const columns = [
-    { field: "classCode", headerName: "Class Name", width: 200 ,headerClassName: 'header'},
-    { field: "scheduleName", headerName: "Schedule Name", width: 200 ,headerClassName: 'header'},
+    { field: "classCode", headerName: "Class Name", width: 250 ,headerClassName: 'header'},
+    { field: "scheduleName", headerName: "Schedule Name", width: 250 ,headerClassName: 'header'},
     {
       field: "status",
       headerClassName: 'header',
@@ -305,14 +305,14 @@ const BasicTable = () => {
         );
       },
       headerName: "Status",
-      width: 120,
+      width: 180,
       type: Boolean,
     },
     {
       field: "actions",
       headerClassName: 'header',
       headerName: "View/Edit",
-      width: 150,
+      width: 180,
       renderCell: (params) => (
         <Button
         style={{color:"black",fontWeight:"bold"}}
@@ -336,7 +336,7 @@ const BasicTable = () => {
                 />;
       },
       headerName: "Remove",
-      width: 195
+      width: 220
       
     },
   ];
@@ -438,8 +438,8 @@ const BasicTable = () => {
 
             <div className="add">
               
-              <Button type="cancel">Cancel {<GiCancel />}</Button>
-                  <Button type="submit">Save Changes {<AiTwotoneSave />}</Button>
+              <Button type="cancel" style={{color:"black"}}>Cancel {<GiCancel />}</Button>
+                  <Button type="submit" style={{color:"black"}}>Save Changes {<AiTwotoneSave />}</Button>
             </div>
           </div>
         </Typography>

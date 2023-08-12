@@ -14,40 +14,25 @@ const dataRows = [
   ];
   
   const columns = [
-    { field: "rank", headerName: "Rank", width: 100 },
-    { field: "name", headerName: "Name", width: 200 },
-    { field: "class", headerName: "Class", width: 100 },
-    { field: "year", headerName: "Year", width: 100 },
-    { field: "aggregate", headerName: "Aggregate %", width: 100 },
+    { field: "rank", headerName: "Rank", width: 100,headerClassName:'boardheader' },
+    { field: "name", headerName: "Name", width: 200 ,headerClassName:'boardheader'},
+    { field: "class", headerName: "Class", width: 100,headerClassName:'boardheader' },
+    { field: "year", headerName: "Year", width: 100,headerClassName:'boardheader' },
+    { field: "aggregate", headerName: "Aggregate %", width: 150,headerClassName:'boardheader' },
   ];
 
 const Leaderboard = () => {
     return (
-        <div>
+        <>
+        
             <div className="container">
                 <div className="heading">
                     <h2>TOPPERS</h2>
                 </div>
-        </div>
-
-        <div>
-            <div className="lb-year-dd">
-                    <Box className="lb-box1">
-                    <FormControl fullWidth variant="filled">
-                            <InputLabel>YEAR</InputLabel>
-                                <Select className="dropdown-class-main">
-                                    <MenuItem value={2023}>2023</MenuItem>
-                                    <MenuItem value={2022}>2022</MenuItem>
-                                    <MenuItem value={2021}>2021</MenuItem>
-                                </Select>
-                        </FormControl>
-                    </Box>
-                </div>
-
                 <div className="lb-class-dd">
                     <Box className="lb-box1">
-                        <FormControl fullWidth variant="filled">
-                            <InputLabel>CLASS</InputLabel>
+                        <FormControl sx={{ m: 1 }} size="small" >
+                            <InputLabel style={{color:"black"}}>CLASS</InputLabel>
                                 <Select className="dropdown-class-main">
                                     <MenuItem value={10}>10</MenuItem>
                                     <MenuItem value={9}>9</MenuItem>
@@ -56,8 +41,25 @@ const Leaderboard = () => {
                         </FormControl>
                     </Box>
                 </div>
-            </div>
+                <div className="lb-year-dd">
+                    <Box className="lb-box1">
+                    <FormControl sx={{ m: 1 }} size="small">
+                            <InputLabel style={{color:"black"}}>YEAR</InputLabel>
+                                <Select className="dropdown-class-main" >
+                                    <MenuItem value={2023}>2023</MenuItem>
+                                    <MenuItem value={2022}>2022</MenuItem>
+                                    <MenuItem value={2021}>2021</MenuItem>
+                                </Select>
+                        </FormControl>
+                    </Box>
+                </div>
 
+               
+             </div>
+
+       
+           
+               
             
             <div className="lb-table">
                 <DataGrid
@@ -70,14 +72,17 @@ const Leaderboard = () => {
                     hideFooterSelectedRowCount
                 />
             </div>
-
+            <center>
             <div className="footnote">
-            <h1>
+                
+                <h2>
                 WE ARE PROUD OF OUR ACHIEVERS !!
-            </h1>
+            </h2>
+                
+           
             </div>
-
-            </div>
+            </center>
+            </>
     )
 }
 export default Leaderboard;

@@ -22,7 +22,7 @@
   margin-right: 20px;
 
 }
-.view-button
+/* .view-button
 {
   
   color:dimgrey;
@@ -33,11 +33,27 @@
   float: right;
   margin: 0px;
   position: relative;
+} */
+.view-button{
+  background: black;
+  border: 0.5px solid rgb(110, 109, 109);
+  border-radius: 3px;
+ /* padding:2%; */
+ margin-top:20px;
+ margin-left: 60px;
+
+ font-size: 18px;
+ 
+ color:white;
+
+  width:85px;
+  height:32px;
+  /* float: left; */
+  font-family:Georgia, 'Times New Roman', Times, serif;
 }
 .top-part
 {
   display: flex;
-  height: 0%;
   justify-content:center ;
   align-content:center ;
 }
@@ -81,4 +97,44 @@ padding-right: 80px;
   height: 7.5cm;
 
 }
+.class-drop-down .selectresult{
+  width:155px;
+  height:40px;
+  /* margin-bottom: 0.5%; */
+margin-right: -30%;
+  font-size: medium;
+  font-family:Georgia, 'Times New Roman', Times, serif;
+  background-color: #6c88c8;
+  color: black;
+  
 
+}
+
+ .year-drop-down .selectresult{
+  width:170px;
+  height:40px;
+  /* margin-bottom: 0.5%; */
+  margin-left: 20px;
+  font-size: medium;
+  font-family:Georgia, 'Times New Roman', Times, serif;
+  background-color: #6c88c8;
+  color: black;
+  /* float: left; */
+}
+
+.test-drop-down .selectresult{
+  width:160px;
+  height:40px;
+  /* margin-bottom: 0.5%; */
+  margin-left: 30px;
+  font-size: medium;
+  font-family:Georgia, 'Times New Roman', Times, serif;
+  background-color: #6c88c8;
+  color: black;
+  /* float: left; */
+}
+.results-container{
+  display: flex;
+  align-content: center;
+  justify-content: center;
+}

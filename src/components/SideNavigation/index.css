@@ -11,9 +11,11 @@
 }
 .selectBox{
     background-color: white;
+    height: 40px;
 }
-.LabelName{
+.dd .LabelName{
     color: black;
+    top:-15%;
 }
 .menuItem
 {

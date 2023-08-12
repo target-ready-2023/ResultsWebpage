@@ -65,9 +65,9 @@ import axios from 'axios';
             This cannot be undone!
         </h4>
         <Stack spacing={2} direction="row">
-        <Button className="dlt-button" variant="contained" onClick={handleConfirmClick}> Confirm
+        <Button className="dlt-button" variant="contained" onClick={handleConfirmClick} style={{color:"white",backgroundColor:"black"}}> Confirm
        </Button>
-       <Button className="dlt-button" variant="outlined" onClick={()=>setAnchor(null)}> Cancel
+       <Button className="dlt-button" variant="outlined" onClick={()=>setAnchor(null)} style={{color:"white",backgroundColor:"black"}}> Cancel
        </Button>
         </Stack>
         

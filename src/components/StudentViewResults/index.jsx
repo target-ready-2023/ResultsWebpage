@@ -262,14 +262,14 @@ const StudentViewResults = () => {
   return (
     <div>
       <div className="top-part">
-        <h3>STUDENT VIEW RESULTS</h3>
+        <h2>RESULTS</h2>
       </div>
 
       <div className="drop-downs-block">
         <Box className="drop-down">
-          <FormControl fullWidth variant="filled" sx={{ m: 1 }}>
-            <InputLabel>Class Name</InputLabel>
-            <Select value={classCode} onChange={handleClassNameSelect}>
+          <FormControl sx={{ m: 1 }}>
+            <InputLabel style={{color:"black"}}>Class Name</InputLabel>
+            <Select value={classCode} onChange={handleClassNameSelect} className="resultdrop-down">
               {classNameoptions.map((option) => (
                 <MenuItem key={option.code} value={option.code}>
                   {option.name}
@@ -279,12 +279,13 @@ const StudentViewResults = () => {
           </FormControl>
         </Box>
         <Box className="drop-down">
-          <FormControl fullWidth variant="filled" sx={{ m: 1 }}>
-            <InputLabel>Roll No</InputLabel>
+          <FormControl  sx={{ m: 1 }}>
+            <InputLabel style={{color:"black"}}>Roll No</InputLabel>
             <Select
               disabled={disableStudent}
               value={studentRollNo}
               onChange={handleStudentRollNo}
+              className="resultdrop-down"
             >
               {studentOptions?.map((option, id) => (
                 <MenuItem key={id} value={option.rollNumber}>
@@ -295,9 +296,10 @@ const StudentViewResults = () => {
           </FormControl>
         </Box>
         <Box className="drop-down">
-          <FormControl fullWidth variant="filled" sx={{ m: 1 }}>
-            <InputLabel>Academic Year</InputLabel>
+          <FormControl sx={{ m: 1 }}>
+            <InputLabel style={{color:"black"}}>Academic Year</InputLabel>
             <Select
+            className="resultdrop-down"
               value={year}
               onChange={handleYearSelect}
               disabled={disableAcYear}
@@ -310,10 +312,10 @@ const StudentViewResults = () => {
         </Box>
 
         <div className="view-results-button">
-          <FormControl variant="filled">
-            <Button variant="contained" onClick={handleView}>
+          <FormControl  >
+            <button variant="contained" onClick={handleView} className="view-buttonresult"  >
               view
-            </Button>
+            </button>
           </FormControl>
         </div>
       </div>

@@ -59,15 +59,22 @@ const SideNavigation = () => {
     handleClose()
   }
   const handleSchedule = () => {
-    if (userPersona=="student") {
+    if (userPersona==='student') {
       navigate('/schedule+student')
+      handleClose()
     }
     else {
-    navigate('/schedule')}
+    navigate('/schedule')
     handleClose()
   }
+    
+  }
   const handleResults=() => {
-    navigate('/admin+result')
+    if (userPersona==='student') {
+      navigate('/admin+result')
+    }
+    else {
+    navigate('/student+results')}
     handleClose()
   }
    
@@ -76,8 +83,8 @@ const SideNavigation = () => {
      {/* < className="persona-drop-down"> */}
         <Box className="dd">
 
-          <FormControl  className="label-persona"   sx={{ m: 1, minWidth: 150 }} size="small">
-            <InputLabel className="LabelName">User Persona</InputLabel>
+          <FormControl  className="label-persona"   sx={{ m: 1, minWidth: 150 }} >
+            <InputLabel className="LabelName" >User Persona</InputLabel>
             
               <Select  className="selectBox" value={userPersona} onChange={handleUserPersonaChange} >
                   <MenuItem className="menus" value="admin">Admin</MenuItem>

@@ -417,22 +417,25 @@ else {
        
         <DialogContent>
           <div>
-                  
-                  <label className="input-label"> Name </label>
+                
+                  <label className="input-label">  Subject Name  </label>
+             
                   <input className="input"
-                  onChange={(event)=>setSubject({...subject,subjectName:event.target.value})}></input>
-                  <br/>
+                  onChange={(event)=>setSubject({...subject,subjectName:event.target.value})}>
+                  </input>
+                  <br/> 
                   <br></br>
+
                   {subjectError && (
                                 <tr style={{paddingTop:"2px"}}>
-                                    <td></td>
+                                    
                                     <td>
                                         <span style={{ color: 'red' }}>{subjectError}</span>
                                     </td>
                                 </tr>
                             )}
                             <br></br>
-                  <label className="input-label"> Credit </label>
+                  <label className="input-label">Subject  Credit </label>
                   <input className="input"
                    onChange={(event)=>setSubject({...subject,credits:event.target.value})}></input>
                    <br />
@@ -475,7 +478,7 @@ else {
                                 </tr>
                             )}
                        <br></br>
-                  <label className="input-label"> Class </label>
+                  <label className="input-label">  Class Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </label>
                   <select className="select"
                   onChange={(event)=>setSubject({...subject,classCode:event.target.value})}
                  
@@ -486,7 +489,7 @@ else {
                         <option key={id} value={classes.code}>{classes.name}</option>
                         ))}
                    </select>
-                  <br></br>
+                    <br/>
                    <br></br>
                    {subjectClassError && (
                                 <tr style={{paddingTop:"2px"}}>
