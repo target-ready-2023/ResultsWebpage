@@ -2,7 +2,7 @@ import React from "react";
 import "./EditResultsAdmin.css";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Box,Stack, Grid,Button,Table,TableHead, TableCell ,TableRow,Dialog,DialogActions,DialogContent,DialogTitle, Typography, TextField, Select, FormControl, InputLabel, MenuItem} from "@mui/material";
+import { Box,Stack, Grid,Button,Table,TableHead,TableCell ,TableRow,Dialog,DialogActions,DialogContent,DialogTitle, Typography, TextField, Select, FormControl, InputLabel, MenuItem} from "@mui/material";
 import EditIcon  from '@mui/icons-material/Edit';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import swal from "sweetalert";
@@ -15,7 +15,7 @@ const EditResultsAdmin=()=>{
     const [stResults,setStResults] = React.useState([]);
     var classLevel;
     var shCode;
-    var uniqueMarks;
+    var uniqueMarks=[];
     const [disMarks,setDisMarks] =React.useState([]);
     const [year,setYear] = React.useState("");
     const [openAdd, setOpenAdd] = React.useState(false);
@@ -31,6 +31,11 @@ const EditResultsAdmin=()=>{
     const [openView, setOpenView] = React.useState(false);
     const [displayStudent,setDisplayStudent] =React.useState([]);
     const navigate = useNavigate();
+    const [disableClass,setDisableClass]=React.useState(true);
+    const [disableYear,setDisableYear] =React.useState(true);
+    const [disableType,setDisableType] =React.useState(true);
+    const [markError,setMarkError] = React.useState("");
+    const [maxMark,setMaxMark] = React.useState(0);
     const [marks, setMarks] =React.useState([{
         subjectCode: "",
         internalMarks: 0,
@@ -82,6 +87,20 @@ const EditResultsAdmin=()=>{
     }
 
     const addResult = async() =>{
+        if((schedules.scheduleType).toLowerCase() === "test"){
+            if(validateInMarks()){
+                const requestBody={...result,marksList:uniqueMarks};
+                await axios.post('http://localhost:8080/results/v1',requestBody)
+                .then(res => {swal({
+                    title: "Result Added Successfully",
+                    icon: "success",
+                    button: "OK",
+                  })})
+                  handleCloseAdd();
+                  getAllResults(test);
+                }
+        }
+        else if(validateExMarks()){
         const requestBody={...result,marksList:uniqueMarks};
         await axios.post('http://localhost:8080/results/v1',requestBody)
         .then(res => {swal({
@@ -89,10 +108,14 @@ const EditResultsAdmin=()=>{
             icon: "success",
             button: "OK",
           })})
+          handleCloseAdd();
           getAllResults(test);
+        }
     }
-
     const updateResult= async() => {
+
+        if((schedules.scheduleType).toLowerCase() === "test"){
+        if(validateInMarks()){
         const requestBody = {...result,resultsCode:resultCode,marksList:uniqueMarks};
         await axios.put('http://localhost:8080/results/v1/'+resultCode,requestBody)
         .then(res => {swal({
@@ -100,8 +123,22 @@ const EditResultsAdmin=()=>{
             icon: "success",
             button: "OK",
           })})
-        .catch(err => console.log(err.message))
-        getAllResults(test)
+        getAllResults(test);
+        handleCloseUpdate(); 
+      }
+    }
+    else if(validateExMarks()){
+        const requestBody = {...result,resultsCode:resultCode,marksList:uniqueMarks};
+        await axios.put('http://localhost:8080/results/v1/'+resultCode,requestBody)
+        .then(res => {swal({
+            title: "Result Updated Successfully",
+            icon: "success",
+            button: "OK",
+          })})
+        handleCloseUpdate();
+        getAllResults(test); 
+      }
+
     }
     const getAllResults= async(test) =>{
         await axios.get('http://localhost:8080/results/v1/classTest',{params:{classCode:classes,academicYear:year,scheduleCode:test}})
@@ -135,37 +172,108 @@ const EditResultsAdmin=()=>{
         setStResults([]);
         getAllResults(shCode);
         setResult({...result,scheduleCode:shCode})
+        setDisableType(false);
     }
 
     const handleAcYearChange=(e)=>{
         setYear(e.target.value);
         getTestOrExam(e.target.value);
+        setDisableYear(false);
     }
-
     const handleClassNameChange=(event)=>{
         classLevel=event.target.value;
-        var index = event.nativeEvent.target.selectedIndex;
-        var clname =event.nativeEvent.target[index].text
-        setClaName(clname);
+        const clname = classNames.find((cls) => cls.code === classLevel);
+        setClaName(clname.name);
         setClasses(event.target.value);
         getAcYear();
         setDisplayStudent([]);
         getStudents(classLevel);
+        setDisableClass(false);
     }
-    const handleInMarks=(e)=>{
-        let inMark=e.target.value;
-        if (inMark ===''){
-            inMark = 0;
+
+    const validateInMarks=()=>{
+        const markRegex =  /^[0-9]*$/;
+        let flag=0;
+        if(uniqueMarks.length===0 || uniqueMarks.length < subjects.length){
+            setMarkError("Marks are required");
+            return false;
         }
-        const r = {subjectCode:e.target.id, internalMarks:inMark};
+        else{
+            for(let i=0;i<marks.length;i++){
+                let inMark=marks[i].internalMarks;
+                if(inMark ===''){
+                    setMarkError("Marks are required");
+                    return false;
+                }
+                else if(!markRegex.test(inMark)){
+                    setMarkError("Marks must be Number");
+                    return false;
+                }
+                else if(inMark > maxMark){
+                    setMarkError("Marks cannot be greater than Max marks");
+                    return false;
+                }
+                else if(inMark < 0){
+                    setMarkError("Marks cannot be less than 0");
+                    return false;
+                }
+                else{
+                    setMarkError('');
+                    flag=1;     
+                }
+            }
+            if(flag === 1)
+            return true;
+            else
+            return false;
+        }
+    }
+    const validateExMarks=()=>{
+        const markRegex =  /^[0-9]*$/;
+        let flag=0;
+        if(uniqueMarks.length===0 || uniqueMarks.length < subjects.length){
+            setMarkError("Marks are required");
+            return false;
+        }
+        else{
+            for(let i=0;i<marks.length;i++){
+                let inMark=marks[i].externalMarks;
+                if(inMark ===''){
+                    setMarkError("Marks are required");
+                    return false;
+                }
+                else if(!markRegex.test(inMark)){
+                    setMarkError("Marks must be Number");
+                    return false;
+                }
+                else if(inMark > maxMark){
+                    setMarkError("Marks cannot be greater than Max marks");
+                    return false;
+                }
+                else if(inMark < 0){
+                    setMarkError("Marks cannot be less than 0");
+                    return false;
+                }
+                else{
+                    setMarkError(''); 
+                    flag=1;    
+                }
+            }
+            if(flag ===1)
+            return true;
+            else
+            return false;
+        }
+    }
+
+    const handleInMarks=(e,maxTestMarks)=>{
+        setMaxMark(maxTestMarks);
+        const r = {subjectCode:e.target.id, internalMarks:e.target.value};
         setMarks(marks => [...marks, r]);
     }
-    const handleExMarks=(e)=>{
-        let exMark=e.target.value;
-        if (exMark ===''){
-            exMark = 0;
-        }
-        const r = {subjectCode:e.target.id, externalMarks:exMark};
+    const handleExMarks=(e,maxExamMarks)=>{
+        setMaxMark(maxExamMarks);
+        const r = {subjectCode:e.target.id, externalMarks:e.target.value};
         setMarks(marks => [...marks, r]);
     }
     const handleClickOpenAddOrUpdate = (stRoll,student) => {
@@ -189,26 +297,28 @@ const EditResultsAdmin=()=>{
       }
     const handleAddAndClose = () =>{
         uniqueMarks = keepLatestInternalMarks(marks);
+        setMarks(uniqueMarks);
         addResult();
-        handleCloseAdd();
     }
     
       const handleCloseAdd=()=>{
         setMarks([]);
-        uniqueMarks=0;
+        uniqueMarks=[];
         setOpenAdd(false);
+        setMarkError('');
      }
 
      const handleUpdateAndClose=()=>{
         uniqueMarks = keepLatestInternalMarks(marks);
+        setMarks(uniqueMarks);
         updateResult();
-        handleCloseUpdate(); 
      }
 
     const handleCloseUpdate=()=>{
         setMarks([]);
-        uniqueMarks=0;
+        uniqueMarks=[];
         setOpenUpdate(false); 
+        setMarkError('');
     }
   
     const handleClickOpenView=()=>{
@@ -237,14 +347,22 @@ const EditResultsAdmin=()=>{
                 <Typography variant="body1"  className="text"  width="25%">{subject?.subjectName}</Typography>
                 <Typography className="txt">:</Typography>
                 {(schedules.scheduleType).toLowerCase() === "test"? 
-                <><input className="text-add" id={subject?.subjectCode} onChange={(e) => handleInMarks(e)}/>
+                <><input className="text-add" id={subject?.subjectCode} onChange={(e) => handleInMarks(e,subject?.maxTestMarks)}/>
                 <Typography variant="body1" className="text">&nbsp;  / {subject?.maxTestMarks}</Typography></>
-                :<><input className="text-add" id={subject?.subjectCode} onChange={(e) => handleExMarks(e)}/>
+                :<><input className="text-add" id={subject?.subjectCode} onChange={(e) => handleExMarks(e,subject?.maxExamMarks)}/>
                 <Typography variant="body1"  className="text">&nbsp;  / {subject?.maxExamMarks}</Typography></>}
                 </div>
                 </>
             ))}
-            <br/> 
+            <br/>
+            {markError && (
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <span style={{ color: 'red' }}>{markError}</span>
+                                    </td>
+                                </tr>
+                            )} 
             </DialogContent>
           <DialogActions>
              <button className="button-dialog" onClick={handleCloseAdd}>Close</button>
@@ -269,14 +387,22 @@ const EditResultsAdmin=()=>{
                 <Typography variant="body1"  className="text"  width="25%">{subject?.subjectName}</Typography>
                 <Typography className="txt">:</Typography>
                 {(schedules.scheduleType).toLowerCase() === "test"? 
-                <><input className="text-add" id={subject?.subjectCode} defaultValue={disMarks[index]?.internalMarks} onChange={(e) => handleInMarks(e)}/>
+                <><input className="text-add" id={subject?.subjectCode} defaultValue={disMarks[index]?.internalMarks} onChange={(e) => handleInMarks(e,subject?.maxTestMarks)}/>
                 <Typography variant="body1" className="text">&nbsp;  / {subject?.maxTestMarks}</Typography></>
-                :<><input className="text-add" id={subject?.subjectCode} defaultValue={disMarks[index]?.externalMarks} onChange={(e) => handleExMarks(e)}/>
+                :<><input className="text-add" id={subject?.subjectCode} defaultValue={disMarks[index]?.externalMarks} onChange={(e) => handleExMarks(e,subject?.maxExamMarks)}/>
                 <Typography variant="body1"  className="text">&nbsp;  / {subject?.maxExamMarks}</Typography></>}
                 </div>
                 </>
             ))}
             <br/> 
+            { markError && (
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <span style={{ color: 'red' }}>{markError}</span>
+                                    </td>
+                                </tr>
+                            )} 
             </DialogContent>
             <DialogActions>
           <button className="button-dialog" onClick={handleCloseUpdate}>Close</button>
@@ -304,43 +430,34 @@ const EditResultsAdmin=()=>{
                             <Table className="table-design">
                                 <TableRow className="table-row1">
                                 <TableCell>
-                                    {/* <Typography className="text1">Class: &nbsp; &nbsp; */}
                                     <FormControl>
                                     <InputLabel style={{top:"-8px",color:"black"}}>Class Name</InputLabel>
                                     <Select id="classes" className="selectstyle" value={classes} onChange={(event)=>{handleClassNameChange( event)}}>
-                                        {/* <option className="text4" disabled selected value="">--select--</option> */}
                                         {classNames.map((classes,index) =>(
                                         <MenuItem id={index} className="text3" value={classes.code}>{classes?.name}</MenuItem>
                                         ) )}
                                     </Select>
                                     </FormControl>
-                                    {/* </Typography> */}
                                     </TableCell>
                                     <TableCell>
-                                    {/* <Typography className="text2">Academic Year: &nbsp; &nbsp; */}
                                     <FormControl>
                                     <InputLabel style={{top:"-8px",color:"black"}}>Academic Year</InputLabel>
-                                    <Select id="year" className="selectstyle" value={year} onChange={handleAcYearChange}>
-                                        <MenuItem className="text4" disabled selected value="">--select--</MenuItem>
+                                    <Select id="year" className="selectstyle" value={year} disabled={disableClass} onChange={handleAcYearChange}>
                                         {acYear.map((year,index) =>(
-                                        <option id={index} className="text3" value={year}>{year}</option>
+                                        <MenuItem id={index} className="text3" value={year}>{year}</MenuItem>
                                         ) )}
                                     </Select>
                                     </FormControl>
-                                    {/* </Typography> */}
                                     </TableCell>
                                     <TableCell>
-                                    {/* <Typography className="text2">Test/Exam: &nbsp; &nbsp; */}
                                     <FormControl>
                                     <InputLabel style={{top:"-8px",color:"black"}}>Test/Exam</InputLabel>
-                                    <Select id="test" className="selectstyle" value={test} onChange={handleTestNameChange}>
-                                        <option className="text4" disabled selected value="">--select--</option>
+                                    <Select id="test" className="selectstyle" value={test} disabled={disableYear || disableClass} onChange={handleTestNameChange}>
                                         {testNames.map((test,index) =>(
                                         <MenuItem id={index} className="text3" value={test.scheduleCode}>{test?.scheduleName}</ MenuItem>
                                         ) )}
                                     </Select>
                                     </FormControl>
-                                    {/* </Typography> */}
                                     </TableCell>
                                         <TableCell><button className="button-design" onClick={OpenAllResults}>View all results</button></TableCell>
                                         <TableCell width="1%"><button className="button-design" onClick={OpenLeaderboard}>Leaderboard</button></TableCell>
@@ -375,9 +492,9 @@ const EditResultsAdmin=()=>{
                                     <TableCell className="Table-cell">{student.rollNumber}</TableCell>
                                     <TableCell className="Table-cell">{student.name}</TableCell>
                                     <TableCell className="Table-cell">
-                                        <button  className="table-button" onClick={ () =>{handleClickOpenAddOrUpdate(student.rollNumber,student)}}><EditIcon/></button>
+                                        <button  className="table-button" disabled={disableType} onClick={ () =>{handleClickOpenAddOrUpdate(student.rollNumber,student)}}><EditIcon/></button>
                                      </TableCell>
-                                    <TableCell className="Table-cell"><Button className="table-button" onClick={handleClickOpenView}><VisibilityOutlinedIcon style={{ color: "black" }}/></Button></TableCell>
+                                    <TableCell className="Table-cell"><button className="table-button" disabled={disableType} onClick={handleClickOpenView}><VisibilityOutlinedIcon/></button></TableCell>
                                     </TableRow> 
                                 ))}
                                 </>}
