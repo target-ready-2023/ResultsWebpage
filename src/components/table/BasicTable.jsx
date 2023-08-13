@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
+import { DatePicker, TimePicker } from "@mui/lab";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -25,7 +26,12 @@ import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import {GrAdd} from "react-icons/gr";
 import axios from "axios";
-
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import dayjs, { Dayjs } from "dayjs";
+import "dayjs/locale/en";
 import { classCode, viewClick, acYear } from "../SchedulePage";
 
 
@@ -63,6 +69,10 @@ const BasicTable = () => {
   const geturlClassCode = `http://localhost:8080/schedule/v1/${classCode}/${acYear}/all`
 
   const [schedule, setSchedule] = useState([]);
+
+  const fourPM = dayjs().set("hour", 16).startOf("hour");
+  const nineAM = dayjs().set("hour", 9).startOf("hour");
+
   useEffect(() => {
 
     console.log("table : " + classCode)
@@ -128,7 +138,25 @@ const BasicTable = () => {
       )
     );
   };
-  
+   const isSunday = (date) => {
+    const day = date.day();
+
+    return day === 0;
+  };
+  const [dateError,setDateError]=useState("");
+  const[timeError,setTimeError]=useState("")
+  const handleDateChange=()=>{
+
+  }
+  const handleTimeChange=()=>{
+
+  }
+  const handleTimeSelect=()=>{
+
+  }
+  const handleDateSelect=()=>{
+
+  }
   const handlePopoverClose = () => {
     setPopoverData([]); // Clear popoverData
     setAnchorEl(null); // Close the popover
@@ -299,7 +327,10 @@ const BasicTable = () => {
     }
   };
   
-
+const handleCancelClick = () => {
+   
+    setAnchorEl(null);
+  };
 
   const handleDeleteSchedule = (scheduleCode) => {
     // Filter out the deleted schedule from the schedule state
@@ -378,20 +409,46 @@ const BasicTable = () => {
     {
       field: "date",
       headerName: "Date",
-      editable: true,
-      width: 180,
-      align: "left",
-      headerAlign: "left",
+      width: 200,
+      renderCell: (params) => (
+        <Button onClick={(event) => handleDateDialogBox(event, params)}>
+          {" "}
+          {params.row.date === ""
+            ? "Select Date"
+            : dayjs(params.row.date).format("YYYY-MM-DD")}
+        </Button>
+      ),
     },
-
     {
       field: "time",
-      headerName: "Time",
-      //type: "dateTime",
-      width: 220,
-      //valueGetter: ({ value }) => value && new Date(value),
-      editable: true,
+      headerName: " Time",
+      width: 200,
+      renderCell: (params) => (
+        <Button onClick={(event) => handleTimeDialogBox(event, params)}>
+          {" "}
+          {params.row.time === ""
+            ? "Select Time"
+            : dayjs(params.row.time).format("HH:mm")}
+        </Button>
+      ),
     },
+    // {
+    //   field: "date",
+    //   headerName: "Date",
+    //   editable: true,
+    //   width: 180,
+    //   align: "left",
+    //   headerAlign: "left",
+    // },
+
+    // {
+    //   field: "time",
+    //   headerName: "Time",
+    //   //type: "dateTime",
+    //   width: 220,
+    //   //valueGetter: ({ value }) => value && new Date(value),
+    //   editable: true,
+    // },
     {
       
       field: "status",
@@ -407,6 +464,14 @@ const BasicTable = () => {
       type: Boolean,
     }
   ];
+  const handleDateDialogBox=()=>{
+
+  }
+  const handleTimeDialogBox = () =>{
+
+  }
+  const [anchorD , setAnchorD]=useState(null);
+  const [anchorT,setAnchorT]=useState(null)
 
   const handleClosePopover = () => {
     setAnchorEl(null);
@@ -430,7 +495,7 @@ const BasicTable = () => {
       <Popover
         open={Boolean(anchorEl)}
         anchorEl={anchorEl}
-        onClose={handleClosePopover}
+         disableClickAway={true}
         anchorOrigin={{
           vertical: "top",
           horizontal: "center",
@@ -451,11 +516,99 @@ const BasicTable = () => {
                   hideFooter
                   onEditCellChange={handlePopoverCellChange} // Add this prop
                 />
+                 <Popover
+                    open={Boolean(anchorD)}
+                    anchorEl={anchorD}
+                    // onClose={handleCloseDateTime}
+                    disableClickAway={true}
+                    anchorOrigin={{
+                      vertical: "top",
+                      horizontal: "center",
+                    }}
+                    transformOrigin={{
+                      vertical: "center",
+                      horizontal: "center",
+                    }}
+                  >
+                    <Typography sx={{ p: 2 }}>
+                      <div>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DemoContainer components={["DateTimePicker"]}>
+                            <DatePicker
+                              ampm={false}
+                              shouldDisableDate={isSunday}
+                            //   defaultValue={"Choose date"}
+                            //   //defaultValue={dateTimeSave !== null ? dateTimeSave : nineAM}
+                            //  // defaultValue={nextDay}
+                            //   minTime={nineAM}
+                            //   maxTime={fourPM}
+                              // value={selectedPopoverDate}
+                              label="Select Date"
+                              onChange={handleDateChange}
+                              renderInput={(params) => <TextField {...params} />}
+                            />
+                          </DemoContainer>
+                        </LocalizationProvider>
+                      </div>
+                      <div>
+                        <Button onClick={handleDateSelect}>Done</Button>
+                        {dateError && (
+                          <span style={{ color: "red" }}>{timeError}</span>
+                        )}
+                      </div>
+                    </Typography>
+                  </Popover>
+                   <Popover
+                    open={Boolean(anchorT)}
+                    anchorEl={anchorT}
+                    // onClose={handleCloseDateTime}
+                    disableClickAway={true}
+                    anchorOrigin={{
+                      vertical: "top",
+                      horizontal: "center",
+                    }}
+                    transformOrigin={{
+                      vertical: "center",
+                      horizontal: "center",
+                    }}
+                  >
+                    <Typography sx={{ p: 2 }}>
+                      <div>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DemoContainer components={["DateTimePicker"]}>
+                            <DateTimePicker
+                              ampm={false}
+                              // shouldDisableDate={isSunday}
+                              defaultValue={"Choose date and time"}
+                              value={selectedPopoverTime}
+                              //defaultValue={dateTimeSave !== null ? dateTimeSave : nineAM}
+                             // defaultValue={nextDay}
+                             renderInput={(params) => <TextField {...params} />}
+                              minTime={nineAM}
+                              maxTime={fourPM}
+                              label="Select Time"
+                              onChange={handleTimeChange}
+                            />
+                          </DemoContainer>
+                        </LocalizationProvider>
+                      </div>
+                      <div>
+                        <Button onClick={handleTimeSelect}>Done</Button>
+                        {timeError && (
+                          <span style={{ color: "red" }}>{timeError}</span>
+                        )}
+                      </div>
+                    </Typography>
+                  </Popover>
+
+
               </div>
 
             <div className="add">
               
-              <Button type="cancel" style={{color:"black"}}>Cancel {<GiCancel />}</Button>
+              <Button type="cancel" 
+                      onClick={handleCancelClick}
+                      style={{color:"black"}}>Cancel {<GiCancel />}</Button>
                   <Button type="submit" style={{color:"black"}}>Save Changes {<AiTwotoneSave />}</Button>
             </div>
           </div>
