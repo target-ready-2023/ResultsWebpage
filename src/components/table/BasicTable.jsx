@@ -25,8 +25,8 @@ import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import {GrAdd} from "react-icons/gr";
 import axios from "axios";
-import { classCode } from "../SchedulePage";
 
+import { classCode, viewClick, acYear } from "../SchedulePage";
 
 
 
@@ -60,13 +60,14 @@ const BasicTable = () => {
   const getUrl = " http://localhost:8080/schedule/v1/all"
 
   //GET ALL BY CLASSCODE
-  const geturlClassCode = `http://localhost:8080/schedule/v1/${classCode}/all`
+  const geturlClassCode = `http://localhost:8080/schedule/v1/${classCode}/${acYear}/all`
 
   const [schedule, setSchedule] = useState([]);
   useEffect(() => {
 
     console.log("table : " + classCode)
-    if(classCode.trim()=== ""){
+    console.log(" year : "+acYear)
+    if(classCode.trim()=== "" && acYear.trim()===""){
       axios.get(getUrl).then((response) => {
         console.log(response.data)
          setSchedule(response.data);
@@ -79,16 +80,17 @@ const BasicTable = () => {
         setSchedule(modifiedData);
   
         const initialCheckedState = response.data.reduce((acc, item) => {
-          acc[item.id] = item.scheduleStatus === 'true';
+          acc[item.id] = item.scheduleStatus === 'active';
           return acc;
         }, {});
         setIsChecked(initialCheckedState);
-      },[classCode])
+      })
       .catch((error) => {
         console.error('Error fetching data:', error);
       });
     }
-    else{
+    else if(viewClick==="yes"){
+      console.log("year : ",acYear)
 
 
       axios.get(geturlClassCode).then((response) => {
@@ -104,19 +106,19 @@ const BasicTable = () => {
         setSchedule(modifiedData);
   
         const initialCheckedState = response.data.reduce((acc, item) => {
-          acc[item.id] = item.scheduleStatus === 'true';
+          acc[item.id] = item.scheduleStatus === 'active';
           return acc;
-        });
+        }, {});
         setIsChecked(initialCheckedState);
-      }, [classCode])
+      })
       .catch((error) => {
         console.error('Error fetching data:', error);
+        setSchedule([])
       });
 
     }
 
-  },[classCode]);
-
+  },[classCode,acYear,viewClick]);
   const handlePopoverCellChange = (params) => {
     const { id, field, value } = params;
   
