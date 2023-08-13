@@ -155,6 +155,7 @@ const StudentViewResults = () => {
         setResults(res.data);
         console.log("Results : ", results);
         resultsR = res.data;
+        console.log("a : ",resultsR.length)
         getScheduleNames();
       })
       .catch((error) => {
@@ -268,8 +269,12 @@ const StudentViewResults = () => {
       <div className="drop-downs-block">
         <Box className="drop-down">
           <FormControl sx={{ m: 1 }}>
-            <InputLabel style={{color:"black"}}>Class Name</InputLabel>
-            <Select value={classCode} onChange={handleClassNameSelect} className="resultdrop-down">
+            <InputLabel style={{ color: "black" }}>Class Name</InputLabel>
+            <Select
+              value={classCode}
+              onChange={handleClassNameSelect}
+              className="resultdrop-down"
+            >
               {classNameoptions.map((option) => (
                 <MenuItem key={option.code} value={option.code}>
                   {option.name}
@@ -279,8 +284,8 @@ const StudentViewResults = () => {
           </FormControl>
         </Box>
         <Box className="drop-down">
-          <FormControl  sx={{ m: 1 }}>
-            <InputLabel style={{color:"black"}}>Roll No</InputLabel>
+          <FormControl sx={{ m: 1 }}>
+            <InputLabel style={{ color: "black" }}>Roll No</InputLabel>
             <Select
               disabled={disableStudent}
               value={studentRollNo}
@@ -297,9 +302,9 @@ const StudentViewResults = () => {
         </Box>
         <Box className="drop-down">
           <FormControl sx={{ m: 1 }}>
-            <InputLabel style={{color:"black"}}>Academic Year</InputLabel>
+            <InputLabel style={{ color: "black" }}>Academic Year</InputLabel>
             <Select
-            className="resultdrop-down"
+              className="resultdrop-down"
               value={year}
               onChange={handleYearSelect}
               disabled={disableAcYear}
@@ -312,8 +317,12 @@ const StudentViewResults = () => {
         </Box>
 
         <div className="view-results-button">
-          <FormControl  >
-            <button variant="contained" onClick={handleView} className="view-buttonresult"  >
+          <FormControl>
+            <button
+              variant="contained"
+              onClick={handleView}
+              className="view-buttonresult"
+            >
               view
             </button>
           </FormControl>
@@ -321,81 +330,93 @@ const StudentViewResults = () => {
       </div>
 
       <div>
-        <div>
-          {classError && <span style={{ color: "red" }}>{classError}</span>}
-        </div>
-        <div>
-          {yearError && <span style={{ color: "red" }}>{yearError}</span>}
-        </div>
-        <div>
-          {rollNoError && <span style={{ color: "red" }}>{rollNoError}</span>}
-        </div>
+        <center>
+          <div>
+            {classError && <span style={{ color: "red" }}>{classError}</span>}
+          </div>
+          <div>
+            {yearError && <span style={{ color: "red" }}>{yearError}</span>}
+          </div>
+          <div>
+            {rollNoError && <span style={{ color: "red" }}>{rollNoError}</span>}
+          </div>
+        </center>
       </div>
-      
+
       <div>
         {view === "yes" ? (
           <div className="student-results-table">
-            <Box>
-              <Table className="Results-table">
-                <TableHead className="Table-head">
-                  <TableRow>
-                    <TableCell className="Head-Table-cell" rowSpan={2}>
-                      Test/Exam Name
-                    </TableCell>
-                    {subjects?.map((sub, index) => (
-                      <TableCell className="Head-Table-cell" colSpan={2}>
-                        {sub}
-                      </TableCell>
-                    ))}
-                    <TableCell className="Head-Table-cell" rowSpan={2}>
-                      Total
-                    </TableCell>
-                    <TableCell className="Head-Table-cell" rowSpan={2}>
-                      Percentage
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    {subjects.map((subject, index) => (
-                      <React.Fragment key={index}>
-                        <TableCell className="Head-Table-cell">
-                          Obtained Marks
-                        </TableCell>
-                        <TableCell className="Head-Table-cell">
-                          Max Marks
-                        </TableCell>
-                      </React.Fragment>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {results.map((result, i) => (
+            {results.length > 0 ? (
+              <Box>
+                <Table className="Results-table">
+                  <TableHead className="Table-head">
                     <TableRow>
-                      <TableCell>{testExamNames.at(i)}</TableCell>
-                      {result.marksList.map((mark, index) => (
+                      <TableCell className="Head-Table-cell" rowSpan={2}>
+                        Test/Exam Name
+                      </TableCell>
+                      {subjects?.map((sub, index) => (
+                        <TableCell className="Head-Table-cell" colSpan={2}>
+                          {sub}
+                        </TableCell>
+                      ))}
+                      <TableCell className="Head-Table-cell" rowSpan={2}>
+                        Total
+                      </TableCell>
+                      <TableCell className="Head-Table-cell" rowSpan={2}>
+                        Percentage
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      {subjects.map((subject, index) => (
                         <React.Fragment key={index}>
-                          <TableCell>
-                            {testType[i] === "Test"
-                              ? mark.internalMarks
-                              : mark.externalMarks}
+                          <TableCell className="Head-Table-cell">
+                            Obtained Marks
                           </TableCell>
-
-                          <TableCell>
-                            {testType[i] === "Test"
-                              ? maxMarksTest[index]
-                              : maxMarksExam[index]}
+                          <TableCell className="Head-Table-cell">
+                            Max Marks
                           </TableCell>
                         </React.Fragment>
                       ))}
-                      <TableCell>{result.totalMarks}</TableCell>
-                      <TableCell>{result.totalPercentage}</TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Box>
+                  </TableHead>
+                  <TableBody>
+                    {results.map((result, i) => (
+                      <TableRow>
+                        <TableCell>{testExamNames.at(i)}</TableCell>
+                        {result.marksList.map((mark, index) => (
+                          <React.Fragment key={index}>
+                            <TableCell>
+                              {testType[i] === "Test"
+                                ? mark.internalMarks
+                                : mark.externalMarks}
+                            </TableCell>
+
+                            <TableCell>
+                              {testType[i] === "Test"
+                                ? maxMarksTest[index]
+                                : maxMarksExam[index]}
+                            </TableCell>
+                          </React.Fragment>
+                        ))}
+                        <TableCell>{result.totalMarks}</TableCell>
+                        <TableCell>{result.totalPercentage}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Box>
+            ) : (
+              <p></p>
+              // <p style={{ textAlign: "center", color: "red" }}>
+              //   Results not found
+              // </p>
+            )}
           </div>
         ) : (
-          <p></p>
+          <p style={{ textAlign: "center" }}>
+            Note: select classname, roll number and academic year to view test
+            results
+          </p>
         )}
       </div>
     </div>
