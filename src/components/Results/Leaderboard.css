@@ -34,7 +34,7 @@
 }
 
 .lb-table{
-    width : 700px;
+    width : 420px;
     margin: 0 auto;
     padding-top: 45px;
 }
@@ -58,3 +58,13 @@
     background-color:#6c88c8;
     font-size: medium;
  }
+.error-message
+{
+    color: red;
+}
+.message-heading {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 18px;
+    font-weight: bold;
+  }

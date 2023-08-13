@@ -79,11 +79,11 @@ const BasicTable = () => {
         setSchedule(modifiedData);
   
         const initialCheckedState = response.data.reduce((acc, item) => {
-          acc[item.id] = item.scheduleStatus === 'active';
+          acc[item.id] = item.scheduleStatus === 'true';
           return acc;
         }, {});
         setIsChecked(initialCheckedState);
-      })
+      },[classCode])
       .catch((error) => {
         console.error('Error fetching data:', error);
       });
@@ -104,11 +104,11 @@ const BasicTable = () => {
         setSchedule(modifiedData);
   
         const initialCheckedState = response.data.reduce((acc, item) => {
-          acc[item.id] = item.scheduleStatus === 'active';
+          acc[item.id] = item.scheduleStatus === 'true';
           return acc;
-        }, {});
+        });
         setIsChecked(initialCheckedState);
-      })
+      }, [classCode])
       .catch((error) => {
         console.error('Error fetching data:', error);
       });
@@ -117,9 +117,67 @@ const BasicTable = () => {
 
   },[classCode]);
 
+  const handlePopoverCellChange = (params) => {
+    const { id, field, value } = params;
+  
+    setPopoverData((prevData) =>
+      prevData.map((item) =>
+        item.id === id ? { ...item, [field]: value } : item
+      )
+    );
+  };
+  
+  const handlePopoverClose = () => {
+    setPopoverData([]); // Clear popoverData
+    setAnchorEl(null); // Close the popover
+  };
+  const handlePopoverSave = async () => {
+    try {
+      // Iterate through the popoverData and update each subjectSchedule object
+      const updatedSubjectSchedules = await Promise.all(
+        popoverData.map(async (item) => {
+          const putUrl = `http://localhost:8080/schedule/v1/${item.id}`;
+          const putData = {
+            ...item,
+            dateTime: `${item.date}T${item.time}:00`,
+            status: item.scheduleStatus,
+          };
+          const response = await axios.put(putUrl, putData);
+          console.log(response);
+          return response.data; // Return the updated subjectSchedule object
+        })
+      );
+  
+      // Update the local state with the updated subjectSchedules
+      const updatedSchedule = schedule.map((item) => {
+        const updatedSubjectSchedule = updatedSubjectSchedules.find(
+          (updatedItem) => updatedItem.id === item.id
+        );
+        if (updatedSubjectSchedule) {
+          return {
+            ...item,
+            subjectSchedule: updatedSubjectSchedule.subjectSchedule,
+          };
+        }
+        return item;
+      });
+  
+      setSchedule(updatedSchedule);
+      handlePopoverClose(); // Close the popover after saving
+    } catch (error) {
+      console.error("Error updating schedule:", error);
+    }
+  };
+  
   const handleStatusChange = (event, id) => {
     const newStatus = event.target.checked;
-    const updatedData = schedule.map((item) => {
+    const confirmation = window.confirm(
+      "Are you sure you want to change the status of this schedule?"
+    );
+    
+      if(confirmation)
+      {
+      const updatedData = schedule.map((item) => {
       if (item.id === id) {
         return {
           ...item,
@@ -148,140 +206,97 @@ const BasicTable = () => {
       .then((response) => {
         setSchedule(updatedData);
         console.log(response);
+        window.location.reload()
       })
       .catch((error) => {
         console.log(error);
-      });
+      });}
+      else{}
   };
   
+  const handleSubjectStatusChange = async (event, subjectCode, newStatus, scheduleId) => {
+    const confirmation = window.confirm(
+      "Are you sure you want to change the status of ONLY this particular subject?"
+    );
+    if(confirmation)
+    {
+    const updatedSchedule = schedule.map((item) => {
+      if (item.id === scheduleId) {
+        const updatedSubjectSchedule = item.subjectSchedule.map((subject) => {
+          if (subject.subjectCode === subjectCode) {
+            return { ...subject, status: newStatus };
+          }
+          return subject;
+        });
+  
+        return {
+          ...item,
+          subjectSchedule: updatedSubjectSchedule,
+        };
+      }
+      return item;
+    });
+  
+    setSchedule(updatedSchedule);
+  
+    // Update the subject status in the API
+    try {
+      const putData = {
+        ...schedule.find((item) => item.id === scheduleId),
+        subjectSchedule: schedule.find((item) => item.id === scheduleId).subjectSchedule.map((subject) => {
+          if (subject.subjectCode === subjectCode) {
+            return { ...subject, status: newStatus };
+          }
+          return subject;
+        }),
+      };
+  
+      const putUrl = `http://localhost:8080/schedule/v1/${scheduleId}`;
+      const response = await axios.put(putUrl, putData);
+      console.log(response);
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+    }}
+    else{}
+  };
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [popoverData, setPopoverData] = useState([]);
   //const popoverOpen = Boolean(anchorEl);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-  const [dialogData, setDialogData] = useState([]);
-  
-  // const handleNestedDataClick = (event, row) => {
-  //   const nestedDataWithIdFromBackend = row.map((item) => ({
-  //     ...item,
-  //     id: item.subjectCode,
-  //   }));
-  //   setPopoverData(nestedDataWithIdFromBackend);
-  //   setAnchorEl(event.currentTarget);
-  //   console.log(anchorEl)
-  //   console.log(popoverOpen)
-  // };
 
-  // const handleNestedDataClick = (event, row) => {
-  //   getModifiedData(row).then(modifiedData => {
-  //     // Use the modifiedData locally without setting it to the state
-  //     console.log('Modified Data:', modifiedData);
-  
-  //     // Now, setAnchorEl to open the Popover and update popoverData
-  //     setPopoverData(modifiedData);
-  
-  //     // Set event.currentTarget directly as the value of anchorEl
-  //     setAnchorEl(event.currentTarget);
-  //   });
-  // };
-
-  // const handleNestedDataClick = async (event, row) => {
-  //   const modifiedData = await getModifiedData(row);
-
-  //   // Use the modifiedData locally without setting it to the state
-  //   console.log('Modified Data:', modifiedData);
-
-  //   // Now, setAnchorEl to open the Popover and update popoverData
-  //   setPopoverData(modifiedData);
-  //   // setAnchorEl(event.currentTarget);
-  //   setAnchorEl(event.currentTarget);
-  //   console.log(popoverOpen)
-  // };
-
-  // const handleNestedDataClick = async (event, row) => {
-  //   const modifiedData = await Promise.all(
-  //     row.map(async (item) => {
-  //       const response = await axios.get(
-  //         `http://localhost:8080/subjects/v1/subject/${item.subjectCode}`
-  //       );
-  
-  //       const subjectName = response.data.subjectName;
-        
-  //       return {
-  //         ...item,
-  //         id: item.subjectCode,
-  //         subjectName: subjectName,
-  //       };
-  //     })
-  //   );
-  
-  //   // Use the modifiedData locally without setting it to the state
-  //   console.log('Modified Data:', modifiedData);
-  
-  //   // Now, setAnchorEl to open the Popover and update popoverData
-  //   setPopoverData(modifiedData);
-  //   console.log("x" , popoverData)
-  //   setAnchorEl(event.currentTarget);
-  // };
-  
-  const handleNestedDataClick = async (event, row) => {
+  const [sCode, setSCode] = useState(null);
+  const handleNestedDataClick = async (event, row, sCode) => {
     setAnchorEl(event.currentTarget);
-    try{
-    const modifiedData = await Promise.all(
-      row.map(async (item) => {
-        const response = await axios.get(
-          `http://localhost:8080/subjects/v1/subject/${item.subjectCode}`
-        );
+    console.log(sCode)
+    setSCode(sCode)
+    try {
+      const modifiedData = await Promise.all(
+        row.map(async (item) => {
+          const response = await axios.get(
+            `http://localhost:8080/subjects/v1/subject/${item.subjectCode}`
+          );
+          const subjectName = response.data.subjectName;
+          return {
+            ...item,
+            id: item.subjectCode,
+            subjectName: subjectName,
+          };
+        })
+      );
   
-        const subjectName = response.data.subjectName;
+      // Use the modifiedData locally without setting it to the state
+      console.log('Modified Data:', modifiedData);
   
-        return {
-          ...item,
-          id: item.subjectCode,
-          subjectName: subjectName,
-        };
-      })
-    );
-  
-    // Use the modifiedData locally without setting it to the state
-    console.log('Modified Data:', modifiedData);
-  
-    // Now, setAnchorEl to open the Popover
-    setPopoverData(modifiedData);
-
-   
-    } catch(error){
+      // Now, setAnchorEl to open the Popover and update popoverData
+      setPopoverData(modifiedData);
+    } catch (error) {
       console.error("Error fetching nested data:", error);
     }
   };
   
-
-  // const handleNestedDataClick = async (event, row) => {
-  //   const modifiedData = await Promise.all(
-  //     row.map(async (item) => {
-  //       const response = await axios.get(
-  //         `http://localhost:8080/subjects/v1/subject/${item.subjectCode}`
-  //       );
-  
-  //       const subjectName = response.data.subjectName;
-        
-  //       return {
-  //         ...item,
-  //         id: item.subjectCode,
-  //         subjectName: subjectName,
-  //       };
-  //     })
-  //   );
-  
-  //   setPopoverData(modifiedData);
-  //   setAnchorEl(event.currentTarget);
-  // };
-  // const handleCloseDialog = () => {
-  //   setOpenDialog(false);
-  //   setDialogData([]);
-  // };
-
 
 
   const handleDeleteSchedule = (scheduleCode) => {
@@ -299,9 +314,10 @@ const BasicTable = () => {
       headerClassName: 'header',
       renderCell: (params) => {
         return (
-          <Switch  
-          checked={isChecked[params.id]}
-          onChange={(event) => handleStatusChange(event, params.id)} />
+          <Switch
+        checked={params.value}
+        onChange={(event) => handleStatusChange(event, params.id)}
+      />
         );
       },
       headerName: "Status",
@@ -314,16 +330,17 @@ const BasicTable = () => {
       headerName: "View/Edit",
       width: 180,
       renderCell: (params) => (
+        
         <Button
         style={{color:"black",fontWeight:"bold"}}
           onClick={(event) =>
-            handleNestedDataClick(event, params.row.subjectSchedule)
+            handleNestedDataClick(event, params.row.subjectSchedule, params.id)
           }
         >
           view
           <AiTwotoneEdit/>
         </Button>
-      ),
+      )
     },
     {
       field: "remove",
@@ -379,8 +396,8 @@ const BasicTable = () => {
       renderCell: (params) => {
         return (
           <Switch  
-          checked={isChecked[params.id]}
-          onChange={(event) => handleStatusChange(event, params.id)} />
+          checked={params.value}
+          onChange={(event) => handleSubjectStatusChange(event, params.id, event.target.checked, sCode)} />
         );
       },
       headerName: "Status",
@@ -421,20 +438,18 @@ const BasicTable = () => {
           horizontal: "center",
         }}
       >
-        <Typography sx={{ p: 2 }}>
-          <div>
-            <div 
-            className="Table-display"
-           
-            >
-              <DataGrid
-                rows={popoverData}
-                columns={popoverColumns}
-                hideFooterPagination
-                hideFooterSelectedRowCount
-                hideFooter
-              />
-            </div>
+          <Typography sx={{ p: 2 }}>
+            <div>
+              <div className="Table-display">
+                <DataGrid
+                  rows={popoverData}
+                  columns={popoverColumns}
+                  hideFooterPagination
+                  hideFooterSelectedRowCount
+                  hideFooter
+                  onEditCellChange={handlePopoverCellChange} // Add this prop
+                />
+              </div>
 
             <div className="add">
               
