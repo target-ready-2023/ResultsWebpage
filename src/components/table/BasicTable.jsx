@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import { DatePicker, TimePicker } from "@mui/lab";
+import { TextField } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -145,8 +146,43 @@ const BasicTable = () => {
   };
   const [dateError,setDateError]=useState("");
   const[timeError,setTimeError]=useState("")
-  const handleDateChange=()=>{
+  let updated ="";
+  const handleDateChange=(newVal)=>{
+    console.log("new date : ", newVal)
+    const selectedDate = newVal.$d;
+    const isoDate = dayjs(selectedDate).format("YYYY-MM-DD");
+    console.log("format : "+isoDate)
 
+    const{id, field}= idFormatD;
+    console.log("id : ",id , " field : ",field)
+    const scheduleCode =sCode
+    console.log("code : ",scheduleCode)
+   // const a ={...schedule.find((item) => item.id === scheduleId)},
+
+   const updatedSchedule = schedule.map((item) => {
+    if (item.id === scheduleCode) {
+      const updatedSubjectSchedule = item.subjectSchedule.map((subject) => {
+        if (subject.subjectCode === id) {
+          return { ...subject, date : isoDate };
+        }
+        return subject;
+      });
+
+      return {
+        ...item,
+        subjectSchedule: updatedSubjectSchedule,
+      };
+    }
+    return item;
+  })
+  updated = updatedSchedule
+  console.log("Schedule : ",updated)
+  console.log("Updated Schedule : ", updatedSchedule)
+  // setSchedule([])
+  setSchedule(updatedSchedule)
+  console.log("nope : ",schedule)
+  const  x = updated.find((item)=>item.scheduleCode ===sCode)
+  console.log("x ",x)
   }
   const handleTimeChange=()=>{
 
@@ -155,10 +191,11 @@ const BasicTable = () => {
 
   }
   const handleDateSelect=()=>{
-
+    
+    setAnchorD(null)
   }
   const handlePopoverClose = () => {
-    setPopoverData([]); // Clear popoverData
+    //setPopoverData([]); // Clear popoverData
     setAnchorEl(null); // Close the popover
   };
   const handlePopoverSave = async () => {
@@ -291,6 +328,18 @@ const BasicTable = () => {
     else{}
   };
 
+  const updateSchedule = ()=>{
+    const a =schedule
+   
+    const  x = a.find((item)=>item.scheduleCode ===sCode)
+    console.log("data final : ", x)
+    const id = sCode
+    axios.put(`http://localhost:8080/schedule/v1/${id}`,x)
+    .then((response)=>{
+      console.log("res : ",response)
+    })
+  }
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [popoverData, setPopoverData] = useState([]);
   //const popoverOpen = Boolean(anchorEl);
@@ -419,36 +468,20 @@ const handleCancelClick = () => {
         </Button>
       ),
     },
-    {
-      field: "time",
-      headerName: " Time",
-      width: 200,
-      renderCell: (params) => (
-        <Button onClick={(event) => handleTimeDialogBox(event, params)}>
-          {" "}
-          {params.row.time === ""
-            ? "Select Time"
-            : dayjs(params.row.time).format("HH:mm")}
-        </Button>
-      ),
-    },
-    // {
-    //   field: "date",
-    //   headerName: "Date",
-    //   editable: true,
-    //   width: 180,
-    //   align: "left",
-    //   headerAlign: "left",
-    // },
-
     // {
     //   field: "time",
-    //   headerName: "Time",
-    //   //type: "dateTime",
-    //   width: 220,
-    //   //valueGetter: ({ value }) => value && new Date(value),
-    //   editable: true,
+    //   headerName: " Time",
+    //   width: 200,
+    //   renderCell: (params) => (
+    //     <Button onClick={(event) => handleTimeDialogBox(event, params)}>
+    //       {" "}
+    //       {params.row.time === ""
+    //         ? "Select Time"
+    //         : dayjs(params.row.time).format("HH:mm")}
+    //     </Button>
+    //   ),
     // },
+
     {
       
       field: "status",
@@ -464,8 +497,11 @@ const handleCancelClick = () => {
       type: Boolean,
     }
   ];
-  const handleDateDialogBox=()=>{
-
+  const [idFormatD, setIdFormatD] = useState("");
+  const handleDateDialogBox=(event,row)=>{
+    setAnchorD(event.currentTarget)
+    console.log("a : ",row)
+    setIdFormatD(row);
   }
   const handleTimeDialogBox = () =>{
 
@@ -534,18 +570,20 @@ const handleCancelClick = () => {
                       <div>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                           <DemoContainer components={["DateTimePicker"]}>
-                            <DatePicker
+                            <DateTimePicker
                               ampm={false}
                               shouldDisableDate={isSunday}
+                              defaultValue={"Date"}
+                              views={["year", "month", "day"]}
                             //   defaultValue={"Choose date"}
                             //   //defaultValue={dateTimeSave !== null ? dateTimeSave : nineAM}
                             //  // defaultValue={nextDay}
                             //   minTime={nineAM}
                             //   maxTime={fourPM}
                               // value={selectedPopoverDate}
-                              label="Select Date"
+                             // label="Select Date"
                               onChange={handleDateChange}
-                              renderInput={(params) => <TextField {...params} />}
+                             // renderInput={(params) => <TextField {...params} />}
                             />
                           </DemoContainer>
                         </LocalizationProvider>
@@ -558,7 +596,7 @@ const handleCancelClick = () => {
                       </div>
                     </Typography>
                   </Popover>
-                   <Popover
+                   {/* <Popover
                     open={Boolean(anchorT)}
                     anchorEl={anchorT}
                     // onClose={handleCloseDateTime}
@@ -599,7 +637,7 @@ const handleCancelClick = () => {
                         )}
                       </div>
                     </Typography>
-                  </Popover>
+                  </Popover> */}
 
 
               </div>
@@ -609,7 +647,7 @@ const handleCancelClick = () => {
               <Button type="cancel" 
                       onClick={handleCancelClick}
                       style={{color:"black"}}>Cancel {<GiCancel />}</Button>
-                  <Button type="submit" style={{color:"black"}}>Save Changes {<AiTwotoneSave />}</Button>
+                  <Button type="submit" style={{color:"black"}} onClick={updateSchedule}>Save Changes {<AiTwotoneSave />}</Button>
             </div>
           </div>
         </Typography>

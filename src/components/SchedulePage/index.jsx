@@ -23,12 +23,15 @@ import dayjs, { Dayjs } from "dayjs";
 import { Stack } from "@mui/material";
 import swal from "sweetalert";
 import "dayjs/locale/en";
-
+import { useNavigate } from 'react-router-dom';
 let classCode = "";
 let viewClick = "";
 let acYear = "";
 
 const SchedulePage = () => {
+  
+const navigate = useNavigate()
+
   const [anchor, setAnchor] = React.useState(null);
   const [classNameoptions, setClassNameOptions] = useState([]);
   const [scheduleN, setScheduleN] = useState("");
@@ -341,6 +344,8 @@ const SchedulePage = () => {
               icon: "success",
               button: "OK",
             });
+            //navigate('/schedule')
+            window.location.reload();
           }
         });
     }
