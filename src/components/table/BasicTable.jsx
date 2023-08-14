@@ -20,7 +20,7 @@ import { AiTwotoneDelete, AiTwotoneEdit, AiTwotoneSave } from "react-icons/ai";
 import {GiCancel} from "react-icons/gi";
 import "./BasicTable.css"
 import { Popover } from "@mui/material";
-import Typography from "@mui/material/Typography";
+import {Typography,TextField }from "@mui/material";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";

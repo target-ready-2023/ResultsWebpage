@@ -36,6 +36,8 @@ const EditResultsAdmin=()=>{
     const [disableType,setDisableType] =React.useState(true);
     const [markError,setMarkError] = React.useState("");
     const [maxMark,setMaxMark] = React.useState(0);
+    const [viewRes,setViewRes] = React.useState([]);
+    const [viewResMarks,setViewResMarks] = React.useState([]);
     const [marks, setMarks] =React.useState([{
         subjectCode: "",
         internalMarks: 0,
@@ -321,10 +323,31 @@ const EditResultsAdmin=()=>{
         setMarkError('');
     }
   
-    const handleClickOpenView=()=>{
-      setOpenView(true);
+    const handleClickOpenView=(stRoll,student)=>{
+        getSubjectsByclass(classLevel);
+        setSt_roll(stRoll);
+        setStudentName(student.name);
+        setStudentClass(student.classCode);
+        let re =(stResults.find(x=> x.studentId === student.studentId ));
+        if(re === undefined || re?.length === 0 ){
+            setViewRes([]);
+        }
+        else{
+            const resMarks=(re?.marksList).map((marksDis,index) => {
+                const subDetails = subjects.find(sub => sub.subjectCode === marksDis.subjectCode)
+                marksDis.subjectName= subDetails? subDetails.subjectName:null
+                marksDis.maxTestMarks=subDetails? subDetails.maxTestMarks:null
+                marksDis.maxExamMarks=subDetails? subDetails.maxExamMarks:null
+                return marksDis
+            })
+            setViewRes(re)
+            setViewResMarks(resMarks);
+        }
+       setOpenView(true);
      }
      const handleCloseView=()=>{
+        setViewRes([]);
+        setViewResMarks([]);
         setOpenView(false);
      }
 
@@ -338,7 +361,7 @@ const EditResultsAdmin=()=>{
             <Typography className="text"><b>SID: </b>{st_roll}</Typography>    
             <Typography className="text"><b>Name: </b>{studentName}</Typography>
             <Typography className="text"><b>Class: </b>{claName}</Typography>
-            <Typography className="text"><b>Type: </b>{schedules.scheduleName}</Typography>
+            <Typography className="text"><b>Test/Exam: </b>{schedules.scheduleName}</Typography>
             </div>
             <br/>
             {subjects?.map((subject,index) => (
@@ -377,8 +400,8 @@ const EditResultsAdmin=()=>{
             <div style={{ display: 'flex', justifyContent: 'space-between'}}>
             <Typography className="text"><b>SID: </b>{st_roll}</Typography>    
             <Typography className="text"><b>Name: </b>{studentName}</Typography>
-            <Typography variant="body1" className="text"><b>Class: </b>{claName}</Typography>
-            <Typography variant="body1" className="text"><b>Type: </b>{schedules.scheduleName}</Typography>
+            <Typography className="text"><b>Class: </b>{claName}</Typography>
+            <Typography className="text"><b>Test/Exam: </b>{schedules.scheduleName}</Typography>
             </div>
             <br/>
             {subjects?.map((subject,index) => (
@@ -409,14 +432,64 @@ const EditResultsAdmin=()=>{
           <button className="button-dialog" onClick={handleUpdateAndClose}>Update</button>
         </DialogActions>
         </Dialog>
-
-        <Dialog open={openView} onClose={handleCloseView}>
-            <DialogTitle>Result</DialogTitle>
+        {/* {view Result} */}
+        <Dialog open={openView} onClose={handleCloseView} fullWidth>
+            <DialogTitle className="DialogTitle">Result</DialogTitle>
             <DialogContent>
-
+                <br/>
+            <div style={{ display: 'flex', justifyContent: 'space-between'}}>
+            <Typography className="text"><b>SID: </b>{st_roll}</Typography>    
+            <Typography className="text"><b>Name: </b>{studentName}</Typography>
+            <Typography className="text"><b>Class: </b>{claName}</Typography>
+            <Typography className="text"><b>Test/Exam: </b>{schedules.scheduleName}</Typography>
+            </div>
+            <br/>
+            <Table style={{border:"1px solid"}}>
+                <TableHead>
+                    <TableCell className="Table-cell"><Typography className="text"><b>Subject Name</b></Typography></TableCell>
+                    <TableCell className="Table-cell"><Typography className="text"><b>Max Marks</b></Typography></TableCell>
+                    <TableCell className="Table-cell"><Typography className="text"><b>Obtained marks</b></Typography></TableCell>
+                </TableHead>
+                {viewRes?.length === 0 ?
+                <TableRow>
+                    <TableCell><Typography className="text4">No Result Found. Please add result to view</Typography></TableCell>
+                </TableRow>
+                :
+                <>
+                    {viewResMarks?.map((re, index) =>(
+                    <div>
+                        {(schedules.scheduleType).toLowerCase() === "test" ?<>
+                    <TableRow key={index}>
+                        <TableCell className="Table-cell"><Typography className="text">{re.subjectName}</Typography></TableCell>
+                        <TableCell className="Table-cell"><Typography className="text">{re.maxTestMarks}</Typography></TableCell>
+                        <TableCell className="Table-cell"><Typography className="text">{re.internalMarks}</Typography></TableCell>
+                    </TableRow>
+                    </>
+                   :
+                 <>
+                    <TableRow key={index}>
+                        <TableCell className="Table-cell"><Typography className="text">{re.subjectName}</Typography></TableCell>
+                        <TableCell className="Table-cell"><Typography className="text">{re.maxExamMarks}</Typography></TableCell>
+                        <TableCell className="Table-cell"><Typography className="text">{re.externalMarks}</Typography></TableCell>
+                    </TableRow>
+                    </>
+            } 
+            </div>
+        )    
+        )}
+            </>
+        }
+            </Table>
+            <br/>
+            {viewRes?.length === 0?
+            <div></div>:
+            <div>
+            <Typography className="text"><b>Total: </b>{viewRes.totalMarks}</Typography>    
+            <Typography className="text"><b>Percentage: </b>{viewRes.totalPercentage}</Typography>
+            </div>}
             </DialogContent>
             <DialogActions>
-            <button onClick={handleCloseView}>Close</button>
+            <button className="button-dialog" onClick={handleCloseView}>Close</button>
             </DialogActions>
         </Dialog>
 
@@ -494,7 +567,7 @@ const EditResultsAdmin=()=>{
                                     <TableCell className="Table-cell">
                                         <button  className="table-button" disabled={disableType} onClick={ () =>{handleClickOpenAddOrUpdate(student.rollNumber,student)}}><EditIcon/></button>
                                      </TableCell>
-                                    <TableCell className="Table-cell"><button className="table-button" disabled={disableType} onClick={handleClickOpenView}><VisibilityOutlinedIcon/></button></TableCell>
+                                    <TableCell className="Table-cell"><button className="table-button" disabled={disableType} onClick={ () =>{handleClickOpenView(student.rollNumber,student)}}><VisibilityOutlinedIcon/></button></TableCell>
                                     </TableRow> 
                                 ))}
                                 </>}
