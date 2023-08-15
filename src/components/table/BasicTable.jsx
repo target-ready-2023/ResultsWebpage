@@ -634,6 +634,9 @@ const BasicTable = () => {
     );
   };
 
+  const isDate = ()=>{
+    return true
+  }
   
 
   const handleDateDialogBox = (event, row) => {
@@ -709,11 +712,11 @@ const BasicTable = () => {
                         <DateTimePicker
                           ampm={false}
                           shouldDisableDate={isSunday}
-                          defaultValue={"Date"}
+                          
                           views={["year", "month", "day"]}
                           label="Select Date"
                           onChange={handleDateChange}
-                          
+                          //defaultValue={"Date"}
                           //   //defaultValue={dateTimeSave !== null ? dateTimeSave : nineAM}
                           //  // defaultValue={nextDay}
                           //   minTime={nineAM}
@@ -760,7 +763,7 @@ const BasicTable = () => {
                           label="Select Time"
                           onChange={handleTimeChange}
                           inputFormat="HH:mm"
-
+                          shouldDisableDate={isDate}
                           //value={selectedPopoverTime}
                           //defaultValue={dateTimeSave !== null ? dateTimeSave : nineAM}
                           // defaultValue={nextDay}
