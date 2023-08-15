@@ -23,14 +23,13 @@ import dayjs, { Dayjs } from "dayjs";
 import { Stack } from "@mui/material";
 import swal from "sweetalert";
 import "dayjs/locale/en";
-import { useNavigate } from 'react-router-dom';
+
 let classCode = "";
 let viewClick = "";
 let acYear = "";
 
 const SchedulePage = () => {
   
-const navigate = useNavigate()
 
   const [anchor, setAnchor] = React.useState(null);
   const [classNameoptions, setClassNameOptions] = useState([]);
@@ -39,18 +38,14 @@ const navigate = useNavigate()
   const [classN, setClassN] = useState("");
   const [classNameSelectforAll, setClassNameSelectForAll] = useState("");
   const [rowsDisplay, setRowsDisplay] = useState([]);
-  const [subjects, setSubjects] = useState([]);
-  const [classSelectError, setClassSelectError] = useState("");
-  const [scheduleSelectError, setScheduleSelectError] = useState("");
-  const [dateTimeError, setDateTimeError] = useState("");
-  //let errorData = "";
+
   const [anchorDT, setAnchorDT] = useState(null);
 
   const [disableAcYear, setDisableAcYear] = useState(true);
   const [classError, setClassError] = useState("");
   const [scheduleError, setScheduleError] = useState("");
   const [dateTimeErrorParent, setDateTimeErrorParent] = useState("");
-  const fourPM = dayjs().set("hour", 16).startOf("hour");
+  const threePM = dayjs().set("hour", 15).startOf("hour");
   const nineAM = dayjs().set("hour", 9).startOf("hour");
   const nextDay = dayjs().add(1, "day").startOf("day").set("hour", 9);
   const [disabledScheduleNames, setDisabledScheduleNames] = useState(true);
@@ -65,12 +60,15 @@ const navigate = useNavigate()
     "Final",
   ]);
   const [alert, setAlert] = useState("");
-
+ const [dateTimeError, setDateTimeError]=useState("")
   const [year, setYear] = useState("");
   const [classAcademiYears, setClassAcademicYears] = useState([]);
+  const [idFormat, setIdFormat] = useState("");
+  const [dateTimeSave, setDateTimeSave] = useState(null);
+  const [classE, setClassE] = useState("");
+  const [yearError, setYearError] = useState("");
 
   let academicYear = "";
-  let diableSchedule = true;
   let classNameSelect = "";
   let scheduleNameSelect = "";
   let scheduleType = "";
@@ -90,9 +88,13 @@ const navigate = useNavigate()
       });
   });
 
+  //function to open the add schedule popover
+
   const handleClick = (event) => {
     setAnchor(event.currentTarget);
   };
+
+  // defining columns to display in datagrid
 
   const [columns, setColumns] = React.useState([
     {
@@ -124,72 +126,33 @@ const navigate = useNavigate()
     },
   ]);
 
-  const [idFormat, setIdFormat] = useState("");
-  const [dateTimeSave, setDateTimeSave] = useState(null);
+  //handle class name select in add schedule
 
-  const handleDateTimeDialogBox = (event, row) => {
-    setAnchorDT(event.currentTarget);
-
-    //console.log("hey " ,row);
-    //x=row.id;
-    setIdFormat(row);
-    //console.log(event.currentTarget)
-    const prevSavedValue = rowsDisplay.find(
-      (item) => item.id === row.id
-    )?.dateTime;
-
-    setDateTimeSave(prevSavedValue ? dayjs(prevSavedValue) : null);
-  };
-
-  const handleDateTimeSelect = () => {
-    const selectedDateTime = rowsDisplay.find(
-      (item) => item.id === idFormat.id
-    )?.dateTime;
-
-    if (selectedDateTime) {
-      const selectedTime = dayjs(selectedDateTime).format("HH:mm");
-
-      const selectedHours = parseInt(selectedTime.split(":")[0], 10);
-      const selectedMinutes = parseInt(selectedTime.split(":")[1], 10);
-
-      if (
-        selectedHours < 9 ||
-        (selectedHours === 9 && selectedMinutes < 0) ||
-        selectedHours > 16 ||
-        (selectedHours === 16 && selectedMinutes > 0)
-      ) {
-        setDateTimeError("Selected time must be between 9 AM and 4 PM.");
-      } else {
-        setDateTimeError("");
-        setAnchorDT(null);
-      }
-    } else {
-      setDateTimeError("Please select a date and time.");
-    }
-  };
-
-  const handleDateTimeChange = (newVal) => {
-    setDateTimeSave(newVal);
-    const selectedDate = newVal.$d;
-    const isoDateTime = dayjs(selectedDate).format("YYYY-MM-DDTHH:mm:ss");
-    console.log("format : " + isoDateTime);
-    const { id, field } = idFormat;
-    setRowsDisplay((prevRows) =>
-      prevRows.map((row) =>
-        row.id === id ? { ...row, [field]: isoDateTime } : row
-      )
+  const handleClassNameSelect = (event) => {
+    classNameSelect = event.target.value;
+    setClassN(classNameSelect);
+   
+    const subjectsArray = getClassSubjects(classNameSelect);
+    
+    subjectsJson = convertToJSONData(subjectsArray);
+    
+    processData();
+    getExistingSchedulesofClass();
+    
+    setDisabledScheduleNames(false);
+    const className = classNameoptions.find(
+      (item) => item.code === classNameSelect
     );
-    console.log(rowsDisplay);
-    const m = rowsDisplay;
-    console.log(m);
-    //console.log(x)
+
   };
 
+  //get subjects associated with class code
   const getClassSubjects = (classCode) => {
     const classData = classNameoptions.find((item) => item.code === classCode);
     return classData ? classData.subjects : [];
   };
 
+  //mapping subject name with subject codes
   const convertToJSONData = (array) => {
     const jsonData = array.map((subjectName) => {
       return { subjectName };
@@ -198,35 +161,25 @@ const navigate = useNavigate()
     return jsonData;
   };
 
-  const getAcademicYears = (classCode) => {
-    axios
-      .get(`http://localhost:8080/schedule/v1/${classCode}/acYears`)
-      .then((response) => {
-        setClassAcademicYears(response.data);
-        console.log("acYear : " + response.data);
-        // acYear=response.data
-        // console.log("ac yeat : ",acYear)
-      })
-      .catch((error) => {
-        console.error("Error ", error);
-      });
-  };
+//fetching the subject code
 
-  const fetchSubjectCode = async (subjectName, classCode) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:8080/subjects/v1/search?subjectName=${subjectName}`
-      );
-      const subjectData = response.data.find(
-        (item) => item.classCode === classCode
-      );
-      return subjectData ? subjectData.subjectCode : null;
-    } catch (error) {
-      console.error(`Error fetching subjectCode for ${subjectName}:`, error);
-      return null;
-    }
-  };
 
+const fetchSubjectCode = async (subjectName, classCode) => {
+  try {
+    const response = await axios.get(
+      `http://localhost:8080/subjects/v1/search?subjectName=${subjectName}`
+    );
+    const subjectData = response.data.find(
+      (item) => item.classCode === classCode
+    );
+    return subjectData ? subjectData.subjectCode : null;
+  } catch (error) {
+    console.error(`Error fetching subjectCode for ${subjectName}:`, error);
+    return null;
+  }
+};
+
+  //processing the data fetched by choosing the class name to display the subjects
   const processData = async () => {
     updatedData = await Promise.all(
       subjectsJson.map(async (item) => {
@@ -245,13 +198,124 @@ const navigate = useNavigate()
 
     console.log(updatedData);
     row = updatedData.map((item) => ({
-      id: item.subjectCode, // Use 'subjectCode' as the 'id'
+      id: item.subjectCode, 
       ...item,
     }));
     console.log(row);
     setRowsDisplay(row);
   };
 
+  //function for mapping the selected schedule name and type
+
+  const handleScheduleNameSelect = (event) => {
+    scheduleNameSelect = event.target.value;
+    setScheduleN(scheduleNameSelect);
+    const scName = scheduleNameSelect;
+    console.log(scName);
+    if (
+      scName === "Test 1" ||
+      scName === "Test 2" ||
+      scName === "Test 3" ||
+      scName === "Test 4"
+    ) {
+      scheduleType = "Test";
+    } else if (scName === "Final") {
+      scheduleType = "Final";
+    } else {
+      scheduleType = "Exam";
+    }
+    setScheduleT(scheduleType);
+  };
+
+  //getting the existing  schedules of a class and processing it
+
+  const getExistingSchedulesofClass = () => {
+    console.log("class code : ", classNameSelect);
+
+    axios
+      .get(
+        `http://localhost:8080/schedule/v1/current/scNames?classCode=${classNameSelect}`
+      )
+      .then((res) => {
+        console.log("Response ", res.data);
+        const existingSchedules = res.data;
+        const updatedSchedules = schedules.filter(
+          (schedule) => !existingSchedules.includes(schedule)
+        );
+        console.log("Updated schedule : ", updatedSchedules);
+        setSchedules(updatedSchedules);
+      })
+      .catch((error) => {
+        console.log("Error ", error);
+      });
+  };
+
+  
+
+// handling the date time popover
+
+  const handleDateTimeDialogBox = (event, row) => {
+    setAnchorDT(event.currentTarget);
+
+    setIdFormat(row);
+   
+    const prevSavedValue = rowsDisplay.find(
+      (item) => item.id === row.id
+    )?.dateTime;
+
+    setDateTimeSave(prevSavedValue ? dayjs(prevSavedValue) : null);
+  };
+
+  // selecting the date and time
+
+  const handleDateTimeSelect = () => {
+    const selectedDateTime = rowsDisplay.find(
+      (item) => item.id === idFormat.id
+    )?.dateTime;
+
+    if (selectedDateTime) {
+      const selectedTime = dayjs(selectedDateTime).format("HH:mm");
+
+      const selectedHours = parseInt(selectedTime.split(":")[0], 10);
+      const selectedMinutes = parseInt(selectedTime.split(":")[1], 10);
+
+      if (
+        selectedHours < 9 ||
+        (selectedHours === 9 && selectedMinutes < 0) ||
+        selectedHours > 15 ||
+        (selectedHours === 15 && selectedMinutes > 0)
+      ) {
+        setDateTimeError("Selected time must be between 9 AM and 3 PM.");
+      } else {
+        setDateTimeError("");
+        setAnchorDT(null);
+      }
+    } else {
+      setDateTimeError("Please select a date and time.");
+    }
+  };
+
+  // handling the change in date time.
+
+  const handleDateTimeChange = (newVal) => {
+    setDateTimeSave(newVal);
+    const selectedDate = newVal.$d;
+    const isoDateTime = dayjs(selectedDate).format("YYYY-MM-DDTHH:mm:ss");
+    
+    const { id, field } = idFormat;
+    setRowsDisplay((prevRows) =>
+      prevRows.map((row) =>
+        row.id === id ? { ...row, [field]: isoDateTime } : row
+      )
+    );
+    
+    const m = rowsDisplay;
+    
+  };
+
+ //validation functions for 
+ //class
+ 
   const validateclass = () => {
     if (classN === "") {
       setClassError("select a class");
@@ -261,6 +325,9 @@ const navigate = useNavigate()
       return false;
     }
   };
+
+  //schedule
+
   const validateSchedule = () => {
     if (scheduleN === "") {
       setScheduleError("Select a schedule");
@@ -271,14 +338,16 @@ const navigate = useNavigate()
     }
   };
 
-  const validateDateTime = (dateTime) => {
+  //date and time
+
+  const validateDateTime = () => {
     const data = JSON.parse(JSON.stringify(rowsDisplay));
     let hasEmptyDateTime = false;
 
     data.forEach((row) => {
       if (!row.dateTime) {
         hasEmptyDateTime = true;
-        return; // Exit the loop early if an empty dateTime is found
+        return;
       }
     });
     if (hasEmptyDateTime) {
@@ -289,6 +358,16 @@ const navigate = useNavigate()
       return false;
     }
   };
+
+  //checking wheather the day is sunday or not
+
+  const isSunday = (date) => {
+    const day = date.day();
+
+    return day === 0;
+  };
+
+  //handling the save schedule
 
   const handleSaveSchedule = () => {
     const classnamevalidation = validateclass();
@@ -343,86 +422,27 @@ const navigate = useNavigate()
               title: "Schedule Added Successfully",
               icon: "success",
               button: "OK",
+            }).then(() => {
+              window.location.reload(); 
             });
-            //navigate('/schedule')
-            window.location.reload();
+            
           }
-        });
+        })
+        .catch((error)=>{
+          swal({
+            title: "Failed to Add Schedule",
+            text: "An error occurred while adding the schedule.",
+            icon: "error",
+            button: "OK",
+          }).then(() => {
+            window.location.reload(); 
+          });
+        })
     }
   };
 
-  const getExistingSchedulesofClass = () => {
-    console.log("class code : ", classNameSelect);
-    // let existingSchedules=""
-    axios
-      .get(
-        `http://localhost:8080/schedule/v1/current/scNames?classCode=${classNameSelect}`
-      )
-      .then((res) => {
-        console.log("Response ", res.data);
-        const existingSchedules = res.data;
-        const updatedSchedules = schedules.filter(
-          (schedule) => !existingSchedules.includes(schedule)
-        );
-        console.log("Updated schedule : ", updatedSchedules);
-        setSchedules(updatedSchedules);
-      })
-      .catch((error) => {
-        console.log("Error ", error);
-      });
-  };
+  //handling closing the add schedule popover
 
-  const handleClassNameSelect = (event) => {
-    classNameSelect = event.target.value;
-    setClassN(classNameSelect);
-    console.log(classNameSelect);
-    const subjectsArray = getClassSubjects(classNameSelect);
-    console.log(classNameSelect + " " + subjectsArray);
-    subjectsJson = convertToJSONData(subjectsArray);
-    console.log(subjectsJson);
-    processData();
-    getExistingSchedulesofClass();
-    console.log("process data : " + rowsDisplay);
-    setDisabledScheduleNames(false);
-    const className = classNameoptions.find(
-      (item) => item.code === classNameSelect
-    );
-    // fetchScheduleNames(className.name);
-  };
-
-  const handleClassNameSelectForAll = (event) => {
-    setClassNameSelectForAll(event.target.value); //useState
-    console.log("useState" + classNameSelectforAll);
-    classCode = event.target.value; //let
-    console.log("let " + classCode);
-    getAcademicYears(classCode);
-    setDisableAcYear(false);
-  };
-  const handleYearSelect = (event) => {
-    setYear(event.target.value);
-    acYear = event.target.value;
-    academicYear = event.target.value;
-    console.log("let : ", academicYear);
-  };
-  const handleScheduleNameSelect = (event) => {
-    scheduleNameSelect = event.target.value;
-    setScheduleN(scheduleNameSelect);
-    const scName = scheduleNameSelect;
-    console.log(scName);
-    if (
-      scName === "Test 1" ||
-      scName === "Test 2" ||
-      scName === "Test 3" ||
-      scName === "Test 4"
-    ) {
-      scheduleType = "Test";
-    } else if (scName === "Final") {
-      scheduleType = "Final";
-    } else {
-      scheduleType = "Exam";
-    }
-    setScheduleT(scheduleType);
-  };
   const handleCancelClick = () => {
     setRowsDisplay([]);
     setClassN("");
@@ -433,17 +453,45 @@ const navigate = useNavigate()
     setDateTimeErrorParent("");
     setAnchor(null);
   };
-  const handleCloseDateTime = () => {
-    setAnchorDT(null);
-  };
-  const isSunday = (date) => {
-    const day = date.day();
+ 
 
-    return day === 0;
+//selecting the class name for displaying all the schedules
+
+  const handleClassNameSelectForAll = (event) => {
+    setClassNameSelectForAll(event.target.value); 
+    console.log("useState" + classNameSelectforAll);
+    classCode = event.target.value;
+    console.log("let " + classCode);
+    getAcademicYears(classCode);
+    setDisableAcYear(false);
   };
-  const [fetchError, setFetchError] = useState("");
-  const [classE, setClassE] = useState("");
-  const [yearError, setYearError] = useState("");
+
+  // displaying the academic years of the selected class
+
+  const getAcademicYears = (classCode) => {
+    axios
+      .get(`http://localhost:8080/schedule/v1/${classCode}/acYears`)
+      .then((response) => {
+        setClassAcademicYears(response.data);
+        
+      })
+      .catch((error) => {
+        console.error("Error ", error);
+      });
+  };
+
+  //handle selecting a year
+
+  const handleYearSelect = (event) => {
+    setYear(event.target.value);
+    acYear = event.target.value;
+    academicYear = event.target.value;
+    console.log("let : ", academicYear);
+  };
+  
+  //validations for:
+  //class name select
+  
   const classValid = () => {
     if (classCode === "") {
       setClassE("Please select class");
@@ -453,6 +501,7 @@ const navigate = useNavigate()
       return false;
     }
   };
+  //academic year select
   const yearValid = () => {
     if (acYear === "") {
       setYearError("Please select academic year");
@@ -462,11 +511,14 @@ const navigate = useNavigate()
       return false;
     }
   };
+
+  
+  // handling the view click
+  
   const handleView = () => {
     const classvalid = classValid();
     const acYearValid = yearValid();
-    // console.log("a : " +classvalid + " b : "+ acYearValid)
-    // if(classCode.trim() !== "" && )
+    
     if (classvalid || acYearValid) {
       if (classvalid === acYearValid) {
         setClassE("Please Select Class and Academic Year");
@@ -605,7 +657,7 @@ const navigate = useNavigate()
                               //defaultValue={dateTimeSave !== null ? dateTimeSave : nineAM}
                              // defaultValue={nextDay}
                               minTime={nineAM}
-                              maxTime={fourPM}
+                              maxTime={threePM}
                               label="Select Date and Time"
                               onChange={handleDateTimeChange}
                             />
@@ -613,10 +665,13 @@ const navigate = useNavigate()
                         </LocalizationProvider>
                       </div>
                       <div>
-                        <Button onClick={handleDateTimeSelect}>Done</Button>
-                        {dateTimeError && (
+                      {dateTimeError && (
                           <span style={{ color: "red" }}>{dateTimeError}</span>
                         )}
+                      </div>
+                      <div>
+                        <Button onClick={handleDateTimeSelect}>Done</Button>
+                        
                       </div>
                     </Typography>
                   </Popover>
