@@ -1,70 +1,68 @@
-.container .heading {
-    /* display: flex; */
-    /* justify-content: center;
-    align-content: center; */
-    /* height: 100vh; Optional: Set the height to fill the viewport */
-    padding-left: 630px;
-}
-
-
-.dd-container{
+.heading{
     display: flex;
-
+    justify-content: center;
 }
 
-.container .lb-year-dd{
-    width: 200px;
-    padding-left: 0px;
-    display: inline-block;
-    float: right;
-    top: 0px;
-    position: relative; 
-    top:-60px;
+.dds {
+    width: 100%;
+    /* text-align: center; */
+    padding: 20px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center; /*Center vertically*/
 }
 
-.container .lb-class-dd{
-    width: 200px;
-    padding-right: 0px;
-    display: inline-block;
-    /* left: 68%; */
-    top: 0px;
-    position: relative;
-    float: right;
-    top:-60px;
+.lb-year-dd .dropdown-class-main {
+    background-color: #6c88c8;
+    width: 150px;
+   margin: 0 10px;  /* Add some horizontal spacing between dropdowns */
+   vertical-align: middle;
+   /* height: 30px;
+    padding-top: 40px;
+    margin-top: 18px; */
+}
+
+.lb-class-dd .dropdown-class-main {
+    background-color: #6c88c8;
+    width: 150px;
+   margin: 0 10px;  /* Add some horizontal spacing between dropdowns */
+   vertical-align: middle;
+   /* height: 20px; */
+    /* padding-top: 40px; */
+    /* margin-top: 18px; */
 }
 
 .lb-table{
     width : 420px;
     margin: 0 auto;
-    padding-top: 45px;
+    padding-top: 0px;
 }
 
-.footnote{
-    width : 600px;
-
-   
-}
-.dropdown-class-main{
-    width:150px;
-  height:40px;
-  margin-bottom: 0%;
-  font-size: medium;
-  font-family:Georgia, 'Times New Roman', Times, serif;
-  background-color: #6c88c8;
-  color: black;
-}
-
-.boardheader{
-    background-color:#6c88c8;
-    font-size: medium;
- }
-.error-message
-{
-    color: red;
-}
 .message-heading {
     text-align: center;
-    margin-top: 16px;
+    /* margin-top: 16px; */
     font-size: 18px;
     font-weight: bold;
   }
+
+  .footnote{
+    width : 600px;
+    align-items: center;
+    text-align: center;
+   width: 100%;
+   padding-top: 20px;
+}
+
+.error-message
+{
+    color: red;
+    text-align: center;
+}
+
+.direction-message
+{
+    color: blue;
+    text-align: center;
+}
+
+
