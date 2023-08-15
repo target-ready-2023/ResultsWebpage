@@ -37,13 +37,18 @@ const SchedulePageStudent = () => {
 
   return (
     <>
-    <div className="main-div">
-      <div className="top-part">
+   
+      <div>
+        <div className="head1">
+         
+         <h2>Schedules</h2>
+         
+        </div>
         
         <div className="drop-down">
-          <Box className="label">
-            <FormControl fullWidth variant="filled">
-              <InputLabel>Class</InputLabel>
+          
+            <FormControl >
+              <InputLabel>Class Name</InputLabel>
               <Select className="dropdown"
                onChange={handleClassNameSelect}
               value={classNameSelect} >
@@ -54,10 +59,11 @@ const SchedulePageStudent = () => {
                         }
               </Select>
             </FormControl>
-          </Box>
+            
+          
         </div>
-      </div>    
-    </div>
+        </div>
+     <br></br>
     
         <div className="table">
         <BasicTableStudent

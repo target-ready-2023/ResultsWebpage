@@ -32,28 +32,32 @@ const BasicTable = ({ handleClassNameSelect, classNameSelect }) => {
       headerName: "Subject Code",
       headerAlign: "center",
       align: "center",
-      width: "200",
+      width: "263",
+      headerClassName:"headerdesign"
     },
     {
       field: "subjectName",
       headerName: "Subject Name",
       headerAlign: "center",
       align: "center",
-      width: "200",
+      width: "260",
+      headerClassName:"headerdesign"
     },
     {
       field: "date",
       headerName: "Date",
       headerAlign: "center",
       align: "center",
-      width: "200",
+      width: "270",
+      headerClassName:"headerdesign"
     },
     {
       field: "time",
       headerName: "Time",
       headerAlign: "center",
       align: "center",
-      width: "200",
+      width: "270",
+      headerClassName:"headerdesign"
     },
   ];
 
@@ -124,7 +128,7 @@ const BasicTable = ({ handleClassNameSelect, classNameSelect }) => {
           
         />
       ) : (
-        <p>Loading...</p>
+        <p>Note: Select class name to view your Schedules</p>
       )}
     </div>
   );
