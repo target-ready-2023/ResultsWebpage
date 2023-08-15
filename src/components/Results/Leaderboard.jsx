@@ -9,6 +9,7 @@ import axios from "axios";
     { 
         field: "id",  
         headerAlign: "center",
+        headerClassName:"leaderboard-head",
         align: "center", 
         headerName: "Rank", 
         width: 100 
@@ -16,6 +17,7 @@ import axios from "axios";
     { 
       field: "name", 
       headerAlign: "center",
+      headerClassName:"leaderboard-head",
       align: "center", 
       headerName: "Name", 
       width: 200 
@@ -23,9 +25,10 @@ import axios from "axios";
     { 
       field: "aggregate", 
       headerAlign: "center",
+      headerClassName:"leaderboard-head",
       align: "center", 
       headerName: "Aggregate %", 
-      width: 100 
+      width: 118 
   },
   ];
 
@@ -33,6 +36,7 @@ import axios from "axios";
     {
       field: "id",  
         headerAlign: "center",
+        headerClassName:"leaderboard-head",
         align: "center", 
         headerName: "Class", 
         width: 100 
@@ -40,6 +44,7 @@ import axios from "axios";
     { 
       field: "name", 
       headerAlign: "center",
+      headerClassName:"leaderboard-head",
       align: "center", 
       headerName: "Name", 
       width: 200 
@@ -47,9 +52,10 @@ import axios from "axios";
     { 
       field: "aggregate", 
       headerAlign: "center",
+      headerClassName:"leaderboard-head",
       align: "center",
       headerName: "Aggregate %", 
-      width: 100 },
+      width: 117 },
   ]
 
   const Leaderboard = () => {
@@ -192,8 +198,8 @@ import axios from "axios";
         <div className="dds">
           <div className="lb-year-dd">
             {/* <Box className="lb-box1"> */}
-              <FormControl fullWidth variant="filled">
-                <InputLabel>YEAR</InputLabel>
+              <FormControl >
+                <InputLabel className="year-label">Year</InputLabel>
                 <Select
                   className="dropdown-class-main"
                   value={yearSelect}
@@ -213,8 +219,8 @@ import axios from "axios";
   
           <div className="lb-class-dd">
             {/* <Box className="lb-box1"> */}
-              <FormControl fullWidth variant="filled">
-                <InputLabel>CLASS</InputLabel>
+              <FormControl >
+                <InputLabel className="class-label">Class</InputLabel>
                 <Select
                   className="dropdown-class-main"
                   onChange={handleClassNameSelect}

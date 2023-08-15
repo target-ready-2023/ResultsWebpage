@@ -17,9 +17,21 @@
     width: 150px;
    margin: 0 10px;  /* Add some horizontal spacing between dropdowns */
    vertical-align: middle;
+   height: 40px;
    /* height: 30px;
     padding-top: 40px;
     margin-top: 18px; */
+}
+
+.leaderboard-head{
+    background-color: #6c88c8;
+}
+.lb-year-dd .year-label{
+    top:-15%;
+}
+
+.lb-class-dd .class-label{
+    top:-15%;
 }
 
 .lb-class-dd .dropdown-class-main {
@@ -27,6 +39,7 @@
     width: 150px;
    margin: 0 10px;  /* Add some horizontal spacing between dropdowns */
    vertical-align: middle;
+   height: 40px;
    /* height: 20px; */
     /* padding-top: 40px; */
     /* margin-top: 18px; */
