@@ -20,7 +20,7 @@ import { AiTwotoneDelete, AiTwotoneEdit, AiTwotoneSave } from "react-icons/ai";
 import {GiCancel} from "react-icons/gi";
 import "./BasicTable.css"
 import { Popover } from "@mui/material";
-import {Typography,TextField }from "@mui/material";
+import {Typography}from "@mui/material";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -73,7 +73,7 @@ const BasicTable = () => {
 
   const fourPM = dayjs().set("hour", 16).startOf("hour");
   const nineAM = dayjs().set("hour", 9).startOf("hour");
-
+ 
   useEffect(() => {
 
     console.log("table : " + classCode)
@@ -147,7 +147,7 @@ const BasicTable = () => {
   const [dateError,setDateError]=useState("");
   const[timeError,setTimeError]=useState("")
   let updated ="";
-  const handleDateChange=(newVal)=>{
+  const handleDateChange=async (newVal)=>{
     console.log("new date : ", newVal)
     const selectedDate = newVal.$d;
     const isoDate = dayjs(selectedDate).format("YYYY-MM-DD");
@@ -180,15 +180,105 @@ const BasicTable = () => {
   console.log("Updated Schedule : ", updatedSchedule)
   // setSchedule([])
   setSchedule(updatedSchedule)
-  console.log("nope : ",schedule)
+ console.log("popover : ",popoverData)
   const  x = updated.find((item)=>item.scheduleCode ===sCode)
-  console.log("x ",x)
-  }
-  const handleTimeChange=()=>{
 
+  console.log("x ",x.subjectSchedule)
+  const popoverDataWithIds = x.subjectSchedule.map((subject) => ({
+    ...subject,
+    id: subject.subjectCode, // Use subjectCode as the id
+  }));
+
+  try {
+    const modifiedData = await Promise.all(
+      x.subjectSchedule.map(async (item) => {
+        const response = await axios.get(
+          `http://localhost:8080/subjects/v1/subject/${item.subjectCode}`
+        );
+        const subjectName = response.data.subjectName;
+        return {
+          ...item,
+          id: item.subjectCode,
+          subjectName: subjectName,
+        };
+      })
+    );
+
+    // Use the modifiedData locally without setting it to the state
+    console.log('Modified Data:', modifiedData);
+
+    // Now, setAnchorEl to open the Popover and update popoverData
+    setPopoverData(modifiedData);
+  } catch (error) {
+    console.error("Error fetching nested data:", error);
+  }
+
+  //setPopoverData(popoverDataWithIds)
+  }
+  const handleTimeChange=async(newVal)=>{
+    console.log("new date : ", newVal)
+    const selectedTime = newVal.$d;
+    const isoTime = dayjs(selectedTime).format("HH:mm:ss");
+    console.log("format : "+isoTime)
+    const scheduleCode =sCode
+    const{id, field}= idFormatT;
+
+    const updatedSchedule = schedule.map((item) => {
+      if (item.id === scheduleCode) {
+        const updatedSubjectSchedule = item.subjectSchedule.map((subject) => {
+          if (subject.subjectCode === id) {
+            return { ...subject, time : isoTime };
+          }
+          return subject;
+        });
+  
+        return {
+          ...item,
+          subjectSchedule: updatedSubjectSchedule,
+        };
+      }
+      return item;
+    })
+updated = updatedSchedule
+  console.log("Schedule : ",updated)
+  console.log("Updated Schedule : ", updatedSchedule)
+  // setSchedule([])
+  setSchedule(updatedSchedule)
+ console.log("popover : ",popoverData)
+  const  x = updated.find((item)=>item.scheduleCode ===sCode)
+
+  console.log("x ",x.subjectSchedule)
+  const popoverDataWithIds = x.subjectSchedule.map((subject) => ({
+    ...subject,
+    id: subject.subjectCode, // Use subjectCode as the id
+  }));
+  try {
+    const modifiedData = await Promise.all(
+      x.subjectSchedule.map(async (item) => {
+        const response = await axios.get(
+          `http://localhost:8080/subjects/v1/subject/${item.subjectCode}`
+        );
+        const subjectName = response.data.subjectName;
+        return {
+          ...item,
+          id: item.subjectCode,
+          subjectName: subjectName,
+        };
+      })
+    );
+
+    // Use the modifiedData locally without setting it to the state
+    console.log('Modified Data:', modifiedData);
+
+    // Now, setAnchorEl to open the Popover and update popoverData
+    setPopoverData(modifiedData);
+  } catch (error) {
+    console.error("Error fetching nested data:", error);
+  }
+    
   }
   const handleTimeSelect=()=>{
-
+    setAnchorT(null)
   }
   const handleDateSelect=()=>{
     
@@ -341,6 +431,7 @@ const BasicTable = () => {
   }
 
   const [anchorEl, setAnchorEl] = useState(null);
+ 
   const [popoverData, setPopoverData] = useState([]);
   //const popoverOpen = Boolean(anchorEl);
   const [popoverOpen, setPopoverOpen] = useState(false);
@@ -468,19 +559,19 @@ const handleCancelClick = () => {
         </Button>
       ),
     },
-    // {
-    //   field: "time",
-    //   headerName: " Time",
-    //   width: 200,
-    //   renderCell: (params) => (
-    //     <Button onClick={(event) => handleTimeDialogBox(event, params)}>
-    //       {" "}
-    //       {params.row.time === ""
-    //         ? "Select Time"
-    //         : dayjs(params.row.time).format("HH:mm")}
-    //     </Button>
-    //   ),
-    // },
+    {
+      field: "time",
+      headerName: " Time",
+      width: 200,
+      renderCell: (params) => (
+        <Button onClick={(event) => handleTimeDialogBox(event, params)}>
+          {" "}
+          {params.row.time === ""
+            ? "Select Time"
+            : dayjs(params.row.time, "HH:mm:ss").format("HH:mm:ss")}
+        </Button>
+      ),
+    },
 
     {
       
@@ -498,12 +589,16 @@ const handleCancelClick = () => {
     }
   ];
   const [idFormatD, setIdFormatD] = useState("");
+  const [idFormatT, setIdFormatT] = useState("");
   const handleDateDialogBox=(event,row)=>{
     setAnchorD(event.currentTarget)
     console.log("a : ",row)
     setIdFormatD(row);
   }
-  const handleTimeDialogBox = () =>{
+
+  const handleTimeDialogBox = (event, row) =>{
+    setAnchorT(event.currentTarget)
+    setIdFormatT(row);
 
   }
   const [anchorD , setAnchorD]=useState(null);
@@ -575,6 +670,7 @@ const handleCancelClick = () => {
                               shouldDisableDate={isSunday}
                               defaultValue={"Date"}
                               views={["year", "month", "day"]}
+                              value={"hello"}
                             //   defaultValue={"Choose date"}
                             //   //defaultValue={dateTimeSave !== null ? dateTimeSave : nineAM}
                             //  // defaultValue={nextDay}
@@ -596,7 +692,7 @@ const handleCancelClick = () => {
                       </div>
                     </Typography>
                   </Popover>
-                   {/* <Popover
+                   <Popover
                     open={Boolean(anchorT)}
                     anchorEl={anchorT}
                     // onClose={handleCloseDateTime}
@@ -617,8 +713,11 @@ const handleCancelClick = () => {
                             <DateTimePicker
                               ampm={false}
                               // shouldDisableDate={isSunday}
-                              defaultValue={"Choose date and time"}
-                              value={selectedPopoverTime}
+                              defaultValue={"Choose time"}
+                              
+                              views={["hours", "minutes"]}
+                             
+                              //value={selectedPopoverTime}
                               //defaultValue={dateTimeSave !== null ? dateTimeSave : nineAM}
                              // defaultValue={nextDay}
                              renderInput={(params) => <TextField {...params} />}
@@ -626,6 +725,7 @@ const handleCancelClick = () => {
                               maxTime={fourPM}
                               label="Select Time"
                               onChange={handleTimeChange}
+                              inputFormat="HH:mm" 
                             />
                           </DemoContainer>
                         </LocalizationProvider>
@@ -637,7 +737,7 @@ const handleCancelClick = () => {
                         )}
                       </div>
                     </Typography>
-                  </Popover> */}
+                  </Popover>
 
 
               </div>
