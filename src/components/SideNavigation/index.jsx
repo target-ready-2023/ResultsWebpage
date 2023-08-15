@@ -116,7 +116,9 @@ const SideNavigation = () => {
       >
         <MenuItem onClick={handleHome}>Home</MenuItem>
         <MenuItem onClick={handleStudent}>Student</MenuItem>
-        <MenuItem onClick={handleClasses}>Classes and Subjects</MenuItem>
+        {userPersona !== 'student' && ( // Conditionally render if userPersona is not 'student'
+          <MenuItem onClick={handleClasses}>Classes and Subjects</MenuItem>
+        )}
         <MenuItem onClick={handleExams}>Exam Main Page</MenuItem>
         {/* <MenuItem onClick={handleSchedule}>Exam Schedule</MenuItem>
         <MenuItem onClick={handleResults}>Exam Results</MenuItem> */}

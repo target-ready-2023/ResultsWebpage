@@ -61,7 +61,12 @@ import axios from "axios";
     const [cVal, setCVal] = useState('');
     const [selectedAcademicYear, setSelectedAcademicYear] = useState('');
     const [yearNotAvailableError, setYearNotAvailableError] = useState('');
-
+    const [classDropdownDisabled, setClassDropdownDisabled] = useState(true);
+    const [classDropdownErrorMessage, setClassDropdownErrorMessage] = useState('');
+    const customLocaleText = {
+      noRowsLabel: 'Select a YEAR to view our students who aced their year !',
+      // Add other customized text here if needed
+  };
 
   
     useEffect(() => {
@@ -77,17 +82,24 @@ import axios from "axios";
     }, []);
   
     const handleYearSelect = (event) => {
-        const selectedYear = event.target.value;
-        setSelectedAcademicYear(selectedYear);
-        setYearSelect(selectedYear);
+      const selectedYear = event.target.value;
+      setSelectedAcademicYear(selectedYear);
+      setYearSelect(selectedYear);
+      setClassDropdownDisabled(false); // Enable the class dropdown
+      setClassDropdownErrorMessage(''); // Clear the error message
       };
   
     const handleClassNameSelect = (event) => {
-      const selectedClass = classNameoptions.find(option => option.code === event.target.value);
-      if (selectedClass) {
-        setCVal(selectedClass.name);
-      }
-      setClassNameSelect(event.target.value);
+      if (!yearSelect) {
+        setClassDropdownErrorMessage('Please select a year first.'); // Set the error message
+       } else {
+        const selectedClass = classNameoptions.find(option => option.code === event.target.value);
+        if (selectedClass) {
+            setCVal(selectedClass.name);
+        }
+        setClassNameSelect(event.target.value);
+        setClassDropdownErrorMessage(''); // Clear the error message
+    }
     };
 
     useEffect(()=>{
@@ -171,16 +183,15 @@ import axios from "axios";
     const academicYears = generateAcademicYears();
   
     return (
-      <div>
-        <div className="container">
+      <>
+
           <div className="heading">
             <h2>TOPPERS</h2>
           </div>
-        </div>
   
-        <div>
+        <div className="dds">
           <div className="lb-year-dd">
-            <Box className="lb-box1">
+            {/* <Box className="lb-box1"> */}
               <FormControl fullWidth variant="filled">
                 <InputLabel>YEAR</InputLabel>
                 <Select
@@ -195,65 +206,82 @@ import axios from "axios";
                   ))}
                 </Select>
               </FormControl>
-              <p className="error-message">{yearNotAvailableError}</p>
-            </Box>
+              {/* <p className="error-message">{yearNotAvailableError}</p> */}
+            {/* </Box> */}
           </div>
+
   
           <div className="lb-class-dd">
-            <Box className="lb-box1">
+            {/* <Box className="lb-box1"> */}
               <FormControl fullWidth variant="filled">
                 <InputLabel>CLASS</InputLabel>
                 <Select
                   className="dropdown-class-main"
                   onChange={handleClassNameSelect}
                   value={classNameSelect}
-                >
+                  disabled={classDropdownDisabled} // Disable the dropdown if classDropdownDisabled is true
+                  >
                   {classNameoptions.map((option) => (
-                    <MenuItem key={option.name} value={option.code}>
-                      {option.name}
-                    </MenuItem>
+                      <MenuItem key={option.name} value={option.code}>
+                          {option.name}
+                      </MenuItem>
                   ))}
                 </Select>
+
               </FormControl>
-            </Box>
+            {/* </Box> */}
           </div>
         </div>
   
+        <div className="error">
+          <p className="error-message">{yearNotAvailableError}</p>
+          {/* <p className="error-message">{classDropdownErrorMessage}</p>  */}
+          {!yearSelect && (
+              <p className="direction-message">Please select a year first</p>
+          )}
+         
+            { yearSelect && !yearNotAvailableError && !classNameSelect ? 
+            (<p className="direction-message">Select CLASS to see the Leaderboard</p>)
+          : null }
+          
+        </div>
+
         <div className="lb-table">
 
-        {((yearSelect && !classNameSelect)) ? (
-          <h3 className="message-heading">Top Students Of Each Class</h3>
-        ) : null}
+              {((yearSelect && !classNameSelect)) ? (
+                <h3 className="message-heading">Top Students Of Each Class</h3>
+              ) : null}
 
-        {(yearSelect && !classNameSelect) || (!yearSelect && !classNameSelect) ? (
-          <DataGrid
-            rows={toppersData}
-            columns={topperColumns}
-            pageSize={5}
-            autoHeight
-            hideFooter
-            hideFooterPagination
-            hideFooterSelectedRowCount
-          />
-          ) : (
-            <><h3 className="message-heading">Leader Board</h3>
-            <DataGrid
-            rows={leaderboardData}
-            columns={columns}
-            pageSize={5}
-            autoHeight
-            hideFooter
-            hideFooterPagination
-            hideFooterSelectedRowCount
-          />
-          </>
-          )}
+              {(yearSelect && !classNameSelect) || (!yearSelect && !classNameSelect) ? (
+                <DataGrid
+                  rows={toppersData}
+                  columns={topperColumns}
+                  pageSize={5}
+                  autoHeight
+                  hideFooter
+                  hideFooterPagination
+                  hideFooterSelectedRowCount
+                  localeText={customLocaleText}
+                />
+                ) : (
+                  <><h3 className="message-heading">Leader Board</h3>
+                  <DataGrid
+                  rows={leaderboardData}
+                  columns={columns}
+                  pageSize={5}
+                  autoHeight
+                  hideFooter
+                  hideFooterPagination
+                  hideFooterSelectedRowCount
+                />
+                </>
+                )}
         </div>
   
         <div className="footnote">
-          <h1>WE ARE PROUD OF OUR ACHIEVERS !!</h1>
+          <h1 className="msg">WE ARE PROUD OF OUR ACHIEVERS !!</h1>
         </div>
-      </div>
+      </>
     );
   };
   
