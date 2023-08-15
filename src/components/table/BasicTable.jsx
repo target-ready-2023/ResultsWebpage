@@ -66,6 +66,9 @@ const BasicTable = () => {
 
   const [originalSchedule, setOriginalSchedule] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
+  const [displayDate, setDisplayDate] = useState("");
+  const [displayTime, setDisplayTime] = useState("");
+
   //GET CALL URL
   const getUrl = " http://localhost:8080/schedule/v1/all";
 
@@ -219,10 +222,10 @@ const BasicTable = () => {
       width: 200,
       renderCell: (params) => (
         <Button onClick={(event) => handleDateDialogBox(event, params)}>
-          {" "}
+          {/* {" "} */}
           {params.row.date === ""
             ? "Select Date"
-            : dayjs(params.row.date).format("YYYY-MM-DD")}
+            : dayjs(params.row.date).format("DD-MM-YYYY")}
         </Button>
       ),
     },
@@ -323,16 +326,25 @@ const BasicTable = () => {
       setSelectedDate("");
     } else {
       setDateError("");
-      setAnchorD(null);
+      //setAnchorD(null);
       setSelectedDate("");
+      //closeDatePopover(); // Call the function to close the date popover
     }
   };
+  
+  const closeDatePopover = () => {
+    setAnchorD(null);
+  };
+  
 
   const handleTimeChange = async (newVal) => {
     const selectedTime = newVal.$d;
     const isoTime = dayjs(selectedTime).format("HH:mm:ss");
+    console.log(isoTime)
     
     setSelectedTime(isoTime);
+    setDisplayTime(dayjs(isoTime,"HH:mm:ss").format("HH:mm"));
+    console.log(displayTime)
    
     const scheduleCode = sCode;
     const { id, field } = idFormatT;
@@ -368,10 +380,12 @@ const BasicTable = () => {
             ...item,
             id: item.subjectCode,
             subjectName: subjectName,
+            date: item.date,
           };
+          
         })
       );
-
+        
       setPopoverData(modifiedData);
     } catch (error) {
       console.error("Error fetching nested data:", error);
@@ -383,9 +397,10 @@ const BasicTable = () => {
      
       setTimeError("Please select a time.");
       setSelectedTime(null);
+      setDisplayTime(a);
     } else {
       
-      const time = dayjs(selectedTime).format("HH:mm");
+      const time = dayjs(selectedTime).format("HH:mm:ss");
       const selectedHours = parseInt(time.split(":")[0], 10);
       const selectedMinutes = parseInt(time.split(":")[1], 10);
       if (
@@ -398,10 +413,17 @@ const BasicTable = () => {
         setTimeError("Selected time must be between 9 AM and 4 PM.");
       } else {
         setTimeError("");
-        setAnchorT(null);
-        setSelectedTime("");
+        // setAnchorT(null);
+        // setSelectedTime("");
+        setSelectedTime(null); // Clear the time object state
+        setDisplayTime("");
+        closeTimePopover();
       }
     }
+  };
+
+  const closeTimePopover = () => {
+    setAnchorT(null);
   };
  
   const handlePopoverClose = () => {
@@ -585,6 +607,7 @@ const BasicTable = () => {
     );
   };
   const isSunday = (date) => {
+    console.log(date)
     const day = date.day();
 
     return day === 0;
@@ -640,13 +663,19 @@ const BasicTable = () => {
   
 
   const handleDateDialogBox = (event, row) => {
+    // setSelectedDate(row.row.date);
+    console.log(row.row.date)
+    setDisplayDate(dayjs(row.row.date))
     setAnchorD(event.currentTarget);
+
     console.log("a : ", row);
     setIdFormatD(row);
   };
 
   const handleTimeDialogBox = (event, row) => {
     setAnchorT(event.currentTarget);
+    setDisplayTime(row.row.time)
+    console.log(row.row.time)
     setIdFormatT(row);
   };
 
@@ -712,7 +741,7 @@ const BasicTable = () => {
                         <DateTimePicker
                           ampm={false}
                           shouldDisableDate={isSunday}
-                          
+                          value={displayDate}
                           views={["year", "month", "day"]}
                           label="Select Date"
                           onChange={handleDateChange}
@@ -734,6 +763,7 @@ const BasicTable = () => {
                   </div>
                   <div>
                     <Button onClick={handleDateSelect}>Done</Button>
+                    <Button onClick={closeDatePopover}>Close</Button> {/* Close button */}
                   </div>
                 </Typography>
               </Popover>
@@ -741,6 +771,7 @@ const BasicTable = () => {
                 open={Boolean(anchorT)}
                 anchorEl={anchorT}
                 disableClickAway={true}
+                
                 anchorOrigin={{
                   vertical: "top",
                   horizontal: "center",
@@ -759,12 +790,13 @@ const BasicTable = () => {
                           views={["hours", "minutes"]}
                           renderInput={(params) => <TextField {...params} />}
                           minTime={nineAM}
+                          onClose={closeDatePopover}
                           maxTime={threePM}
                           label="Select Time"
                           onChange={handleTimeChange}
                           inputFormat="HH:mm"
                           shouldDisableDate={isDate}
-                          //value={selectedPopoverTime}
+                          value={displayTime}
                           //defaultValue={dateTimeSave !== null ? dateTimeSave : nineAM}
                           // defaultValue={nextDay}
                         />
@@ -778,6 +810,7 @@ const BasicTable = () => {
                   </div>
                   <div>
                     <Button onClick={handleTimeSelect}>Done</Button>
+                    <Button onClick={closeTimePopover}>Close</Button> {/* Close button */}
                   </div>
                 </Typography>
               </Popover>
