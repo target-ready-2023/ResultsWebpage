@@ -61,10 +61,11 @@ const SchedulePage = () => {
   ]);
   const [alert, setAlert] = useState("");
  const [dateTimeError, setDateTimeError]=useState("")
+ const [dateTimeNotif, setDateTimeNotif]=useState("")
   const [year, setYear] = useState("");
   const [classAcademiYears, setClassAcademicYears] = useState([]);
   const [idFormat, setIdFormat] = useState("");
-  const [dateTimeSave, setDateTimeSave] = useState(null);
+  const [dateTimeSave, setDateTimeSave] = useState("");
   const [classE, setClassE] = useState("");
   const [yearError, setYearError] = useState("");
 
@@ -255,15 +256,15 @@ const fetchSubjectCode = async (subjectName, classCode) => {
 // handling the date time popover
 
   const handleDateTimeDialogBox = (event, row) => {
+    setDateTimeNotif("Please select a date and time.");
     setAnchorDT(event.currentTarget);
-
     setIdFormat(row);
-   
     const prevSavedValue = rowsDisplay.find(
       (item) => item.id === row.id
-    )?.dateTime;
-
+      )?.dateTime;
     setDateTimeSave(prevSavedValue ? dayjs(prevSavedValue) : null);
+    if(dateTimeSave){
+    setDateTimeNotif("");}
   };
 
   // selecting the date and time
@@ -291,14 +292,18 @@ const fetchSubjectCode = async (subjectName, classCode) => {
         setAnchorDT(null);
       }
     } else {
-      setDateTimeError("Please select a date and time.");
+      
+      setAnchorDT(null);
     }
   };
 
   // handling the change in date time.
 
   const handleDateTimeChange = (newVal) => {
-    setDateTimeSave(newVal);
+
+    setDateTimeSave(newVal.toISOString());
+    console.log("dateTimeSave:", dateTimeSave);
+
     const selectedDate = newVal.$d;
     const isoDateTime = dayjs(selectedDate).format("YYYY-MM-DDTHH:mm:ss");
     
@@ -310,7 +315,8 @@ const fetchSubjectCode = async (subjectName, classCode) => {
     );
     
     const m = rowsDisplay;
-    
+     setDateTimeNotif("");
+     setDateTimeError("");
   };
 
  //validation functions for 
@@ -652,8 +658,9 @@ const fetchSubjectCode = async (subjectName, classCode) => {
                           <DemoContainer components={["DateTimePicker"]}>
                             <DateTimePicker
                               ampm={false}
-                              shouldDisableDate={isSunday}
-                              defaultValue={"Choose date and time"}
+                              // shouldDisableDate={isSunday}
+                              shouldDisableDate={(date) => dayjs(date).isBefore(dayjs(), 'day')&& isSunday} // Disable past dates
+                              defaultValue={dateTimeSave ? dayjs(dateTimeSave) : null}
                               //defaultValue={dateTimeSave !== null ? dateTimeSave : nineAM}
                              // defaultValue={nextDay}
                               minTime={nineAM}
@@ -665,7 +672,10 @@ const fetchSubjectCode = async (subjectName, classCode) => {
                         </LocalizationProvider>
                       </div>
                       <div>
-                      {dateTimeError && (
+                        {dateTimeNotif && (
+                          <span style={{ color: "#1976d2" }}>{dateTimeNotif}</span>
+                        )}
+                        {dateTimeError && (
                           <span style={{ color: "red" }}>{dateTimeError}</span>
                         )}
                       </div>
