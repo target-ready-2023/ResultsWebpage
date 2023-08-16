@@ -2,7 +2,7 @@ import React from "react";
 import "./EditResultsAdmin.css";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Box,Stack, Grid,Button,Table,TableHead,TableCell ,TableRow,Dialog,DialogActions,DialogContent,DialogTitle, Typography, TextField, Select, FormControl, InputLabel, MenuItem} from "@mui/material";
+import { Box,Stack, Grid,Button,Table,TableHead,TableCell ,TableBody,TableRow,Dialog,DialogActions,DialogContent,DialogTitle, Typography, TextField, Select, FormControl, InputLabel, MenuItem} from "@mui/material";
 import EditIcon  from '@mui/icons-material/Edit';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import swal from "sweetalert";
@@ -450,23 +450,25 @@ const EditResultsAdmin=()=>{
                     <TableCell className="Table-cell"><Typography className="text"><b>Max Marks</b></Typography></TableCell>
                     <TableCell className="Table-cell"><Typography className="text"><b>Obtained marks</b></Typography></TableCell>
                 </TableHead>
+                <TableBody>
                 {viewRes?.length === 0 ?
                 <TableRow>
                     <TableCell><Typography className="text4">No Result Found. Please add result to view</Typography></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
                 </TableRow>
                 :
                 <>
                     {viewResMarks?.map((re, index) =>(
-                    <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between'}}>
                         {(schedules.scheduleType).toLowerCase() === "test" ?<>
-                    <TableRow key={index}>
+                    <TableRow key={index} >
                         <TableCell className="Table-cell"><Typography className="text">{re.subjectName}</Typography></TableCell>
                         <TableCell className="Table-cell"><Typography className="text">{re.maxTestMarks}</Typography></TableCell>
                         <TableCell className="Table-cell"><Typography className="text">{re.internalMarks}</Typography></TableCell>
                     </TableRow>
                     </>
-                   :
-                 <>
+                   :<>
                     <TableRow key={index}>
                         <TableCell className="Table-cell"><Typography className="text">{re.subjectName}</Typography></TableCell>
                         <TableCell className="Table-cell"><Typography className="text">{re.maxExamMarks}</Typography></TableCell>
@@ -478,7 +480,7 @@ const EditResultsAdmin=()=>{
         )    
         )}
             </>
-        }
+        }</TableBody>
             </Table>
             <br/>
             {viewRes?.length === 0?
