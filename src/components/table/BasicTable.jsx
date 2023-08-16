@@ -764,7 +764,7 @@ const BasicTable = () => {
                   </div>
                   <div>
                     <Button onClick={handleDateSelect}>Done</Button>
-                    <Button onClick={closeDatePopover}>Close</Button> {/* Close button */}
+                    {/* <Button onClick={closeDatePopover}>Close</Button> Close button */}
                   </div>
                 </Typography>
               </Popover>
@@ -811,7 +811,7 @@ const BasicTable = () => {
                   </div>
                   <div>
                     <Button onClick={handleTimeSelect}>Done</Button>
-                    <Button onClick={closeTimePopover}>Close</Button> {/* Close button */}
+                    {/* <Button onClick={closeTimePopover}>Close</Button> Close button */}
                   </div>
                 </Typography>
               </Popover>
