@@ -261,7 +261,7 @@ const AdminViewAllResults=()=>
         <Stack direction="row" justifyContent="space-between">
       <Box className="class-drop-down">
       <FormControl sx={{ m: 1 }}  size="small">
-               <InputLabel style={{color:"black"}}>Class Name</InputLabel>
+               <InputLabel style={{color:"black"}} className="label-result">Class Name</InputLabel>
                <Select required={true} onChange={handleClassNameSelect}
                className="selectresult">
                 {classes?.map((classes,id) => (
@@ -272,7 +272,7 @@ const AdminViewAllResults=()=>
          </Box>
          <Box className="year-drop-down">
                <FormControl sx={{ m: 1 }} size="small">
-               <InputLabel style={{color:"black",marginLeft:"20px"}}>Academic Year</InputLabel>
+               <InputLabel style={{color:"black",marginLeft:"20px"}} className="label-result">Academic Year</InputLabel>
                 <Select value={year} 
                 className="selectresult"
                           onChange={handleYearSelect} disabled={disableClass}>
@@ -285,7 +285,7 @@ const AdminViewAllResults=()=>
          </Box>
          <Box className="test-drop-down">
                <FormControl sx={{ m: 1 }} size="small" >
-               <InputLabel style={{color:"black",marginLeft:"30px"}} >Test/Exam</InputLabel>
+               <InputLabel style={{color:"black",marginLeft:"30px"}} className="label-result">Test/Exam</InputLabel>
                 <Select disabled={disableClass||disableYear} onChange={handleTestNameSelect}
                 className="selectresult">
                             {testList?.map((test,id) => (
@@ -325,16 +325,19 @@ const AdminViewAllResults=()=>
                <TableCell className="Head-Table-cell"  >Student Name</TableCell>
                {subjects?.map((sub,index) => (
                       <TableCell className="Head-Table-cell"  >
-                        <div>
+                        <div style={{justifyContent:"centre"}}>
+                        
                         {sub} 
                         <Divider style={{backgroundColor:"black"}}></Divider>
                         <Stack direction="row">
-                        <div style={{padding:"5px",paddingLeft:"25px",alignContent:"center",paddingBottom:"0px"}} className="Head-Table-cell">
+                        <div style={{padding:"5px",paddingLeft:"25px",justifyContent:"centre",paddingBottom:"10px"}} className="Head-Table-cell">
                           IM
                           <div> {maxTestMarks[index]}</div>
                         </div>
-                        <Divider orientation="vertical" flexItem style={{backgroundColor:"black", marginLeft:"15px", paddingBottom:"50px"}}></Divider>
-                        <div style={{padding:"5px",paddingLeft:"25px",alignContent:"center", paddingBottom:"0px"}} className="Head-Table-cell">
+                      
+                        <Divider orientation="vertical" flexItem style={{backgroundColor:"black", marginLeft:"0px", paddingBottom:"40px",paddingTop:"10px"}}></Divider>
+                       
+                        <div style={{padding:"5px",paddingLeft:"25px",justifyContent:"centre",paddingBottom:"10px"}} className="Head-Table-cell">
                           EM
                           <div> {maxExamMarks[index]}</div>
                           </div>
@@ -355,10 +358,10 @@ const AdminViewAllResults=()=>
       <TableCell className="Table-cell">{result.studentName}</TableCell>
       {result.marksList?.map((marks,index)=>
       {return(
-        <TableCell>
+        <TableCell style={{padding:"0px"}}>
           <Stack direction="row">
-          <div style={{padding:"5px",paddingLeft:"25px"}} className="Table-cell">{marks.internalMarks}</div>
-          <Divider orientation="vertical" flexItem style={{backgroundColor:"black", marginLeft:"15px"}}></Divider>
+          <div style={{padding:"5px",paddingLeft:"40px"}} className="Table-cell">{marks.internalMarks}</div>
+          <Divider orientation="vertical" flexItem style={{backgroundColor:"black", marginLeft:"0px"}}></Divider>
           <div style={{padding:"5px",paddingLeft:"25px"}} className="Table-cell">{marks.externalMarks}</div>
           </Stack>
         </TableCell>

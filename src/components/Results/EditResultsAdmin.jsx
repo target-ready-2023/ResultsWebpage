@@ -444,35 +444,53 @@ const EditResultsAdmin=()=>{
             <Typography className="text"><b>Test/Exam: </b>{schedules.scheduleName}</Typography>
             </div>
             <br/>
-            <Table style={{border:"1px solid"}}>
-                <TableHead>
-                    <TableCell className="Table-cell"><Typography className="text"><b>Subject Name</b></Typography></TableCell>
-                    <TableCell className="Table-cell"><Typography className="text"><b>Max Marks</b></Typography></TableCell>
-                    <TableCell className="Table-cell"><Typography className="text"><b>Obtained marks</b></Typography></TableCell>
-                </TableHead>
-                <TableBody>
+            <Table style={{border:"1px solid"}} className="view">
+                
                 {viewRes?.length === 0 ?
+                <>
+                <div>
+                <TableHead>
+                    <TableCell ><Typography className="txt"><b>Subject Name</b></Typography></TableCell>
+                    <TableCell ><Typography className="txt"><b>Max Marks</b></Typography></TableCell>
+                    <TableCell ><Typography className="txt"><b>Obtained marks</b></Typography></TableCell>
+                </TableHead>
+                </div>
                 <TableRow>
                     <TableCell><Typography className="text4">No Result Found. Please add result to view</Typography></TableCell>
                     <TableCell></TableCell>
                     <TableCell></TableCell>
                 </TableRow>
+                </>
+                
+               
                 :
-                <>
+                <>  
+                <div>
+                     <TableHead>
+                    <TableCell ><Typography className="txt"><b>Subject Name</b></Typography></TableCell>
+                    <TableCell ><Typography className="txt"><b>Max Marks</b></Typography></TableCell>
+                    <TableCell ><Typography className="txt"><b>Obtained marks</b></Typography></TableCell>
+                </TableHead>
+            </div>
+                
                     {viewResMarks?.map((re, index) =>(
                     <div style={{ display: 'flex', justifyContent: 'space-between'}}>
                         {(schedules.scheduleType).toLowerCase() === "test" ?<>
-                    <TableRow key={index} >
-                        <TableCell className="Table-cell"><Typography className="text">{re.subjectName}</Typography></TableCell>
-                        <TableCell className="Table-cell"><Typography className="text">{re.maxTestMarks}</Typography></TableCell>
-                        <TableCell className="Table-cell"><Typography className="text">{re.internalMarks}</Typography></TableCell>
+                      
+                        
+                    <TableRow key={index}>
+                        <TableCell className="Table-cell"><Typography className="txt">{re.subjectName}</Typography></TableCell>
+                        <TableCell className="Table-cell" ><Typography className="txt">{re.maxTestMarks}</Typography></TableCell>
+                        <TableCell className="Table-cell"><Typography className="txt">{re.internalMarks}</Typography></TableCell>
                     </TableRow>
                     </>
-                   :<>
+                   :
+                 <>
+                 
                     <TableRow key={index}>
-                        <TableCell className="Table-cell"><Typography className="text">{re.subjectName}</Typography></TableCell>
-                        <TableCell className="Table-cell"><Typography className="text">{re.maxExamMarks}</Typography></TableCell>
-                        <TableCell className="Table-cell"><Typography className="text">{re.externalMarks}</Typography></TableCell>
+                        <TableCell className="Table-cell"><Typography className="txt">{re.subjectName}</Typography></TableCell>
+                        <TableCell className="Table-cell"><Typography className="txt">{re.maxExamMarks}</Typography></TableCell>
+                        <TableCell className="Table-cell"><Typography className="txt">{re.externalMarks}</Typography></TableCell>
                     </TableRow>
                     </>
             } 
