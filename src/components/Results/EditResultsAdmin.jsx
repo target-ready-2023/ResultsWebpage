@@ -498,7 +498,7 @@ const EditResultsAdmin=()=>{
         )    
         )}
             </>
-        }</TableBody>
+        }
             </Table>
             <br/>
             {viewRes?.length === 0?
