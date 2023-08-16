@@ -328,7 +328,7 @@ const BasicTable = () => {
       setDateError("");
       //setAnchorD(null);
       setSelectedDate("");
-      //closeDatePopover(); // Call the function to close the date popover
+      closeDatePopover(); // Call the function to close the date popover
     }
   };
   
@@ -666,6 +666,7 @@ const BasicTable = () => {
     // setSelectedDate(row.row.date);
     console.log(row.row.date)
     setDisplayDate(dayjs(row.row.date))
+    setSelectedDate(displayDate)
     setAnchorD(event.currentTarget);
 
     console.log("a : ", row);
