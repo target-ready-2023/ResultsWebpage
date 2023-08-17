@@ -1,8 +1,9 @@
 .table-data{
     padding-left: 150px;
     padding-right: 150px;
-    padding-top :30px;
-    height: 330px;
+    padding-top :50px;
+    height: 300px;
+    width: 1060px;
    
         display: flex;
         /* position: absolute; */
