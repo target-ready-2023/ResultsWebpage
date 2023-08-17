@@ -19,6 +19,8 @@ import {
 import { useEffect } from "react";
 import axios from "axios";
 
+import { useNavigate } from 'react-router-dom';
+
 const StudentViewResults = () => {
   const [className, setClassName] = useState("");
   const [classCode, setClassCode] = useState("");
@@ -42,6 +44,8 @@ const StudentViewResults = () => {
   let classCodeSelect = "";
   let resultsR = "";
   let scheduleCodes = "";
+
+  const navigate = useNavigate();
 
   const [classError, setClassError] = useState("");
   const [rollNoError, setRollNoError] = useState("");
@@ -260,11 +264,28 @@ const StudentViewResults = () => {
       setView("yes");
     }
   };
+
+const handleLeaderBoard = ()=>{
+  navigate('/Leaderboard')
+}
+
   return (
     <div>
       <div className="top-part">
         <h2>RESULTS</h2>
       </div>
+      <div className="leaderboard">
+      <FormControl>
+            <button
+              variant="contained"
+              onClick={handleLeaderBoard}
+              className="leaderboard-button"
+            >
+              Leaderboard
+            </button>
+          </FormControl>
+      </div>
+      
 
       <div className="drop-downs-block">
         <Box className="drop-down">
@@ -327,6 +348,8 @@ const StudentViewResults = () => {
             </button>
           </FormControl>
         </div>
+
+
       </div>
 
       <div>

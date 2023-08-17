@@ -12,7 +12,10 @@
   float: left;
   /* width: 200px; */
 }
-
+.leaderboard{
+  float: right;
+  padding-right: 30px;
+}
 .top-part
 {
     display: flex;
@@ -77,5 +80,22 @@
     width:80px;
     
     height:32px;
+    font-family:Georgia, 'Times New Roman', Times, serif;
+  }
+
+  .leaderboard-button{
+    background: #6c88c8;
+    border: 0.5px solid rgb(173, 172, 172);
+    border-radius: 3px;
+    padding-top: 2%;
+    padding-right: 2%;
+    padding-left :2%;
+    padding-bottom: 2%;
+   
+   color:black;
+   font-size: medium;
+    width:150px;
+    height:35px;
+    float: right;
     font-family:Georgia, 'Times New Roman', Times, serif;
   }
