@@ -116,7 +116,7 @@ import axios from "axios";
           // console.log(response.data)
 
           const updatedData = response.data.map((item) => ({
-            id: item.classCode,
+            id: item.className,
             name: item.name,
             aggregate: item.totalMarks
           }));
@@ -260,11 +260,13 @@ import axios from "axios";
 
               {(yearSelect && !classNameSelect) || (!yearSelect && !classNameSelect) ? (
                 <DataGrid
+                className="dt1"
                   rows={toppersData}
                   columns={topperColumns}
                   pageSize={5}
-                  autoHeight
+                  autoHeight={false}
                   hideFooter
+                  height={200}
                   hideFooterPagination
                   hideFooterSelectedRowCount
                   localeText={customLocaleText}
@@ -272,10 +274,12 @@ import axios from "axios";
                 ) : (
                   <><h3 className="message-heading">Leader Board</h3>
                   <DataGrid
+                  className="dt1"
                   rows={leaderboardData}
                   columns={columns}
                   pageSize={5}
-                  autoHeight
+                  // height={200}
+                  // autoHeight={false}
                   hideFooter
                   hideFooterPagination
                   hideFooterSelectedRowCount

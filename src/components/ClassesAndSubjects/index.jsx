@@ -435,7 +435,7 @@ else {
                                 </tr>
                             )}
                             <br></br>
-                  <label className="input-label">Subject  Credit </label>
+                  <label className="input-label">Subject Credit</label>
                   <input className="input"
                    onChange={(event)=>setSubject({...subject,credits:event.target.value})}></input>
                    <br />
