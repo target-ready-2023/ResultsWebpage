@@ -676,7 +676,7 @@ else {
          <Stack direction="column">
         <div>
          <div>
-             <button className="button-style"onClick={handleClickOpen} >Add Class</button>
+             <button className="button-style" onClick={handleClickOpen} >Add Class</button>
              </div>
              <div className="nosubmit"   >
                 

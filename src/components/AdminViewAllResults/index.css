@@ -114,14 +114,17 @@ margin-right: -30%;
 .class-drop-down .label-result{
 
   top:-15%;
+  margin-top: 2.5px;
 }
 
 .test-drop-down .label-result{
   top:-15%;
+  margin-top: 2.5px;
 }
 
 .year-drop-down .label-result{
   top:-15%;
+  margin-top: 2.5px;
 }
  .year-drop-down .selectresult{
   width:170px;
