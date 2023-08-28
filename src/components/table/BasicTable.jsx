@@ -144,6 +144,7 @@ const BasicTable = () => {
       headerName: "Class Name",
       width: 250,
       headerClassName: "header",
+      
     },
     {
       field: "scheduleName",
@@ -195,8 +196,8 @@ const BasicTable = () => {
         );
       },
       headerName: "Remove",
-      width: 220,
-    },
+      width: 200,
+    }
   ];
 
   //nested data(subjects) format
@@ -686,7 +687,7 @@ const BasicTable = () => {
   };
 
   return (
-    <div>
+    <>
       <div className="table-data">
         <DataGrid
           className="schedule-display"
@@ -715,6 +716,7 @@ const BasicTable = () => {
           <div>
             <div className="Table-display">
               <DataGrid
+              // sx={{fontSize:"18px"}}
                 rows={popoverData}
                 columns={popoverColumns}
                 hideFooterPagination
@@ -836,8 +838,7 @@ const BasicTable = () => {
           </div>
         </Typography>
       </Popover>
-    </div>
-  );
+      </>  );
 };
 
 export default BasicTable;

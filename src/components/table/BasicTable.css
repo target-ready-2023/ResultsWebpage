@@ -2,19 +2,23 @@
     padding-left: 150px;
     padding-right: 150px;
     padding-top :75px;
-    height: 330px;
+    height: 600px;
    
         display: flex;
-        /* position: absolute; */
+        position: relative;
         justify-content: center;
-        /* width: 1000px; */
+        max-width: 100%;
     
       
 }
-.table-data .schedule-display{
+/* .table-data .schedule-display{
     
-     width: 800px;
+     width: 80000;
     
+} */
+
+.table-data{
+    max-height:450px;
 }
  .header{
     background-color:#6c88c8;
@@ -28,4 +32,10 @@
 .Table-display{
     
     height: 265px;
+}
+.MuiDataGrid-root{
+    max-width:1050px;
+}
+.auto-grid-header {
+    font-size: 18px;
 }
