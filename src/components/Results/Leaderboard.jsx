@@ -12,7 +12,7 @@ import axios from "axios";
         headerClassName:"leaderboard-head",
         align: "center", 
         headerName: "Rank", 
-        width: 100 
+        width: 180 
     },
     { 
       field: "name", 
@@ -20,7 +20,7 @@ import axios from "axios";
       headerClassName:"leaderboard-head",
       align: "center", 
       headerName: "Name", 
-      width: 200 
+      width: 280 
     },
     { 
       field: "aggregate", 
@@ -28,7 +28,7 @@ import axios from "axios";
       headerClassName:"leaderboard-head",
       align: "center", 
       headerName: "Aggregate %", 
-      width: 118 
+      width: 220
   },
   ];
 
@@ -39,7 +39,7 @@ import axios from "axios";
         headerClassName:"leaderboard-head",
         align: "center", 
         headerName: "Class", 
-        width: 100 
+        width: 180 
     },
     { 
       field: "name", 
@@ -47,7 +47,7 @@ import axios from "axios";
       headerClassName:"leaderboard-head",
       align: "center", 
       headerName: "Name", 
-      width: 200 
+      width: 280 
     },
     { 
       field: "aggregate", 
@@ -55,7 +55,8 @@ import axios from "axios";
       headerClassName:"leaderboard-head",
       align: "center",
       headerName: "Aggregate %", 
-      width: 117 },
+      width: 220
+    },
   ]
 
   const Leaderboard = () => {
