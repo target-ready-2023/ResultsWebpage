@@ -748,7 +748,7 @@ const fetchSubjectCode = async (subjectName, classCode) => {
                 onClick={handleView}
                 className="view-buttonresult"
               >
-                view
+                View
               </button>
             </FormControl>
           </div>
@@ -765,7 +765,9 @@ const fetchSubjectCode = async (subjectName, classCode) => {
         </center>
       </div>
 
-        <BasicTable />
+        <div className="table-div">
+        <centre><BasicTable /></centre>
+        </div>
       </div>
     </>
   );
