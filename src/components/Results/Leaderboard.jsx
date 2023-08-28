@@ -12,7 +12,7 @@ import axios from "axios";
         headerClassName:"leaderboard-head",
         align: "center", 
         headerName: "Rank", 
-        width: 180 
+        width: 240 
     },
     { 
       field: "name", 
@@ -20,7 +20,7 @@ import axios from "axios";
       headerClassName:"leaderboard-head",
       align: "center", 
       headerName: "Name", 
-      width: 280 
+      width: 340 
     },
     { 
       field: "aggregate", 
@@ -28,7 +28,7 @@ import axios from "axios";
       headerClassName:"leaderboard-head",
       align: "center", 
       headerName: "Aggregate %", 
-      width: 220
+      width: 285
   },
   ];
 
@@ -39,7 +39,7 @@ import axios from "axios";
         headerClassName:"leaderboard-head",
         align: "center", 
         headerName: "Class", 
-        width: 180 
+        width: 240 
     },
     { 
       field: "name", 
@@ -47,7 +47,7 @@ import axios from "axios";
       headerClassName:"leaderboard-head",
       align: "center", 
       headerName: "Name", 
-      width: 280 
+      width: 340 
     },
     { 
       field: "aggregate", 
@@ -55,7 +55,7 @@ import axios from "axios";
       headerClassName:"leaderboard-head",
       align: "center",
       headerName: "Aggregate %", 
-      width: 220
+      width: 285
     },
   ]
 
